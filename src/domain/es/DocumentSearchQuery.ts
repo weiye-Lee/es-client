@@ -1,5 +1,5 @@
-import useGlobalSettingStore from "@/store/setting/GlobalSettingStore";
-import {stringifyJsonWithBigIntSupport} from "@/algorithm/format";
+import {useGlobalSettingStore} from "@/store";
+import {stringifyJsonWithBigIntSupport} from "$/util";
 
 /**
  * 文档搜索条件

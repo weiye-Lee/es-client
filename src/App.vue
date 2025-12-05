@@ -19,13 +19,13 @@
 
 <script lang="ts" setup>
 // 引入状态管理
-import useGlobalSettingStore from "@/store/setting/GlobalSettingStore";
+import {useGlobalSettingStore} from "@/store";
 import useLoadingStore from "@/store/LoadingStore";
 import {useGlobalStore} from "@/store/GlobalStore";
-import useUrlStore from "@/store/UrlStore";
+import {useUrlStore} from "@/store";
 import useEditorSettingStore from "@/store/setting/EditorSettingStore";
 import {useBackupSettingStore} from "@/store/setting/BackupSettingStore";
-import useIndexStore from "@/store/IndexStore";
+import {useIndexStore} from "@/store";
 import PageNameEnum from "@/enumeration/PageNameEnum";
 import LocalNameEnum from "@/enumeration/LocalNameEnum";
 import {versionManager, VersionStatus} from "@/components/version-manager";

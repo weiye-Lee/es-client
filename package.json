@@ -40,6 +40,8 @@
     "monaco-editor": "^0.34.1",
     "pinia": "^2.3.1",
     "sortablejs": "^1.15.6",
+    "tdesign-icons-vue-next": "^0.4.1",
+    "tdesign-vue-next": "^1.17.6",
     "vconsole": "^3.15.1",
     "vue": "^3.5.25",
     "vue-router": "^4.6.3",
@@ -50,6 +52,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@tdesign-vue-next/auto-import-resolver": "^0.1.4",
     "@types/js-yaml": "^4.0.9",
     "@types/json-bigint": "^1.0.4",
     "@types/json2csv__plainjs": "^6.1.4",

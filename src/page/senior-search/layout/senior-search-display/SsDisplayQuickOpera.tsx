@@ -2,7 +2,7 @@ import {Method} from "axios";
 import {Drawer, Form, FormItem, Input, Radio, RadioGroup, Textarea} from "@arco-design/web-vue";
 import {createSeniorSearchRequestContent} from "@/entity/history/SeniorSearchRequest";
 import {useSeniorSearchRequestStore} from "@/store/history/SeniorSearchRequestStore";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import MonacoEditor from "@/components/monaco-editor/index.vue";
 import {useSeniorSearchStore} from "@/store/components/SeniorSearchStore";
 

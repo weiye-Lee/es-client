@@ -84,8 +84,8 @@
 <script lang="ts" setup>
 import {Node, NodeState} from "@/domain/es/NodeState";
 import ClusterApi from "@/components/es/ClusterApi";
-import MessageUtil from "@/utils/MessageUtil";
-import useUrlStore from "@/store/UrlStore";
+import MessageUtil from "@/utils/model/MessageUtil";
+import {useUrlStore} from "@/store";
 import {prettyDataUnit} from "@/utils/BrowserUtil";
 import {toDateString} from "xe-utils";
 

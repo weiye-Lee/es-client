@@ -1,10 +1,10 @@
 import IndexView from "@/view/index/IndexView";
 import clusterApi from "@/components/es/ClusterApi";
 import IndexFieldBuild from "./IndexFieldBuild";
-import useGlobalSettingStore from "@/store/setting/GlobalSettingStore";
+import {useGlobalSettingStore} from "@/store";
 import StrUtil from "@/utils/StrUtil";
 import {ClusterInfo, ClusterNode} from "@/domain/index/ClusterInfo";
-import NotificationUtil from "@/utils/NotificationUtil";
+import NotificationUtil from "@/utils/model/NotificationUtil";
 
 /**
  * 索引列表构造器

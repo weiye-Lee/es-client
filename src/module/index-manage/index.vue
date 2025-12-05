@@ -48,16 +48,15 @@ import {contains} from "@/utils/ArrayUtil";
 import IndexApi from "@/components/es/IndexApi";
 import Assert from "@/utils/Assert";
 import IndexManageSummary from "@/module/index-manage/summary.vue";
-import MessageUtil from "@/utils/MessageUtil";
-import useIndexStore from "@/store/IndexStore";
+import MessageUtil from "@/utils/model/MessageUtil";
+import {useIndexStore} from "@/store";
 import Optional from "@/utils/Optional";
 import {mapState} from "pinia";
 import {useIndexManageEvent} from "@/global/BeanFactory";
-import MessageBoxUtil from "@/utils/MessageBoxUtil";
+import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
 import IndexMapping from "@/components/IndexMapping/index.vue";
 import MonacoEditor from "@/components/monaco-editor/index.vue";
-import {stringifyJsonWithBigIntSupport} from "@/algorithm/format";
-import {formatJsonString} from "@/algorithm/file";
+import {stringifyJsonWithBigIntSupport, formatJsonString} from "$/util";
 
 export default defineComponent({
   name: 'index-manage',

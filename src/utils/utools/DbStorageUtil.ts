@@ -1,5 +1,5 @@
 import {del, get, set} from 'idb-keyval';
-import {parseJsonWithBigIntSupport, stringifyJsonWithBigIntSupport} from "@/algorithm/format";
+import {parseJsonWithBigIntSupport, stringifyJsonWithBigIntSupport} from "$/util";
 
 // 定义
 

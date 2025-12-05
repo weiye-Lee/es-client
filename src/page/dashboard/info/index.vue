@@ -113,8 +113,8 @@
 </template>
 <script lang="ts" setup>
 import ClusterApi from "@/components/es/ClusterApi";
-import MessageUtil from "@/utils/MessageUtil";
-import useUrlStore from "@/store/UrlStore";
+import MessageUtil from "@/utils/model/MessageUtil";
+import {useUrlStore} from "@/store";
 import {ClusterHealth} from "@/domain/es/ClusterHealth";
 import DashboardCard from "@/page/dashboard/components/DashboardCard.vue";
 import {Overview} from "@/domain/es/Overview";

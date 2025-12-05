@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import NotificationUtil from "@/utils/NotificationUtil";
+import NotificationUtil from "@/utils/model/NotificationUtil";
 
 const useLoadingStore = defineStore('loading', {
     state: () => ({

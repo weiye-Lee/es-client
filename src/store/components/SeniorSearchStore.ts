@@ -1,21 +1,21 @@
 import {defineStore} from "pinia";
 import * as monaco from "monaco-editor";
 // 工具类
-import MessageUtil from "@/utils/MessageUtil";
-import NotificationUtil from "@/utils/NotificationUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
+import NotificationUtil from "@/utils/model/NotificationUtil";
 import {useEsRequest} from "@/plugins/native/axios";
 //算法
 import SeniorSearchJumpEvent from "@/entity/event/SeniorSearchJumpEvent";
 import router from "@/plugins/router";
 import PageNameEnum from "@/enumeration/PageNameEnum";
 import {seniorSearchRecordService, useSeniorShowResultEvent} from "@/global/BeanFactory";
-import useUrlStore from "@/store/UrlStore";
+import {useUrlStore} from "@/store";
 import useLoadingStore from "@/store/LoadingStore";
 import {useSeniorSearchHistoryStore} from "@/store/history/SeniorSearchHistoryStore";
 import {getFromOne, saveOneByAsync} from "@/utils/utools/DbStorageUtil";
 import LocalNameEnum from "@/enumeration/LocalNameEnum";
-import {formatJsonString, formatRestQuery, ParsedRequest, parseRestRequests} from "@/algorithm/file";
-import {parseJsonWithBigIntSupport} from "@/algorithm/format";
+import {formatJsonString, formatRestQuery, ParsedRequest, parseRestRequests} from "$/util";
+import {parseJsonWithBigIntSupport} from "$/util";
 
 function requestBuild(instance: monaco.editor.IStandaloneCodeEditor, index: number): ParsedRequest | undefined {
   let value = instance.getValue();

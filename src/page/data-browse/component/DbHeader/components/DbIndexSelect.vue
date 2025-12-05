@@ -39,7 +39,7 @@
 </template>
 <script lang="ts" setup>
 import IndexView from "@/view/index/IndexView";
-import useIndexStore from "@/store/IndexStore";
+import {useIndexStore} from "@/store";
 import {useDataBrowseStore} from "@/store/components/DataBrowseStore";
 import {useFuse} from "@vueuse/integrations/useFuse";
 

@@ -44,10 +44,10 @@
     </a-spin>
 </template>
 <script lang="ts" setup>
-import useIndexStore from "@/store/IndexStore";
+import {useIndexStore} from "@/store";
 import Field from "@/view/Field";
 import {Token} from "@/domain/es/Analyze";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import DocumentApi from "@/components/es/DocumentApi";
 import {useSeniorSearchStore} from "@/store/components/SeniorSearchStore";
 import PageNameEnum from "@/enumeration/PageNameEnum";

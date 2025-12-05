@@ -1,7 +1,7 @@
-import useIndexStore from "@/store/IndexStore";
+import {useIndexStore} from "@/store";
 import IndexView from "@/view/index/IndexView";
 import {Alert, Button, Form, FormItem, Modal, ModalReturn, Option, Select, Switch} from "@arco-design/web-vue";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import useLoadingStore from "@/store/LoadingStore";
 import {useEsRequest} from "@/plugins/native/axios";
 import {useSeniorSearchStore} from "@/store/components/SeniorSearchStore";

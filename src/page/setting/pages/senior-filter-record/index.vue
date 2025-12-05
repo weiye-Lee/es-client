@@ -64,7 +64,7 @@
 </template>
 <script lang="ts" setup>
 import {useFuse} from "@vueuse/integrations/useFuse";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import {clone} from "xe-utils";
 import {enableFilter, useSeniorFilterRecordStore} from "@/store/record/SeniorFilterRecordStore";
 import {SeniorFilterRecord} from "@/entity/record/SeniorFilterRecord";

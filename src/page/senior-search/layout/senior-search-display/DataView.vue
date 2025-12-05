@@ -37,10 +37,10 @@
 <script lang="ts">
 import ViewTypeEnum from "@/enumeration/ViewTypeEnum";
 import TableViewer from "@/components/view/TableViewer/index.vue";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import MonacoEditor from "@/components/monaco-editor/index.vue";
 import MonacoView from "@/components/view/MonacoView/index.vue";
-import {formatJsonString} from "@/algorithm/file";
+import {formatJsonString} from "$/util";
 import {copyText} from "@/utils/BrowserUtil";
 
 /**

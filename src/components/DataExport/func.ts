@@ -7,9 +7,9 @@ import {DocumentSearchResult} from "@/domain/es/DocumentSearchResult";
 import {copyText, download} from "@/utils/BrowserUtil";
 import DocumentApi from "@/components/es/DocumentApi";
 import useLoadingStore from "@/store/LoadingStore";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import {DocumentSearchQuery} from "@/domain/es/DocumentSearchQuery";
-import {parseJsonWithBigIntSupport, stringifyJsonWithBigIntSupport} from "@/algorithm/format";
+import {parseJsonWithBigIntSupport, stringifyJsonWithBigIntSupport} from "$/util";
 
 // ------------------------------------------------ 渲染库 ------------------------------------------------
 

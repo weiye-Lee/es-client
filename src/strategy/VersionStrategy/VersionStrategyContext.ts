@@ -1,11 +1,11 @@
 import VersionStrategy from "@/strategy/VersionStrategy/VersionStrategy";
-import MessageBoxUtil from "@/utils/MessageBoxUtil";
+import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
 
 import ClusterApi from "@/components/es/ClusterApi";
 import Optional from "@/utils/Optional";
-import useUrlStore from "@/store/UrlStore";
+import {useUrlStore} from "@/store";
 import V7VersionStrategyImpl from "@/strategy/VersionStrategy/impl/V7VersionStrategyImpl";
-import NotificationUtil from "@/utils/NotificationUtil";
+import NotificationUtil from "@/utils/model/NotificationUtil";
 
 export default class VersionStrategyContext {
 

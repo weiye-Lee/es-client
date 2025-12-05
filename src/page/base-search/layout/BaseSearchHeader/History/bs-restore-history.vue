@@ -38,7 +38,7 @@
 </template>
 <script lang="ts">
 import BaseSearchHistory from "@/entity/history/BaseSearchHistory";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import {baseSearchLoadHistory} from "@/store/components/BaseSearchStore";
 import {copyText} from "@/utils/BrowserUtil";
 

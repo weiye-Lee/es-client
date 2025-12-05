@@ -45,11 +45,11 @@ import SeniorSearchDataView from '@/page/senior-search/layout/senior-search-disp
 import DisplayHistory from "@/page/senior-search/layout/senior-search-display/display-history.vue";
 import {statistics, useSeniorShowResultEvent} from "@/global/BeanFactory";
 import Constant from "@/global/Constant";
-import {jsonToHtml} from "@/utils/DialogUtil";
+import {jsonToHtml} from "@/utils/model/DialogUtil";
 import {BrowserWindowType, createDataBrowserWindow} from "@/plugins/native/browser-window";
-import NotificationUtil from "@/utils/NotificationUtil";
+import NotificationUtil from "@/utils/model/NotificationUtil";
 import SsDisplayQuick from "@/page/senior-search/layout/senior-search-display/SsDisplayQuick.vue";
-import useGlobalSettingStore from "@/store/setting/GlobalSettingStore";
+import {useGlobalSettingStore} from "@/store";
 
 const props = defineProps({
   fullscreen: Boolean

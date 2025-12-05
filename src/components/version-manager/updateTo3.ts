@@ -1,4 +1,4 @@
-import useUrlStore from "@/store/UrlStore";
+import {useUrlStore} from "@/store";
 import Dexie from "dexie";
 
 

@@ -21,7 +21,7 @@ import {
 } from "@arco-design/web-vue";
 import {exportData} from "@/components/DataExport/func";
 import useLoadingStore from "@/store/LoadingStore";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import AppLink from "@/components/AppLink/AppLink.vue";
 
 const allowExportTypes: Array<ExportType> = [ExportType.JSON];

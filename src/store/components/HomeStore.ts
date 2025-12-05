@@ -1,4 +1,4 @@
-import useIndexStore from "@/store/IndexStore";
+import {useIndexStore} from "@/store";
 
 
 export enum OrderType {

@@ -28,13 +28,13 @@
   </a-spin>
 </template>
 <script lang="ts">
-import useIndexStore from "@/store/IndexStore";
+import {useIndexStore} from "@/store";
 import Assert from "@/utils/Assert";
 import IndexApi from "@/components/es/IndexApi";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import {mapState} from "pinia";
-import MessageBoxUtil from "@/utils/MessageBoxUtil";
-import {stringifyJsonWithBigIntSupport} from "@/algorithm/format";
+import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
+import {stringifyJsonWithBigIntSupport} from "$/util";
 
 export default defineComponent({
   name: 'index-manage-summary',

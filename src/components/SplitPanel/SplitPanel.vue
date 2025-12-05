@@ -1,6 +1,6 @@
 <template>
   <div ref="containerRef" class="flex h-full select-none">
-    <div class="h-full overflow-auto" :style="{ width: leftPx }">
+    <div class="h-full overflow-auto relative" :style="{ width: leftPx }">
       <slot name="left" />
     </div>
     <div
@@ -11,7 +11,7 @@
       @mouseleave="isHover = false"
       @mousedown="onMouseDown"
     />
-    <div class="flex-1 h-full overflow-auto">
+    <div class="flex-1 h-full overflow-auto relative">
       <slot name="right" />
     </div>
   </div>

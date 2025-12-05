@@ -9,7 +9,7 @@ import useEditorSettingStore from "@/store/setting/EditorSettingStore";
 import Optional from "@/utils/Optional";
 import {URL_REGEX} from "@/data/EsUrl";
 import {useSeniorSearchStore} from "@/store/components/SeniorSearchStore";
-import {formatRestQuery} from "@/algorithm/file";
+import {formatRestQuery} from "$/util";
 
 let instance: monaco.editor.IStandaloneCodeEditor;
 

@@ -55,16 +55,16 @@
   </div>
 </template>
 <script lang="ts" setup>
-import useUrlStore from "@/store/UrlStore";
-import useIndexStore from "@/store/IndexStore";
+import {useUrlStore} from "@/store";
+import {useIndexStore} from "@/store";
 import {getDefaultUrl} from "@/entity/Url";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import {useFuse} from "@vueuse/integrations/useFuse";
 import {TableDraggable} from "@arco-design/web-vue";
 import {copyText, download, openUrl} from "@/utils/BrowserUtil";
 import Constant from "@/global/Constant";
 import {openAddLink, openUpdateLink} from "@/page/setting/pages/link/components/EditLink";
-import {parseJsonWithBigIntSupport, stringifyJsonWithBigIntSupport} from "@/algorithm/format";
+import {parseJsonWithBigIntSupport, stringifyJsonWithBigIntSupport} from "$/util";
 
 const size = useWindowSize();
 

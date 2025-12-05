@@ -20,7 +20,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import useUrlStore from "@/store/UrlStore";
+import {useUrlStore} from "@/store";
 import {useDataBrowseStore} from "@/store/components/DataBrowseStore";
 import {VxeTableInstance} from 'vxe-table';
 import MonacoView from "@/components/view/MonacoView/index.vue";

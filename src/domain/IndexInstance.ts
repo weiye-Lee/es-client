@@ -1,5 +1,5 @@
 import {Setting} from "@/domain/es/IndexBase";
-import useGlobalSettingStore from "@/store/setting/GlobalSettingStore";
+import {useGlobalSettingStore} from "@/store";
 
 /**
  * 索引实体类

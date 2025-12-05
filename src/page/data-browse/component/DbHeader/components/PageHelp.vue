@@ -39,7 +39,7 @@
   </a-button-group>
 </template>
 <script lang="ts" setup>
-import MessageBoxUtil from "@/utils/MessageBoxUtil";
+import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
 import {useDataBrowseStore} from "@/store/components/DataBrowseStore";
 import {useDbConditionStore} from "@/page/data-browse/store/DbConditionStore";
 import {useDbResultTotal} from "@/page/data-browse/store/DbResultStore";

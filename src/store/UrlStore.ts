@@ -1,42 +1,28 @@
 import {defineStore} from "pinia";
 import {Url} from "@/entity/Url";
 import {map} from "@/utils/ArrayUtil";
-import {listByAsync, saveListByAsync, setItem} from "@/utils/utools/DbStorageUtil";
+import {listByAsync, removeOneByAsync, saveListByAsync, setItem} from "@/utils/utools/DbStorageUtil";
 import LocalNameEnum from "@/enumeration/LocalNameEnum";
 import {statistics} from "@/global/BeanFactory";
-import {RequestConfig, useRequestJson} from "@/plugins/native/axios";
+import {buildEsRequestConfig, RequestConfig, useEsRequest, useRequestJson} from "@/plugins/native/axios";
 import {Overview} from "@/domain/es/Overview";
-import UrlAuthTypeEnum from "@/enumeration/UrlAuthTypeEnum";
+import {createElasticsearchClient, ElasticsearchClient} from "$/elasticsearch-client";
 
 const title = useTitle();
 
 export const buildRequestConfig = (record: Omit<Url, 'id' | 'createTime' | 'updateTime'>): RequestConfig => {
-  const config: RequestConfig = {
+  return buildEsRequestConfig({
     baseURL: record.value,
     url: '/',
     method: 'GET',
     headers: {} as Record<string, any>,
-  };
-  if (record.isAuth) {
-    if (record.authType === UrlAuthTypeEnum.BASIC) {
-      config.auth = {
-        username: record.authUser!,
-        password: record.authPassword!
-      }
-    } else if (record.authType === UrlAuthTypeEnum.HEADER) {
-      if (record.authUser) {
-        config.headers = {};
-        config.headers[record.authUser] = record.authPassword;
-      }
-    }
-  }
-  return config;
+  }, record);
 }
 
-const useUrlStore = defineStore('url', () => {
+export const useUrlStore = defineStore('url', () => {
   // state
   const urls = ref<Array<Url>>([]);
-  const url = ref<Url | undefined>(undefined);
+  const url = ref<Url>();
 
   // getters
   const urlMap = computed(() => map(urls.value, 'id'));
@@ -44,6 +30,13 @@ const useUrlStore = defineStore('url', () => {
   const current = computed(() => url.value && url.value.value ? url.value.value! : '');
   const id = computed(() => url.value ? url.value.id! : undefined);
   const empty = computed(() => url.value === undefined);
+  const client = computed<null | ElasticsearchClient>(() => {
+    if (!url.value) return null;
+    return createElasticsearchClient({
+      ...url.value,
+      adapter: useEsRequest
+    })
+  })
   // 第一个版本号
   const versionFirst = computed(() => {
     const [r1] = (url.value?.version || "").split(".");
@@ -135,6 +128,10 @@ const useUrlStore = defineStore('url', () => {
     }
     urls.value.splice(index, 1);
     await _sync();
+    // TODO: 删除关联数据
+    // 1. 删除数据浏览视图
+    await removeOneByAsync(`/item/data-browser/view/${id}`);
+    // 2. 删除数据浏览查询
   };
 
   const save = async (res: Array<Url>) => {
@@ -153,7 +150,8 @@ const useUrlStore = defineStore('url', () => {
     list,
     current,
     id,
-    empty,versionFirst,
+    empty, versionFirst,
+    client,
     choose,
     clear,
     add,
@@ -163,5 +161,3 @@ const useUrlStore = defineStore('url', () => {
     save,
   }
 });
-
-export default useUrlStore;

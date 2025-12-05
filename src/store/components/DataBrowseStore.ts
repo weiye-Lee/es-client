@@ -1,8 +1,8 @@
 import {defineStore} from "pinia";
 // 工具类
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import Optional from "@/utils/Optional";
-import MessageBoxUtil from "@/utils/MessageBoxUtil";
+import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
 // 组件
 import DocumentApi from "@/components/es/DocumentApi";
 // 其他

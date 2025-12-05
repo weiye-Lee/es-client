@@ -1,7 +1,7 @@
 import LocalNameEnum from "@/enumeration/LocalNameEnum";
 import {getItemByDefault, setItem} from "@/utils/utools/DbStorageUtil";
 import Constant from "@/global/Constant";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import {updateTo3ByWeb} from "@/components/version-manager/updateTo3";
 import useLoadingStore from "@/store/LoadingStore";
 import {statistics} from "@/global/BeanFactory";

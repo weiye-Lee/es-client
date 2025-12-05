@@ -2,7 +2,7 @@ import * as monaco from "monaco-editor";
 import { startWith } from "@/utils/ArrayUtil";
 import StrUtil from "@/utils/StrUtil";
 import { optionsForGet, optionsForPost, signs, supportMethods } from "@/data/EsUrl";
-import useIndexStore from "@/store/IndexStore";
+import {useIndexStore} from "@/store";
 
 // 附加操作
 

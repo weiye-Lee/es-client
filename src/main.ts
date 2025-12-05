@@ -1,6 +1,6 @@
-import store from "@/store";
 import AppInstance from './App.vue';
 import router from "@/plugins/router";
+import {createPinia} from "pinia";
 import "@/assets/less"
 // 额外引入图标库
 import ArcoVueIcon from '@arco-design/web-vue/es/icon';
@@ -18,6 +18,7 @@ import 'vxe-pc-ui/es/style.css'
 import VxeUITable from 'vxe-table'
 import 'vxe-table/es/style.css'
 import 'virtual:uno.css'
+import 'tdesign-vue-next/es/style/index.css';
 // @ts-ignore: worker 导入方式可以参考vite官网 https://cn.vitejs.dev/guide/features.html#web-workers
 self.MonacoEnvironment = { // 提供一个定义worker路径的全局变量
   getWorker(_: string, label: string) {
@@ -34,7 +35,7 @@ registerLanguageForHttp()
 
 // 插件
 createApp(AppInstance)
-  .use(store)
+  .use(createPinia())
   .use(ArcoVueIcon)
   .use(router)
   .use(VxeUIBase).use(VxeUITable)

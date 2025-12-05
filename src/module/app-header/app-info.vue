@@ -20,9 +20,9 @@
 </template>
 <script lang="ts">
 import {mapState} from "pinia";
-import useUrlStore from "@/store/UrlStore";
+import {useUrlStore} from "@/store";
 import clusterApi from "@/components/es/ClusterApi";
-import {showJsonDialogByAsync} from "@/utils/DialogUtil";
+import {showJsonDialogByAsync} from "@/utils/model/DialogUtil";
 
 export default defineComponent({
     name: 'home-info',

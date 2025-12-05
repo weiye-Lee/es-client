@@ -30,16 +30,16 @@
 </template>
 <script lang="ts" setup>
 import QueryConditionBuild from "@/page/base-search/algorithm/QueryConditionBuild";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import {current, getBaseSearchCondition} from "@/store/components/BaseSearchStore";
 import {useSeniorSearchStore} from "@/store/components/SeniorSearchStore";
-import {jsonToHtml, showJson} from "@/utils/DialogUtil";
+import {jsonToHtml, showJson} from "@/utils/model/DialogUtil";
 import PageNameEnum from "@/enumeration/PageNameEnum";
 import Constant from "@/global/Constant";
 import {BrowserWindowType, createDataBrowserWindow} from "@/plugins/native/browser-window";
-import NotificationUtil from "@/utils/NotificationUtil";
+import NotificationUtil from "@/utils/model/NotificationUtil";
 import {statistics} from "@/global/BeanFactory";
-import {stringifyJsonWithBigIntSupport} from "@/algorithm/format";
+import {stringifyJsonWithBigIntSupport} from "$/util";
 import {copyText} from "@/utils/BrowserUtil";
 
 const router = useRouter();

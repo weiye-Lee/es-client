@@ -1,7 +1,7 @@
 import {Button, Modal} from "@arco-design/web-vue";
 import MonacoEditor from "@/components/monaco-editor/index.vue";
 import {jumpToSeniorSearchByInsert, jumpToSeniorSearchByUpdate} from "@/page/data-browse/store/DbResultStore";
-import {formatJsonString} from "@/algorithm/file";
+import {formatJsonString} from "$/util";
 
 /**
  * 执行新增操作

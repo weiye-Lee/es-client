@@ -7,7 +7,7 @@
 </template>
 <script lang="ts" setup>
 import ViewTypeEnum from "@/enumeration/ViewTypeEnum";
-import useGlobalSettingStore from "@/store/setting/GlobalSettingStore";
+import {useGlobalSettingStore} from "@/store";
 import {current} from "@/store/components/BaseSearchStore";
 import MonacoView from "@/components/view/MonacoView/index.vue";
 

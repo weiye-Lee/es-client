@@ -1,7 +1,7 @@
 import {contains} from "@/utils/ArrayUtil";
 import {Mapping, Property} from "@/domain/es/IndexBase";
-import {stringifyJsonWithBigIntSupport} from "@/algorithm/format";
-import {formatJsonString} from "@/algorithm/file";
+import {stringifyJsonWithBigIntSupport} from "$/util";
+import {formatJsonString} from "$/util";
 
 /**
  * 数据构造器

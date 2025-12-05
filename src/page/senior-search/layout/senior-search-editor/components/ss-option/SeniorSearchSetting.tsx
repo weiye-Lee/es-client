@@ -1,6 +1,6 @@
 import {Button, Form, FormItem, Input, InputNumber, Modal, Option, Select, Switch} from "@arco-design/web-vue";
 import useEditorSettingStore from "@/store/setting/EditorSettingStore";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 
 export function useSeniorSearchSetting() {
     const instance = ref(useEditorSettingStore().getSetting);

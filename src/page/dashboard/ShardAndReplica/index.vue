@@ -72,8 +72,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import useIndexStore from "@/store/IndexStore";
-import {showJson, showJsonDialogByAsync} from "@/utils/DialogUtil";
+import {useIndexStore} from "@/store";
+import {showJson, showJsonDialogByAsync} from "@/utils/model/DialogUtil";
 import {Shard} from "@/domain/es/ClusterState";
 import {useFuse} from "@vueuse/integrations/useFuse";
 import {useIndexManageEvent} from "@/global/BeanFactory";

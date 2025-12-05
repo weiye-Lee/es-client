@@ -55,8 +55,8 @@ import {TableData, TableExpandable} from "@arco-design/web-vue";
 import {useSeniorSearchStore} from "@/store/components/SeniorSearchStore";
 import {SeniorSearchRecord} from "@/entity/record/SeniorSearchRecord";
 import {seniorSearchRecordService} from "@/global/BeanFactory";
-import useUrlStore from "@/store/UrlStore";
-import MessageUtil from "@/utils/MessageUtil";
+import {useUrlStore} from "@/store";
+import MessageUtil from "@/utils/model/MessageUtil";
 import MonacoView from "@/components/view/MonacoView/index.vue";
 
 const urlId = ref<number | undefined>(useUrlStore().id);

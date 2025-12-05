@@ -59,7 +59,7 @@ import IndexItem from "./components/index-item.vue";
 import {useFuse} from "@vueuse/integrations/useFuse";
 import {OrderType, Status, useHomeStore} from "@/store/components/HomeStore";
 import {indexAdd} from "@/page/home/components/IndexAdd";
-import useUrlStore from "@/store/UrlStore";
+import {useUrlStore} from "@/store";
 
 
 const size = useWindowSize();

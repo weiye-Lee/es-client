@@ -94,6 +94,9 @@ declare module 'vue' {
     SplitPanel: typeof import('./src/components/SplitPanel/SplitPanel.vue')['default']
     SystemNotify: typeof import('./src/components/SystemNotify/SystemNotify.vue')['default']
     TableViewer: typeof import('./src/components/view/TableViewer/index.vue')['default']
+    TIcon: typeof import('tdesign-vue-next')['Icon']
+    TInput: typeof import('tdesign-vue-next')['Input']
+    TTree: typeof import('tdesign-vue-next')['Tree']
     UpdateItem: typeof import('./src/components/update-item/index.vue')['default']
   }
 }
@@ -182,5 +185,8 @@ declare global {
   const SplitPanel: typeof import('./src/components/SplitPanel/SplitPanel.vue')['default']
   const SystemNotify: typeof import('./src/components/SystemNotify/SystemNotify.vue')['default']
   const TableViewer: typeof import('./src/components/view/TableViewer/index.vue')['default']
+  const TIcon: typeof import('tdesign-vue-next')['Icon']
+  const TInput: typeof import('tdesign-vue-next')['Input']
+  const TTree: typeof import('tdesign-vue-next')['Tree']
   const UpdateItem: typeof import('./src/components/update-item/index.vue')['default']
 }

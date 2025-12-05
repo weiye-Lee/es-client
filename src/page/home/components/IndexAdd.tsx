@@ -1,5 +1,4 @@
 import {
-  Alert,
   Button,
   Form,
   FormItem,
@@ -15,14 +14,13 @@ import {
 import {IndexCreate} from "@/domain/es/IndexCreate";
 import {getDefaultIndexInstance, IndexInstance} from "@/domain/IndexInstance";
 import {useSeniorSearchStore} from "@/store/components/SeniorSearchStore";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import indexApi from "@/components/es/IndexApi";
-import useIndexStore from "@/store/IndexStore";
+import {useIndexStore} from "@/store";
 import useLoadingStore from "@/store/LoadingStore";
 import MonacoEditor from "@/components/monaco-editor/index.vue";
-import {parseJsonWithBigIntSupport, stringifyJsonWithBigIntSupport} from "@/algorithm/format";
+import {parseJsonWithBigIntSupport, stringifyJsonWithBigIntSupport} from "$/util";
 import {copyText} from "@/utils/BrowserUtil";
-import AppLink from "@/components/AppLink/AppLink.vue";
 import AlertExtend from "@/components/AppExtend/AlertExtend.vue";
 
 /**

@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import {listByAsync, saveListByAsync} from "@/utils/utools/DbStorageUtil";
 import LocalNameEnum from "@/enumeration/LocalNameEnum";
 import BaseSearchHistory from "@/entity/history/BaseSearchHistory";
-import {stringifyJsonWithBigIntSupport} from "@/algorithm/format";
+import {stringifyJsonWithBigIntSupport} from "$/util";
 
 
 const useBaseSearchHistoryStore = defineStore('base-search-history', () => {

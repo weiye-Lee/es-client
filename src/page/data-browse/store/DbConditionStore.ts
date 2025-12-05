@@ -1,5 +1,5 @@
 import {ConditionKey, DocumentSearchQuery, SortConditionType,} from "@/domain/es/DocumentSearchQuery";
-import useGlobalSettingStore from "@/store/setting/GlobalSettingStore";
+import {useGlobalSettingStore} from "@/store";
 import {
   conditionConvert,
   conditionRender,
@@ -9,8 +9,8 @@ import {
   templateBuild
 } from "@/page/data-browse/build/ConditionBuild";
 import {ConditionItem, SortItem} from "@/page/data-browse/domain/DbConditionItem";
-import MessageUtil from "@/utils/MessageUtil";
-import useUrlStore from "@/store/UrlStore";
+import MessageUtil from "@/utils/model/MessageUtil";
+import {useUrlStore} from "@/store";
 
 type Type = 'must' | 'mustNot' | 'should';
 

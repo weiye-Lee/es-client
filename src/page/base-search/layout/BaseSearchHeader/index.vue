@@ -38,7 +38,7 @@ import {statistics} from "@/global/BeanFactory";
 import {showDataExportDrawer} from "@/components/DataExport";
 import BshManage from "@/page/base-search/layout/BaseSearchHeader/History/index.vue";
 import Sentence from "@/page/base-search/layout/BaseSearchHeader/sentence.vue";
-import useIndexStore from "@/store/IndexStore";
+import {useIndexStore} from "@/store";
 import {baseSearchExecute, current, getBaseSearchCondition, openIndexManage} from "@/store/components/BaseSearchStore";
 
 

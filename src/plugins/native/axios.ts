@@ -1,7 +1,9 @@
 import axios, {AxiosRequestConfig} from "axios";
-import useUrlStore from "@/store/UrlStore";
+import {useUrlStore} from "@/store";
 import UrlAuthTypeEnum from "@/enumeration/UrlAuthTypeEnum";
-import {parseJsonWithBigIntSupport} from "@/algorithm/format";
+import {parseJsonWithBigIntSupport} from "$/util";
+import {Url} from "@/entity/Url";
+import MessageUtil from "@/utils/model/MessageUtil";
 
 
 export interface RequestConfig extends AxiosRequestConfig {
@@ -13,18 +15,54 @@ export interface RequestConfig extends AxiosRequestConfig {
 }
 
 
-export async function useRequest(url: string, config: RequestConfig = {}): Promise<string> {
+export async function useRequest(config: RequestConfig = {}): Promise<string> {
   const response = await axios.request<string>({
     ...config,
-    url,
     responseType: 'text'
   });
   return response.data;
 }
 
 export async function useRequestJson<T extends Record<string, any>>(url: string, config: RequestConfig = {}): Promise<T> {
-  const r = await useRequest(url, config);
+  const r = await useRequest({
+    ...config,
+    url
+  });
   return parseJsonWithBigIntSupport<T>(r);
+}
+
+
+export const buildEsRequestConfig = (config: RequestConfig, record?: Omit<Url, 'id' | 'createTime' | 'updateTime'>): RequestConfig => {
+
+  let headers: Record<string, string> = {
+    'Content-Type': 'application/json; charset=utf-8'
+  };
+  if (record) {
+    if (record.isAuth) {
+      if (record.authType === UrlAuthTypeEnum.BASIC) {
+        config.auth = {
+          username: record.authUser!,
+          password: record.authPassword!
+        }
+      } else if (record.authType === UrlAuthTypeEnum.HEADER) {
+        if (record.authUser) {
+          headers[record.authUser] = record.authPassword;
+        }
+      } else if (record.authType === UrlAuthTypeEnum.COOKIE) {
+        MessageUtil.error("浏览器不支持Cookie认证")
+      }
+    }
+  }
+  return {
+    baseURL: record?.value,
+    ...config,
+    headers: {
+      // 默认的
+      ...headers,
+      // 自定义的
+      ...config.headers
+    }
+  };
 }
 
 export async function useEsRequest(config: RequestConfig = {}): Promise<string> {
@@ -38,30 +76,15 @@ export async function useEsRequest(config: RequestConfig = {}): Promise<string> 
   };
 
   // 如果有密码应该追加密码
-  if (url) {
-    if (url.isAuth) {
-      if (url.authType === UrlAuthTypeEnum.HEADER) {
-        headers[url.authUser] = url.authPassword;
-      }
-      if (url.authType === UrlAuthTypeEnum.COOKIE) {
-        headers['Cookie'] = url.authPassword;
-      } else {
-        config.auth = {
-          username: url.authUser,
-          password: url.authPassword
-        }
-      }
-    }
-  }
-  return useRequest(config.url || '', {
+  return useRequest(buildEsRequestConfig({
     ...config,
     baseURL: current,
     headers: {
-      ...config.headers,
-      ...headers
+      ...headers,
+      ...config.headers
     },
     responseEncoding: "utf-8"
-  })
+  }, url))
 }
 
 

@@ -82,10 +82,10 @@ import IndexApi from '@/components/es/IndexApi'
 import {getDefaultDocumentSearchQueryStr} from "@/domain/es/DocumentSearchQuery";
 import BaseOrder from "@/entity/BaseOrder";
 import {BaseQuery} from "@/entity/BaseQuery";
-import MessageUtil from "@/utils/MessageUtil";
-import MessageBoxUtil from "@/utils/MessageBoxUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
+import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
 import Optional from "@/utils/Optional";
-import useIndexStore from "@/store/IndexStore";
+import {useIndexStore} from "@/store";
 import {useGlobalStore} from "@/store/GlobalStore";
 import {useDataBrowseStore} from "@/store/components/DataBrowseStore";
 import {baseSearchLoadEvent} from "@/store/components/BaseSearchStore";
@@ -94,7 +94,7 @@ import IndexView from "@/view/index/IndexView";
 import {useIndexManageEvent} from "@/global/BeanFactory";
 import {indexReindex} from "@/page/home/components/IndexReindex";
 import PageNameEnum from "@/enumeration/PageNameEnum";
-import {stringifyJsonWithBigIntSupport} from "@/algorithm/format";
+import {stringifyJsonWithBigIntSupport} from "$/util";
 import {copyText} from "@/utils/BrowserUtil";
 import {indexAliasAdd} from "@/page/home/components/IndexAliasAdd";
 

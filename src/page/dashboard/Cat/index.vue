@@ -35,11 +35,11 @@
 <script lang="ts" setup>
 import {TableColumnData, TableData} from "@arco-design/web-vue";
 import {cat, tabs} from "@/page/dashboard/Cat/func";
-import MessageUtil from "@/utils/MessageUtil";
-import useUrlStore from "@/store/UrlStore";
+import MessageUtil from "@/utils/model/MessageUtil";
+import {useUrlStore} from "@/store";
 import {useSeniorSearchStore} from "@/store/components/SeniorSearchStore";
 import PageNameEnum from "@/enumeration/PageNameEnum";
-import useIndexStore from "@/store/IndexStore";
+import {useIndexStore} from "@/store";
 
 const size = useWindowSize();
 const router = useRouter();

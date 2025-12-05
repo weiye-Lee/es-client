@@ -157,7 +157,7 @@
   </div>
 </template>
 <script lang="ts">
-import useGlobalSettingStore from "@/store/setting/GlobalSettingStore";
+import {useGlobalSettingStore} from "@/store";
 import JsonTheme from "@/data/JsonTheme";
 import PageNameEnum from "@/enumeration/PageNameEnum";
 import TableHeaderModeEnum from "@/enumeration/TableHeaderModeEnum";

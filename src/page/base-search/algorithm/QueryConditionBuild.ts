@@ -1,10 +1,10 @@
 import {BaseQuery} from "@/entity/BaseQuery";
 import BaseOrder from "@/entity/BaseOrder";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import {ConditionArray, DocumentSearchQuery, QuerySort} from "@/domain/es/DocumentSearchQuery";
-import {parseJsonWithBigIntSupport} from "@/algorithm/format";
-import useUrlStore from "@/store/UrlStore";
-import useGlobalSettingStore from "@/store/setting/GlobalSettingStore";
+import {parseJsonWithBigIntSupport} from "$/util";
+import {useUrlStore} from "@/store";
+import {useGlobalSettingStore} from "@/store";
 
 /**
  * 获取基础查询请求体

@@ -34,8 +34,8 @@
 import {TableBorder, TableColumnData, TableData, TableExpandable} from "@arco-design/web-vue";
 
 import MonacoView from "@/components/view/MonacoView/index.vue";
-import MessageUtil from "@/utils/MessageUtil";
-import {searchResultToTable} from "@/algorithm/format";
+import MessageUtil from "@/utils/model/MessageUtil";
+import {searchResultToTable} from "$/elasticsearch-client/components/SearchResultToTable";
 import {copyText} from "@/utils/BrowserUtil";
 import {DataSearchColumnConfig} from "@/domain/core";
 

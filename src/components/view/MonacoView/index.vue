@@ -2,7 +2,7 @@
   <monaco-editor :model-value="pretty" language="json" :height="height" read-only/>
 </template>
 <script lang="ts" setup>
-import {formatJsonString} from "@/algorithm/file";
+import {formatJsonString} from "$/util";
 import MonacoEditor from "@/components/monaco-editor/index.vue";
 import {JSON_REGEX} from "@/data/EsUrl";
 

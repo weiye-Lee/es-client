@@ -4,18 +4,18 @@ import BaseOrder from "@/entity/BaseOrder";
 import Field from "@/view/Field";
 import DocumentApi from "@/components/es/DocumentApi";
 import QueryConditionBuild from "@/page/base-search/algorithm/QueryConditionBuild";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import {baseSearchRecordService, useIndexManageEvent} from "@/global/BeanFactory";
-import useIndexStore from "@/store/IndexStore";
-import useGlobalSettingStore from "@/store/setting/GlobalSettingStore";
+import {useIndexStore} from "@/store";
+import {useGlobalSettingStore} from "@/store";
 import {BaseSearchRecord} from "@/entity/record/BaseSearchRecord";
-import useUrlStore from "@/store/UrlStore";
+import {useUrlStore} from "@/store";
 import router from "@/plugins/router";
 import PageNameEnum from "@/enumeration/PageNameEnum";
 import BaseSearchHistory from "@/entity/history/BaseSearchHistory";
 import BaseSearchJumpEvent from "@/entity/event/BaseSearchJumpEvent";
 import {DocumentSearchQuery} from "@/domain/es/DocumentSearchQuery";
-import {parseJsonWithBigIntSupport} from "@/algorithm/format";
+import {parseJsonWithBigIntSupport} from "$/util";
 import {Router} from "vue-router";
 
 function getDefaultBaseSearch(): BaseSearchItemBody {

@@ -63,13 +63,13 @@
 import XEUtils from "xe-utils";
 import {baseSearchRecordService} from "@/global/BeanFactory";
 // 存储
-import useUrlStore from "@/store/UrlStore";
+import {useUrlStore} from "@/store";
 import useBaseSearchHistoryStore from "@/store/history/BaseSearchHistoryStore";
 import {baseSearchLoadRecord} from "@/store/components/BaseSearchStore";
 // 工具类
 import Optional from "@/utils/Optional";
-import MessageUtil from "@/utils/MessageUtil";
-import MessageBoxUtil from "@/utils/MessageBoxUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
+import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
 // 实体类
 import {BaseSearchRecord} from "@/entity/record/BaseSearchRecord";
 import BaseSearchHistory from "@/entity/history/BaseSearchHistory";

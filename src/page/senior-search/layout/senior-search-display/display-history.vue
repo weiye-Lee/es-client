@@ -42,8 +42,8 @@
 import {useSeniorSearchHistoryStore} from "@/store/history/SeniorSearchHistoryStore";
 import {useFuse} from "@vueuse/integrations/useFuse";
 import {useSeniorSearchStore} from "@/store/components/SeniorSearchStore";
-import MessageBoxUtil from "@/utils/MessageBoxUtil";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 
 const size = useWindowSize();
 

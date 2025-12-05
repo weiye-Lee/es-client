@@ -1,11 +1,11 @@
 import {VxeTableEvents, VxeTableInstance} from "vxe-table";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/model/MessageUtil";
 import {useDataBrowseStore} from "@/store/components/DataBrowseStore";
 import {useDbConditionStore} from "@/page/data-browse/store/DbConditionStore";
 import {statistics} from "@/global/BeanFactory";
 import {execUpdate} from "@/page/data-browse/component/DbHeader/func";
 import {copyText} from "@/utils/BrowserUtil";
-import {stringifyJsonWithBigIntSupport} from "@/algorithm/format";
+import {stringifyJsonWithBigIntSupport} from "$/util";
 
 
 export function buildSelectAllChangeEvent(instance: Ref<VxeTableInstance | null>): VxeTableEvents.CheckboxAll {
