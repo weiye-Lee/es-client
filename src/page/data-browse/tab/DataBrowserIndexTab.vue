@@ -1,26 +1,28 @@
 <template>
-  <div class="w-full h-full">
+  <div class="w-full data-browse">
     <!-- 顶部按钮 -->
-    <db-header/>
+    <db-header :tab/>
     <!-- 输入条件 -->
-    <db-condition/>
+    <db-condition :tab/>
     <!-- 数据表格 -->
-    <db-container/>
+    <db-container :tab/>
   </div>
 </template>
 <script lang="ts" setup>
-import DbHeader from "@/page/data-browse/component/DbHeader/index.vue";
-import DbCondition from "@/page/data-browse/component/DbCondition.vue";
+import DbCondition from "@/page/data-browse/component/DbCondition/DbCondition.vue";
 import DbContainer from "@/page/data-browse/component/DbContainer/index.vue";
+import DbHeader from "@/page/data-browse/component/DbHeader/DbHeader.vue";
 import {UseDataBrowserInstance} from "@/hooks";
 
 defineProps({
-  instance: {
+  tab: {
     type: Object as PropType<UseDataBrowserInstance>,
     required: true
   }
 });
 </script>
 <style scoped lang="less">
-
+.data-browse {
+  height: calc(100vh - 96px);
+}
 </style>

@@ -12,6 +12,7 @@ import {DataSearchColumnConfig} from "$/elasticsearch-client";
 
 export interface UseDataBrowserInstance {
   id: string;
+  index: string;
 
   pageNum: Ref<number>;
   pageSize: Ref<number>;
@@ -25,7 +26,7 @@ export interface UseDataBrowserInstance {
   records: Ref<Array<Record<string, any>>>;
 
   loading: Ref<boolean>;
-  run: () => void;
+  run: (renderColumn?: boolean) => void;
 
   add: (data: string) => void;
   update: (id: string, data: string, old: string) => void;
@@ -39,9 +40,6 @@ export interface UseDataBrowserInstance {
   // 构建查询条件
   buildSearch: () => Record<string, any>;
 }
-
-// 类型 index-索引，alias-别名，view-视图
-export type UseDataBrowserInstanceType = "index" | "alias" | "view";
 
 export const useDataBrowserInstance = (index: string): UseDataBrowserInstance => {
   // 唯一ID
@@ -72,6 +70,7 @@ export const useDataBrowserInstance = (index: string): UseDataBrowserInstance =>
     if (loading.value) return;
     loading.value = true;
     const {trackTotalHitsMode, trackTotalHitsValue} = useGlobalSettingStore();
+    console.log("开始搜索")
     client.dataSearch({
       index,
       pageNum: pageNum.value,
@@ -84,6 +83,7 @@ export const useDataBrowserInstance = (index: string): UseDataBrowserInstance =>
       trackTotalHitsValue
     })
       .then((r) => {
+        console.log("搜索完成", r)
         if (renderColumn) {
           columns.value = r.columns;
         }
@@ -187,6 +187,7 @@ export const useDataBrowserInstance = (index: string): UseDataBrowserInstance =>
 
   return {
     id,
+    index,
     pageNum,
     pageSize,
     total,

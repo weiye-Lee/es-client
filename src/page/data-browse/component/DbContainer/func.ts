@@ -1,133 +1,115 @@
-import {VxeTableEvents, VxeTableInstance} from "vxe-table";
+import { VxeTableEvents, VxeTableInstance } from "vxe-table";
+import type { Ref } from "vue";
 import MessageUtil from "@/utils/model/MessageUtil";
-import {useDataBrowseStore} from "@/store/components/DataBrowseStore";
-import {useDbConditionStore} from "@/page/data-browse/store/DbConditionStore";
-import {statistics} from "@/global/BeanFactory";
-import {execUpdate} from "@/page/data-browse/component/DbHeader/func";
-import {copyText} from "@/utils/BrowserUtil";
-import {stringifyJsonWithBigIntSupport} from "$/util";
+import { execUpdate } from "@/page/data-browse/component/DbHeader/DbContextmenu";
+import { UseDataBrowserInstance } from "@/hooks";
+import {
+  addCondition,
+  addOrder,
+  removeCondition,
+  removeOrder
+} from "@/utils/convert/data-browser-condition";
+import { useUmami } from "@/plugins/umami";
+import { formatJsonString } from '$/util'
 
-
-export function buildSelectAllChangeEvent(instance: Ref<VxeTableInstance | null>): VxeTableEvents.CheckboxAll {
-  return () => {
-    const $table = instance.value;
-    if ($table) {
-      const records = $table.getCheckboxRecords()
-      useDataBrowseStore().updateSelectKeys(records)
-    }
-  }
-}
-
-export function buildSelectChangeEvent(instance: Ref<VxeTableInstance | null>): VxeTableEvents.CheckboxChange {
-  return () => {
-    const $table = instance.value;
-    if ($table) {
-      const records = $table.getCheckboxRecords()
-      useDataBrowseStore().updateSelectKeys(records)
-    }
-  }
-}
-
-export function buildContextMenuClickEvent(instance: Ref<VxeTableInstance | null>): VxeTableEvents.MenuClick {
-  return ({menu, row, column}) => {
+export function buildContextMenuClickEvent(
+  instance: Ref<VxeTableInstance | null>,
+  tab: UseDataBrowserInstance
+): VxeTableEvents.MenuClick {
+  return ({ menu, row, column }) => {
     const $table = instance.value;
     const field = column.field;
-    statistics.access("func_data_browser", "使用右键菜单")
+    useUmami.track("func_data_browser", "使用右键菜单");
+    const { index, must, should, mustNot, order, update, remove, run } = tab;
     switch (menu.code) {
-      case 'copy':
+      case "copy":
         // 示例
         if (row && column) {
-          copyText(row[column.field])
-          MessageUtil.info("已复制到剪贴板！")
+          window.preload.copyText(row[column.field]);
+          MessageUtil.info("已复制到剪贴板！");
         }
-        break
-      case 'copyText-row':
+        break;
+      case "copy-row":
         if (row) {
-          copyText(stringifyJsonWithBigIntSupport(row))
-          MessageUtil.info("已复制到剪贴板！")
+          window.preload.copyText(row._source);
+          MessageUtil.info("已复制到剪贴板！");
         }
         break;
-      case 'operation-edit':
-        execUpdate(useDataBrowseStore().name, row['_id'], row['_source'])
-          .then(({id, data, close}) => useDataBrowseStore().update(id, data)
-            .then(() => MessageUtil.success("更新成功", close))
-            .catch(e => MessageUtil.error("更新失败", e)));
+      case "operation-edit":
+        execUpdate(index, row["_id"], formatJsonString(row["_source"])).then(({ id, data }) =>
+          update(id, data, row["_source"])
+        );
         break;
-      case 'operation-delete':
-        useDataBrowseStore().reduce([row['_id']])
+      case "operation-delete":
+        remove(row["_id"], row["_source"]);
         break;
-      case 'expand':
+      case "expand":
         if ($table) {
-          $table.toggleRowExpand(row).then(() => console.log("切换行展收状态成功"))
+          $table.toggleRowExpand(row).then(() => console.log("切换行展收状态成功"));
         }
         break;
-      case 'select':
-        if ($table) {
-          $table.toggleCheckboxRow(row).then(() => console.log("切换行选择状态成功"))
-        }
+      case "must-clear": {
+        must.value = removeCondition(must.value, field);
+        run();
         break;
-      case 'must-clear': {
-        useDbConditionStore().removeCondition('must', field, 'term');
-        useDataBrowseStore().executeQuery(false).then(() => console.log("已清空must条件"));
-        break
       }
-      case 'should-clear': {
-        useDbConditionStore().removeCondition('should', field, 'term');
-        useDataBrowseStore().executeQuery(false).then(() => console.log("已清空should条件"));
-        break
+      case "should-clear": {
+        should.value = removeCondition(should.value, field);
+        run();
+        break;
       }
-      case 'must_not-clear': {
-        useDbConditionStore().removeCondition('mustNot', field, 'term');
-        useDataBrowseStore().executeQuery(false).then(() => console.log("已清空must_not条件"));
-        break
+      case "must_not-clear": {
+        mustNot.value = removeCondition(mustNot.value, field);
+        run();
+        break;
       }
-      case 'sort-clear': {
-        useDbConditionStore().removeOrderBy(field);
-        useDataBrowseStore().executeQuery(false).then(() => console.log("已清空排序条件"));
-        break
+      case "sort-clear": {
+        order.value = removeOrder(order.value, field);
+        run();
+        break;
       }
       case "must-term": {
-        useDbConditionStore().addCondition('must', field, 'term', row[field]);
-        useDataBrowseStore().executeQuery(false).then(() => console.log("执行must-term查询"));
-        break
+        must.value = addCondition(must.value, field, "term", row[field]);
+        run();
+        break;
       }
       case "must-match": {
-        useDbConditionStore().addCondition('must', field, 'match', row[field]);
-        useDataBrowseStore().executeQuery(false).then(() => console.log("执行must-match查询"));
-        break
+        must.value = addCondition(must.value, field, "match", row[field]);
+        run();
+        break;
       }
       case "should-term": {
-        useDbConditionStore().addCondition('should', field, 'term', row[field]);
-        useDataBrowseStore().executeQuery(false).then(() => console.log("执行must-term查询"));
-        break
+        should.value = addCondition(should.value, field, "term", row[field]);
+        run();
+        break;
       }
       case "should-match": {
-        useDbConditionStore().addCondition('should', field, 'match', row[field]);
-        useDataBrowseStore().executeQuery(false).then(() => console.log("执行must-match查询"));
-        break
+        should.value = addCondition(should.value, field, "match", row[field]);
+        run();
+        break;
       }
       case "must_not-term": {
-        useDbConditionStore().addCondition('mustNot', field, 'term', row[field]);
-        useDataBrowseStore().executeQuery(false).then(() => console.log("执行must-term查询"));
-        break
+        mustNot.value = addCondition(mustNot.value, field, "term", row[field]);
+        run();
+        break;
       }
       case "must_not-match": {
-        useDbConditionStore().addCondition('mustNot', field, 'match', row[field]);
-        useDataBrowseStore().executeQuery(false).then(() => console.log("执行must-match查询"));
-        break
+        mustNot.value = addCondition(mustNot.value, field, "match", row[field]);
+        run();
+        break;
       }
       case "sort-asc": {
-        useDbConditionStore().addOrderBy(field, 'asc');
-        useDataBrowseStore().executeQuery(false).then(() => console.log("执行must-term查询"));
-        break
+        order.value = addOrder(order.value, field, "asc");
+        run();
+        break;
       }
       case "sort-desc": {
-        useDbConditionStore().addOrderBy(field, 'desc');
-        useDataBrowseStore().executeQuery(false).then(() => console.log("执行must-match查询"));
-        break
+        order.value = addOrder(order.value, field, "desc");
+        run();
+        break;
       }
       default:
-        MessageUtil.info(`点击了 ${menu.name} 选项`)
+        MessageUtil.info(`点击了 ${menu.name} 选项`);
     }
-  }
+  };
 }

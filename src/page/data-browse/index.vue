@@ -17,5 +17,4 @@ import DataBrowserRight from "@/page/data-browse/layouts/DataBrowserRight.vue";
 const size = useLocalStorage("/page/data-browser/size", 400);
 </script>
 <style lang="less">
-@import url(./index.less);
 </style>

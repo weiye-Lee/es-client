@@ -1,103 +1,147 @@
 <template>
-  <a-button-group type="text" size="mini" class="page-help">
-    <a-button :disabled="page === 1" @click="toFirst()">
+  <div class="flex items-center">
+    <t-button
+      theme="primary"
+      variant="text"
+      shape="square"
+      size="small"
+      :disabled="pageNum === 1"
+      @click="toFirst()"
+    >
       <template #icon>
-        <icon-double-left/>
+        <chevron-left-double-icon />
       </template>
-    </a-button>
-    <a-button :disabled="page === 1" @click="prePage()">
+    </t-button>
+    <t-button
+      theme="primary"
+      variant="text"
+      shape="square"
+      size="small"
+      :disabled="pageNum === 1"
+      @click="prePage()"
+    >
       <template #icon>
-        <icon-left/>
+        <chevron-left-icon />
       </template>
-    </a-button>
-    <a-dropdown trigger="click" @select="pageSizeChange">
-      <a-button style="font-size: 12px;line-height: 20px;">
-        {{ (page - 1) * size }} - {{ Math.min(page * size, useDbResultTotal) }}
-      </a-button>
-      <template #content>
-        <a-doption value="1">10</a-doption>
-        <a-doption value="2">100</a-doption>
-        <a-doption value="3">250</a-doption>
-        <a-doption value="4">500</a-doption>
-        <a-doption value="5">1,000</a-doption>
-        <a-doption value="6">自定义</a-doption>
-      </template>
-    </a-dropdown>
-    <a-button style="font-size: 12px">
-      / {{ useDbResultTotal }}
-    </a-button>
-    <a-button :disabled="page * size > useDbResultTotal" @click="nextPage()">
+    </t-button>
+    <t-dropdown trigger="click">
+      <t-button
+        theme="primary"
+        variant="text"
+        size="small"
+        style="font-size: 12px; line-height: 20px"
+      >
+        {{ (pageNum - 1) * pageSize }} - {{ Math.min(pageNum * pageSize, total) }}
+      </t-button>
+      <t-dropdown-menu>
+        <t-dropdown-item value="1" @click="pageSizeChange('1')">20</t-dropdown-item>
+        <t-dropdown-item value="2" @click="pageSizeChange('2')">100</t-dropdown-item>
+        <t-dropdown-item value="3" @click="pageSizeChange('3')">250</t-dropdown-item>
+        <t-dropdown-item value="4" @click="pageSizeChange('4')">500</t-dropdown-item>
+        <t-dropdown-item value="5" @click="pageSizeChange('5')">1,000</t-dropdown-item>
+        <t-dropdown-item value="6" @click="pageSizeChange('6')">自定义</t-dropdown-item>
+      </t-dropdown-menu>
+    </t-dropdown>
+    <t-button theme="primary" variant="text" size="small" style="font-size: 12px">
+      / {{ total }}
+    </t-button>
+    <t-button
+      theme="primary"
+      variant="text"
+      shape="square"
+      size="small"
+      :disabled="pageNum * pageSize > total"
+      @click="nextPage()"
+    >
       <template #icon>
-        <icon-right/>
+        <chevron-right-icon />
       </template>
-    </a-button>
-    <a-button :disabled="page * size > useDbResultTotal" @click="toLast()">
+    </t-button>
+    <t-button
+      theme="primary"
+      variant="text"
+      shape="square"
+      size="small"
+      :disabled="pageNum * pageSize > total"
+      @click="toLast()"
+    >
       <template #icon>
-        <icon-double-right/>
+        <chevron-right-double-icon />
       </template>
-    </a-button>
-  </a-button-group>
+    </t-button>
+  </div>
 </template>
 <script lang="ts" setup>
 import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
-import {useDataBrowseStore} from "@/store/components/DataBrowseStore";
-import {useDbConditionStore} from "@/page/data-browse/store/DbConditionStore";
-import {useDbResultTotal} from "@/page/data-browse/store/DbResultStore";
+import {
+  ChevronLeftDoubleIcon,
+  ChevronLeftIcon,
+  ChevronRightDoubleIcon,
+  ChevronRightIcon
+} from "tdesign-icons-vue-next";
+import { UseDataBrowserInstance } from "@/hooks";
 
-const {page, size} = useDbConditionStore();
+const props = defineProps({
+  tab: {
+    type: Object as PropType<UseDataBrowserInstance>,
+    required: true
+  }
+});
 
-function update() {
-  useDataBrowseStore().executeQuery(false);
-}
+const { pageNum, pageSize, total, run } = props.tab as UseDataBrowserInstance;
 
 function updatePage(value: number) {
-  page.value = value;
+  pageNum.value = value;
 }
 
 function updateSize(value: number) {
-  size.value = value;
+  pageSize.value = value;
 }
 
 function toFirst() {
-  if (page.value === 1) {
+  if (pageNum.value === 1) {
     return;
   }
   updatePage(1);
-  update();
+  run();
 }
 
 function prePage() {
-  if (page.value === 1) {
+  if (pageNum.value === 1) {
     return;
   }
-  updatePage(page.value - 1);
-  update();
+  updatePage(pageNum.value - 1);
+  run();
 }
 
 function pageSizeChange(command: any) {
-  pageSizeChangeExec(command, update, (p, s) => {
-    updateSize(s);
+  pageSizeChangeExec(command, run, (p, s) => {
     updatePage(p);
-  })
+    updateSize(s);
+  });
 }
 
 function nextPage() {
-  if (page.value * size.value > useDbResultTotal.value) {
+  if (pageNum.value * pageSize.value > total.value) {
     return;
   }
-  updatePage(page.value + 1);
-  update();
+  updatePage(pageNum.value + 1);
+  run();
 }
 
 function toLast() {
-  updatePage(Math.ceil(useDbResultTotal.value / size.value));
-  update();
+  updatePage(Math.ceil(total.value / pageSize.value));
+  run();
 }
 
-function pageSizeChangeExec(command: string, executeQuery: () => void, callback: (page: number, size: number) => void) {
+function pageSizeChangeExec(
+  command: string,
+  executeQuery: () => void,
+  callback: (page: number, size: number) => void
+) {
   switch (command) {
     case "1":
-      callback(1, 10);
+      callback(1, 20);
       executeQuery();
       break;
     case "2":
@@ -117,26 +161,20 @@ function pageSizeChangeExec(command: string, executeQuery: () => void, callback:
       executeQuery();
       break;
     case "6":
-      MessageBoxUtil.prompt('请输入自定义分页大小', '自定义分页', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      MessageBoxUtil.prompt("请输入自定义分页大小", "自定义分页", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
         inputPattern: /\d+/,
-        inputErrorMessage: '请输入正确的数字',
-        inputValue: size.value + ''
+        inputErrorMessage: "请输入正确的数字",
+        inputValue: pageSize.value + ""
       })
         .then((value) => {
           callback(1, parseInt(value));
           executeQuery();
         })
-        .catch(() => {
-        });
-      break
+        .catch(() => {});
+      break;
   }
 }
 </script>
-<style scoped>
-.page-help {
-  display: flex;
-  margin: 0;
-}
-</style>
+<style scoped></style>

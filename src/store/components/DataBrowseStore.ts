@@ -12,7 +12,7 @@ export interface DataBrowseTab extends SelectOption {
 
 export const useDataBrowseStore = defineStore("data-browser", () => {
   // 标签页
-  const tabs = ref<Array<DataBrowseTab>>([]) as Ref<Array<DataBrowseTab>>;
+  const tabs = shallowRef<Array<DataBrowseTab>>([]) as Ref<Array<DataBrowseTab>>;
   const tabId = ref('');
 
 
@@ -30,6 +30,7 @@ export const useDataBrowseStore = defineStore("data-browser", () => {
     if (type === 'query') {
     }else {
       tab.instance = useDataBrowserInstance(val);
+      tab.instance.run(true);
     }
 
     tabs.value.push(tab);

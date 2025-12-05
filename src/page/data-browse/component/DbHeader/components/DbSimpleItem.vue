@@ -1,39 +1,43 @@
 <template>
-    <a-tooltip :content="tip" placement="bottom">
-        <a-button type="text" size="mini" :disabled="disable" @click="click()">
-            <template #icon>
-                <slot/>
-            </template>
-        </a-button>
-    </a-tooltip>
+  <t-tooltip :content="tip" placement="bottom">
+    <t-button
+      theme="primary"
+      variant="text"
+      shape="square"
+      size="small"
+      :disabled="disable"
+      @click="click()"
+    >
+      <template #icon>
+        <slot />
+      </template>
+    </t-button>
+  </t-tooltip>
 </template>
 <script lang="ts">
 export default defineComponent({
-    name: 'db-simple-item',
-    emits: ['click'],
-    props: {
-        disable: {
-            type: Boolean,
-            required: false,
-            default: false
-        },
-        tip: {
-            type: String,
-            required: false,
-            default: ""
-        }
+  name: "DbSimpleItem",
+  props: {
+    disable: {
+      type: Boolean,
+      required: false,
+      default: false
     },
-    data: () => ({
-    }),
-    methods: {
-        click() {
-            if (!this.disable) {
-                this.$emit('click')
-            }
-        }
+    tip: {
+      type: String,
+      required: false,
+      default: ""
     }
+  },
+  emits: ["click"],
+  data: () => ({}),
+  methods: {
+    click() {
+      if (!this.disable) {
+        this.$emit("click");
+      }
+    }
+  }
 });
 </script>
-<style scoped>
-
-</style>
+<style scoped></style>
