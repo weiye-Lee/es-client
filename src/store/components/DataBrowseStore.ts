@@ -7,13 +7,13 @@ export type DataBrowserType = "folder" | "index" | "alias" | "view" | "query";
 
 export interface DataBrowseTab extends SelectOption {
   type: DataBrowserType;
-  instance?: UseDataBrowserInstance;
 }
 
 export const useDataBrowseStore = defineStore("data-browser", () => {
   // 标签页
-  const tabs = shallowRef<Array<DataBrowseTab>>([]) as Ref<Array<DataBrowseTab>>;
+  const tabs = ref<Array<DataBrowseTab>>([]) as Ref<Array<DataBrowseTab>>;
   const tabId = ref('');
+  const tabMap = shallowRef(new Map<string, UseDataBrowserInstance>());
 
 
   const openTab = (value: string, label: string) => {
@@ -29,8 +29,9 @@ export const useDataBrowseStore = defineStore("data-browser", () => {
     tabId.value = value;
     if (type === 'query') {
     }else {
-      tab.instance = useDataBrowserInstance(val);
-      tab.instance.run(true);
+      const instance = useDataBrowserInstance(val);
+      tabMap.value.set(value, instance);
+      instance.run(true);
     }
 
     tabs.value.push(tab);
@@ -45,9 +46,10 @@ export const useDataBrowseStore = defineStore("data-browser", () => {
     } else {
       tabId.value = tabs.value[tabs.value.length - 1].value;
     }
+    tabMap.value.delete(value);
   }
 
-  return {tabId, tabs, openTab, closeTab};
+  return {tabId, tabs, tabMap, openTab, closeTab};
 
 
 })

@@ -25,15 +25,15 @@
                 </template>
                 高级搜索
             </a-menu-item>
-            <!--        <a-sub-menu :key="PageNameEnum.TOOL">-->
+            <!--        <a-sub-menu :value="PageNameEnum.TOOL">-->
             <!--            <template #icon>-->
             <!--                <icon-tool/>-->
             <!--            </template>-->
             <!--            <template #title>工具</template>-->
-            <!--            <a-menu-item :key="PageNameEnum.TOOL_WATCH">-->
+            <!--            <a-menu-item :value="PageNameEnum.TOOL_WATCH">-->
             <!--                观察器-->
             <!--            </a-menu-item>-->
-            <!--            <a-menu-item :key="PageNameEnum.TOOL_SQL">-->
+            <!--            <a-menu-item :value="PageNameEnum.TOOL_SQL">-->
             <!--                SQL-->
             <!--            </a-menu-item>-->
             <!--        </a-sub-menu>-->

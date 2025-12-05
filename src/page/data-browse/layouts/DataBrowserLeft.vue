@@ -35,7 +35,7 @@ const dataBrowserLeftRef = useTemplateRef<HTMLDivElement>("dataBrowserLeft");
 
 const elementSize = useElementSize(dataBrowserLeftRef);
 
-const actives = useSessionStorage<Array<string>>("/home/data-browser/left/active-key", []);
+const actives = useSessionStorage<Array<string>>("/home/data-browser/left/active-value", []);
 
 const height = computed(() => elementSize.height.value - 40);
 

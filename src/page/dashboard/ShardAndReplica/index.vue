@@ -120,7 +120,7 @@ const indices = computed(() => {
         if (!shard.node) {
           hasUnAssigned.value = true;
         }
-        const key = shard.node || UNASSIGNED;
+        const value = shard.node || UNASSIGNED;
         let temp = item.nodes[key];
         if (!temp) {
           item.nodes[key] = new Array<Shard | null>();

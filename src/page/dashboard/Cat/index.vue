@@ -59,7 +59,7 @@ const virtualListProps = computed(() => ({
 const indices = computed(() => useIndexStore().indices.map(e => e.name));
 const needIndex = computed(() => activeKey.value.indexOf('{index}') > -1);
 
-watch(() => activeKey.value, (key) => handler(key), {immediate: true});
+watch(() => activeKey.value, (value) => handler(key), {immediate: true});
 watch(() => index.value, refresh);
 
 watch(() => useUrlStore().current, refresh);

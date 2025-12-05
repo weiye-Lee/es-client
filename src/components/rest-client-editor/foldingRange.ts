@@ -5,7 +5,7 @@ const HTTP_METHODS = new Set(["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "
 function isHeaderLine(line: string): boolean {
   line = line.trim();
   if (!line || line.startsWith("#")) return false;
-  // Header: key: value (no space before colon, at least one after)
+  // Header: value: value (no space before colon, at least one after)
   return /^[^:\s]+:\s/.test(line);
 }
 

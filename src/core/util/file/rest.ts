@@ -15,7 +15,7 @@ export interface ParsedRequest {
  * 格式：
  * - 请求块由一个或多个空行分隔。
  * - 每个请求块的第一行是请求行：METHOD URL。
- * - 后续行可以是请求头（key: value）或以 // 开头的注释。
+ * - 后续行可以是请求头（value: value）或以 // 开头的注释。
  * - 请求头之后是请求体，请求体也可以包含以 // 开头的注释行。
  * @param input - 包含一个或多个 REST 请求定义的原始字符串
  * @returns 解析后的 ParsedRequest 对象数组
@@ -158,7 +158,7 @@ export function formatRestQuery(input: string): string {
         continue;
       }
 
-      // 检查是否符合 header 格式 (key: value)
+      // 检查是否符合 header 格式 (value: value)
       const headerMatch = trimmedLine.match(/^([^:]+):(.*)$/);
       if (headerMatch) {
         // 是 header 行，格式化并添加

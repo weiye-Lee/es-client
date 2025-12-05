@@ -1,30 +1,41 @@
 <template>
   <div class="abs-8">
     <!--    顶部tab-->
-    <t-tabs v-model="tabId" @remove="removeTab">
-      <t-tab-panel v-for="tab in tabs" :value="tab.value" :label="tab.label" removable>
-        <EmptyResult v-if="!tab.instance" title="系统异常，实例不存在"/>
-        <div v-else-if="tab.type === 'query'">query</div>
-        <DataBrowserIndexTab v-else :tab="tab.instance"></DataBrowserIndexTab>
-      </t-tab-panel>
-    </t-tabs>
+
+    <TabChrome v-model="tabId" :tabs="tabs" @remove="removeTab" :class="{'theme-dark': isDark}"/>
+
+    <div class="dbr-container" >
+      <div v-for="tab in tabs" :key="tab.value" v-show="tabId === tab.value">
+        <div v-if="tab.type === 'query'">query</div>
+        <DataBrowserIndexTab v-else :tab="tabMap.get(tab.value)!"></DataBrowserIndexTab>
+      </div>
+    </div>
+
     <empty-result v-if="tabs.length === 0" title="请双击选择索引"/>
   </div>
 </template>
 <script lang="ts" setup>
 import {storeToRefs} from "pinia";
-import { TabsProps } from 'tdesign-vue-next';
 import {DataBrowseTab, useDataBrowseStore} from "@/store/components/DataBrowseStore";
 import DataBrowserIndexTab from "@/page/data-browse/tab/DataBrowserIndexTab.vue";
 import EmptyResult from "@/components/Result/EmptyResult.vue";
+import {useGlobalStore} from "@/store/GlobalStore";
 
+const {tabMap} = useDataBrowseStore();
 const {tabId} = storeToRefs(useDataBrowseStore());
 const tabs = computed<Array<DataBrowseTab>>(() => useDataBrowseStore().tabs);
+const isDark = computed(() => useGlobalStore().isDark);
 
-const removeTab: TabsProps['onRemove'] = ({ value }) => {
+const removeTab = ({ value }: any) => {
   useDataBrowseStore().closeTab(`${value}`);
 }
 </script>
 <style scoped lang="less">
-
+.dbr-container {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 </style>

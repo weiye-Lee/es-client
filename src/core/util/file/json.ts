@@ -123,8 +123,8 @@ export function formatJsonString(jsonString: string, indent: number = 2): string
         }
         break;
       case ":":
-        // 只有在字符串外的冒号才是 key-value 分隔符
-        formatted += char + " "; // 在 key 和 value 之间添加空格
+        // 只有在字符串外的冒号才是 value-value 分隔符
+        formatted += char + " "; // 在 value 和 value 之间添加空格
         break;
       default:
         formatted += char;
@@ -168,7 +168,7 @@ export function extractByJsonPath(jsonString: string, jsonPath: string): string 
     for (const part of parts) {
       const arrayMatch = part.match(/^([^[]+)\[(\d+)\]$/);
       if (arrayMatch) {
-        segments.push(arrayMatch[1]); // key
+        segments.push(arrayMatch[1]); // value
         segments.push(parseInt(arrayMatch[2])); // index
       } else if (part) {
         segments.push(part);

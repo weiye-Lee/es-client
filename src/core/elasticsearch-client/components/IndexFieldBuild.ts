@@ -52,7 +52,7 @@ export function IndexFieldBuild(
     // 情况 2: 顶层是 type 名（如 _doc）→ 有 type（v6 / v7 兼容模式）
     else {
       const topLevelKeys = Object.keys(mappings);
-      // 找第一个值包含 properties 的 key（v7 只有一个 type）
+      // 找第一个值包含 properties 的 value（v7 只有一个 type）
       for (const type of topLevelKeys) {
         const typeMapping = (mappings as Record<string, IndexMapping>)[type];
         if (typeMapping && typeMapping.properties && typeof typeMapping.properties === "object") {

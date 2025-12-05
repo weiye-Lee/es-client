@@ -38,8 +38,8 @@ const windowSize = useWindowSize();
 
 let history = '';
 
-const size = useLocalStorage<string>('/key/senior-search/split-size', '400px');
-const panelSize = useLocalStorage<number>('/key/senior-search/split-panel-size', 400);
+const size = useLocalStorage<string>('/value/senior-search/split-size', '400px');
+const panelSize = useLocalStorage<number>('/value/senior-search/split-panel-size', 400);
 const disabled = ref(false);
 const fullscreen = ref(false);
 

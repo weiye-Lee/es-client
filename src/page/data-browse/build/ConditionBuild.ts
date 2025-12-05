@@ -58,9 +58,9 @@ export function templateBuild(template: string): Array<ConditionItem> {
         if (!item || item === '') {
             continue;
         }
-        // 每一项：[key]{条件}[value]([and|or] [key]{条件}[value])
+        // 每一项：[value]{条件}[value]([and|or] [value]{条件}[value])
         let models = parseCondition(item);
-        // 最基本的 key [=|match|>=|>|<|<= value];
+        // 最基本的 value [=|match|>=|>|<|<= value];
         let model = models[1];
         if (model === '=') {
             condition.push({
