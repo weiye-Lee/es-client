@@ -16,7 +16,7 @@ import {getDefaultUrl, Url} from "@/entity/Url";
 import UrlAuthTypeEnum from "@/enumeration/UrlAuthTypeEnum";
 import './EditLink.less';
 import {useRequestJson} from "@/plugins/native/axios";
-import useUrlStore, {buildRequestConfig} from "@/store/UrlStore";
+import {buildRequestConfig, useUrlStore} from "@/store";
 import MessageUtil from "@/utils/model/MessageUtil";
 import {clone} from "xe-utils";
 import {Overview} from "@/domain/es/Overview";

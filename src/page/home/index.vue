@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts" setup>
-import useIndexStore from '@/store/IndexStore';
+import {useIndexStore} from '@/store';
 import IndexItem from "./components/index-item.vue";
 import {useFuse} from "@vueuse/integrations/useFuse";
 import {OrderType, Status, useHomeStore} from "@/store/components/HomeStore";

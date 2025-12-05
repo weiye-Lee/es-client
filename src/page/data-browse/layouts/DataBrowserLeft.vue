@@ -29,6 +29,7 @@ import {useIndexStore} from "@/store";
 import {useUrlStore} from "@/store";
 import {listDataBrowserViews} from "@/service/DataBrowser/DataBrowserView";
 import {FileIcon, FolderIcon} from "tdesign-icons-vue-next";
+import {useDataBrowseStore} from "@/store/components/DataBrowseStore";
 
 const dataBrowserLeftRef = useTemplateRef<HTMLDivElement>("dataBrowserLeft");
 
@@ -89,6 +90,7 @@ function onClick(node: TreeNodeModel) {
 
 function onDbClick(node: TreeNodeModel) {
   actives.value[0] = `${node.value}`;
+  useDataBrowseStore().openTab(`${node.value}`, node.label || `${Date.now()}`);
 }
 
 </script>

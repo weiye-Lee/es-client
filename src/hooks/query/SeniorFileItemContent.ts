@@ -1,7 +1,6 @@
 import type { Ref } from "vue";
 import { parseRestRequests } from "$/util";
 import { useUrlStore } from "@/store";
-import { clientSearchDevToolApi, seniorFileGet, seniorFileSave } from "@/api";
 import { useQueryApi } from "@/hooks";
 import MessageUtil from "@/utils/model/MessageUtil";
 
@@ -30,7 +29,7 @@ export interface UseSeniorFileItemContent {
   /**
    * 保存操作
    */
-  save: () => Promise<void>;
+  // save: () => Promise<void>;
 
   /**
    * 执行查询
@@ -49,24 +48,10 @@ export const useSeniorFileItemContent = (id: string): UseSeniorFileItemContent =
     if (!request) {
       return Promise.reject(new Error("请求块无法识别"));
     }
-    const { id } = useUrlStore();
-    if (!id) return Promise.reject(new Error("请选择链接"));
-    return clientSearchDevToolApi(id, request);
+    const { client } = useUrlStore();
+    if (!client) return Promise.reject(new Error("请选择链接"));
+    return client.seniorSearch(request);
   });
-
-  (async () => {
-    const res = await seniorFileGet(id);
-    content.value = res.content || "";
-    size.value = res.size || 50;
-  })().finally(() => (init.value = true));
-
-  const save = async () => {
-    await seniorFileSave({
-      id,
-      content: content.value,
-      size: size.value
-    });
-  };
 
   return {
     id,
@@ -75,7 +60,6 @@ export const useSeniorFileItemContent = (id: string): UseSeniorFileItemContent =
     loading,
     size,
     data,
-    save,
     run: (index: number) => {
       reload(index).then(() => MessageUtil.success("执行成功"));
     }

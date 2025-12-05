@@ -1,17 +1,14 @@
-import IndexView from "@/view/index/IndexView";
 import {defineStore} from "pinia";
-import indexListBuild from '@/algorithm/IndexBuild/IndexListBuild';
-import clusterApi from '@/components/es/ClusterApi'
 import {useUrlStore} from "@/store";
-import Field from "@/view/Field";
 import useLoadingStore from "@/store/LoadingStore";
 import NotificationUtil from "@/utils/model/NotificationUtil";
 import {OrderType} from "@/store/components/HomeStore";
 import {ClusterNode} from "@/domain/index/ClusterInfo";
 import MessageUtil from "@/utils/model/MessageUtil";
+import {Field, IndexItem} from "$/elasticsearch-client";
 
-function renderMap(indices: Array<IndexView>): Map<string, IndexView> {
-  let indicesMap = new Map<string, IndexView>();
+function renderMap(indices: Array<IndexItem>): Map<string, IndexItem> {
+  let indicesMap = new Map<string, IndexItem>();
   for (let index of indices) {
     let names = [index.name, ...index.alias];
     for (let name of names) {
@@ -27,8 +24,8 @@ export const useIndexStore = defineStore('index', {
     masterNode: '',
     nodes: {} as Record<string, ClusterNode>,
     // 全部的索引
-    indices: new Array<IndexView>(),
-    indicesMap: new Map<string, IndexView>(),
+    indices: new Array<IndexItem>(),
+    indicesMap: new Map<string, IndexItem>(),
     // 服务器名称
     name: '',
     active_shards: 0,
@@ -59,8 +56,8 @@ export const useIndexStore = defineStore('index', {
      * 重新获取链接
      */
     async reset(): Promise<void> {
-      const {url} = useUrlStore();
-      if (!url) {
+      const {client} = useUrlStore();
+      if (!client) {
         return Promise.reject('链接不存在');
       }
       // 清空数据
@@ -70,7 +67,9 @@ export const useIndexStore = defineStore('index', {
       try {
         useLoadingStore().setText('开始构建索引信息');
         // 获取索引信息
-        let clusterInfo = await indexListBuild();
+
+        const clusterInfo = await client.indices();
+
         this.indices = clusterInfo.indices;
         this.masterNode = clusterInfo.masterNode;
         this.nodes = clusterInfo.nodes;
@@ -78,7 +77,7 @@ export const useIndexStore = defineStore('index', {
         this.indicesMap = renderMap(this.indices);
 
         // 获取基本信息
-        clusterApi._cluster_health().then(health => {
+        client.clusterHealth().then(health => {
           this.name = health.cluster_name;
           this.active_shards = health.active_shards;
           let unassigned_shards = health.unassigned_shards;
@@ -88,8 +87,8 @@ export const useIndexStore = defineStore('index', {
 
 
         // 更新版本信息，但是只需要异步即可
-        clusterApi.info().then(overview => {
-          useUrlStore().update(url.id, {
+        client.info().then(overview => {
+          useUrlStore().update(client.props.id, {
             version: overview.version.number
           }).catch(e => NotificationUtil.error(e, "更新版本信息失败"));
         }).catch(e => NotificationUtil.error(e, "获取版本信息失败"));
@@ -109,14 +108,14 @@ export const useIndexStore = defineStore('index', {
       this.name = '';
       this.masterNode = '';
       this.nodes = {};
-      this.indices = new Array<IndexView>();
-      this.indicesMap = new Map<string, IndexView>();
+      this.indices = new Array<IndexItem>();
+      this.indicesMap = new Map<string, IndexItem>();
       this.active_shards = 0;
       this.total_shards = 0;
       this.status = '';
     },
-    field(indexName: string | IndexView | undefined): Array<Field> {
-      let indexView: IndexView | undefined;
+    field(indexName: string | IndexItem | undefined): Array<Field> {
+      let indexView: IndexItem | undefined;
       if (typeof indexName === 'string') {
         indexView = this.indicesMap.get(indexName);
       } else {
@@ -124,9 +123,9 @@ export const useIndexStore = defineStore('index', {
       }
       if (indexView) {
         return [{
-          name: '_id',
+          indexType: 'index',
           type: 'text',
-          dataIndex: '_id',
+          value: '_id',
           label: '_id'
         }, ...Array.from(indexView.fields)]
       }

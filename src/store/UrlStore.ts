@@ -4,7 +4,7 @@ import {map} from "@/utils/ArrayUtil";
 import {listByAsync, removeOneByAsync, saveListByAsync, setItem} from "@/utils/utools/DbStorageUtil";
 import LocalNameEnum from "@/enumeration/LocalNameEnum";
 import {statistics} from "@/global/BeanFactory";
-import {buildEsRequestConfig, RequestConfig, useEsRequest, useRequestJson} from "@/plugins/native/axios";
+import {buildEsRequestConfig, RequestConfig, useRequest, useRequestJson} from "@/plugins/native/axios";
 import {Overview} from "@/domain/es/Overview";
 import {createElasticsearchClient, ElasticsearchClient} from "$/elasticsearch-client";
 
@@ -30,13 +30,7 @@ export const useUrlStore = defineStore('url', () => {
   const current = computed(() => url.value && url.value.value ? url.value.value! : '');
   const id = computed(() => url.value ? url.value.id! : undefined);
   const empty = computed(() => url.value === undefined);
-  const client = computed<null | ElasticsearchClient>(() => {
-    if (!url.value) return null;
-    return createElasticsearchClient({
-      ...url.value,
-      adapter: useEsRequest
-    })
-  })
+  const client = shallowRef<ElasticsearchClient>()
   // 第一个版本号
   const versionFirst = computed(() => {
     const [r1] = (url.value?.version || "").split(".");
@@ -63,11 +57,16 @@ export const useUrlStore = defineStore('url', () => {
     setItem(LocalNameEnum.KEY_LAST_URL, id);
     url.value = targetUrl;
     title.value = targetUrl.name || 'es-client';
+    client.value = createElasticsearchClient({
+      ...url.value,
+      adapter: useRequest
+    });
     return true;
   };
 
   const clear = () => {
     url.value = undefined;
+    client.value = undefined;
     title.value = 'es-client';
   };
 

@@ -1,16 +1,15 @@
-import type { Ref } from "vue";
-import { useGlobalSettingStore, useIndexStore, useUrlStore } from "@/store";
+import type {Ref} from "vue";
+import {useGlobalSettingStore, useUrlStore} from "@/store";
 import MessageUtil from "@/utils/model/MessageUtil";
-import { clientSearchBaseApi } from "@/api";
-import { stringifyJsonWithBigIntSupport, useSnowflake } from "$/util";
-import { cloneDeep } from "es-toolkit";
+import {stringifyJsonWithBigIntSupport, useSnowflake} from "$/util";
+import {cloneDeep} from "es-toolkit";
 import {
   buildBaseSearchData,
   buildBaseSearchOrder,
   buildBaseSearchQuery
 } from "$/elasticsearch-client/components/BaseSearchQuery";
-import { decodeIndexType, encodeIndexType } from "$/elasticsearch-client/utils";
-import { BaseQueryItem, BaseQueryOrder } from "$/elasticsearch-client";
+import {decodeIndexType} from "$/elasticsearch-client/utils";
+import {BaseQueryItem, BaseQueryOrder} from "$/elasticsearch-client";
 
 export interface BaseSearchInstanceResult {
   id: string;
@@ -48,18 +47,12 @@ export const useBaseSearchInstance = (): BaseSearchInstanceResult => {
   const result = ref("");
 
   const run = () => {
-    const { id } = useUrlStore();
-    if (!id) return MessageUtil.warning("请选择索引");
+    const {client} = useUrlStore();
+    if (!client) return MessageUtil.warning("请选择索引");
     if (loading.value) return;
-    let templateIndex = index.value;
-    if (!useIndexStore().mappingMap.has(templateIndex)) {
-      // 自定义模板
-      templateIndex = encodeIndexType(templateIndex, "");
-    }
-    const { index: idx, type } = decodeIndexType(templateIndex);
-    const { trackTotalHitsMode, trackTotalHitsValue } = useGlobalSettingStore();
-    clientSearchBaseApi(
-      id,
+    const {index: idx, type} = decodeIndexType(index.value);
+    const {trackTotalHitsMode, trackTotalHitsValue} = useGlobalSettingStore();
+    client.baseSearch(
       cloneDeep({
         index: idx,
         type: type,
@@ -80,13 +73,13 @@ export const useBaseSearchInstance = (): BaseSearchInstanceResult => {
       });
   };
 
-  const buildQuery = () => buildBaseSearchQuery({ query: query.value });
-  const buildSort = () => buildBaseSearchOrder({ order: orders.value });
+  const buildQuery = () => buildBaseSearchQuery({query: query.value});
+  const buildSort = () => buildBaseSearchOrder({order: orders.value});
 
   const buildData = () => {
-    const { index: idx, type } = decodeIndexType(index.value);
-    const { trackTotalHitsMode, trackTotalHitsValue } = useGlobalSettingStore();
-    const { versionFirst } = useUrlStore();
+    const {index: idx, type} = decodeIndexType(index.value);
+    const {trackTotalHitsMode, trackTotalHitsValue} = useGlobalSettingStore();
+    const {versionFirst} = useUrlStore();
     return stringifyJsonWithBigIntSupport(
       buildBaseSearchData(
         {

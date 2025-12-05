@@ -97,8 +97,7 @@ import LocalNameEnum from '@/enumeration/LocalNameEnum';
 import FeedbackModule from "@/module/Feedback/index.vue";
 import AppInfo from './app-info.vue';
 // 引入状态管理
-import {useUrlStore} from "@/store";
-import useIndexStore from '@/store/IndexStore';
+import {useUrlStore,useIndexStore} from "@/store";
 import useLoadingStore from "@/store/LoadingStore";
 import {DarkTypeEnum, useGlobalStore} from "@/store/GlobalStore";
 // 工具类
