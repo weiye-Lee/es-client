@@ -439,30 +439,3 @@ function getComparableValue(expr: Expr): string | number {
       throw new Error('Right value must be literal or identifier');
   }
 }
-
-// ========================
-// 5. 测试用例
-// ========================
-if (typeof window === 'undefined') {
-  // Node.js 环境测试
-  const testSQL = `
-    SELECT CONCAT(name, '!!') AS \`full name\`, DATE_FORMAT(created_at, '%Y') 
-    FROM users 
-    WHERE (age >= 18 AND status TERM 'active') 
-      AND (role = 'admin' OR role = 'moderator')
-      AND email IS NOT NULL
-      AND name LIKE 'john%'
-    ORDER BY created_at DESC
-    LIMIT 10 OFFSET 20
-  `;
-
-  try {
-    const ast = parseSQL(testSQL);
-    console.log('✅ AST:', JSON.stringify(ast, null, 2));
-    if (ast.where) {
-      console.log('✅ ES DSL:', JSON.stringify(conditionToES(ast.where), null, 2));
-    }
-  } catch (e) {
-    console.error('❌ Parse error:', e);
-  }
-}

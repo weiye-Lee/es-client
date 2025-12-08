@@ -33,13 +33,14 @@ import {enableFilter, useSeniorFilterRecordStore} from "@/store/record/SeniorFil
 import SeniorSearchEditor from '@/page/senior-search/layout/senior-search-editor/index.vue';
 import SeniorSearchDisplay from '@/page/senior-search/layout/senior-search-display/index.vue';
 import SeniorSearchFilter from '@/page/senior-search/layout/senior-search-filter/index.vue';
+import LocalNameEnum from '@/enumeration/LocalNameEnum';
 
 const windowSize = useWindowSize();
 
 let history = '';
 
-const size = useLocalStorage<string>('/value/senior-search/split-size', '400px');
-const panelSize = useLocalStorage<number>('/value/senior-search/split-panel-size', 400);
+const size = useLocalStorage<string>(LocalNameEnum.VALUE_SENIOR_SEARCH_SPLIT_SIZE, '400px');
+const panelSize = useLocalStorage<number>(LocalNameEnum.VALUE_SENIOR_SEARCH_SPLIT_PANEL_SIZE, 400);
 const disabled = ref(false);
 const fullscreen = ref(false);
 

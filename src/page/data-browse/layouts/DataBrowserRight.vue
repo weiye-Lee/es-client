@@ -6,8 +6,8 @@
 
     <div class="dbr-container" >
       <div v-for="tab in tabs" :key="tab.value" v-show="tabId === tab.value">
-        <div v-if="tab.type === 'query'">query</div>
-        <DataBrowserIndexTab v-else :tab="tabMap.get(tab.value)!"></DataBrowserIndexTab>
+        <DataBrowserQueryTab v-if="tab.type === 'query'" />
+        <DataBrowserIndexTab v-else :tab="tabMap.get(tab.value)!" />
       </div>
     </div>
 
@@ -20,6 +20,7 @@ import {DataBrowseTab, useDataBrowseStore} from "@/store/components/DataBrowseSt
 import DataBrowserIndexTab from "@/page/data-browse/tab/DataBrowserIndexTab.vue";
 import EmptyResult from "@/components/Result/EmptyResult.vue";
 import {useGlobalStore} from "@/store/GlobalStore";
+import DataBrowserQueryTab from "../tab/DataBrowserQueryTab.vue";
 
 const {tabMap} = useDataBrowseStore();
 const {tabId} = storeToRefs(useDataBrowseStore());
