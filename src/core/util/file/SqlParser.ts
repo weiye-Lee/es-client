@@ -14,8 +14,9 @@ const lexer = moo.compile({
   rparen: ')',
   comma: ',',
   dot: '.',
+  star: '*',
 
-  // 关键字（大小写不敏感，但保留原始值）
+  // 关键字（大写字面量，解析时做大小写兼容）
   select: 'SELECT',
   from: 'FROM',
   where: 'WHERE',
@@ -55,14 +56,33 @@ const lexer = moo.compile({
   backtick: /`(?:\\[`\\]|[^`\n\\])*`/,
 });
 
+/**
+ * 支持的方法表达式
+ */
+export type ExprFunctionName = "CONCAT" | "DATE_FORMAT";
+
+export type ExprFunctionCall = {
+  type: 'FunctionCall';
+  name: string;
+  args: Expr[];
+}
+
 // ========================
 // 2. AST 节点类型
 // ========================
 export type Expr =
+  // 标识符：普通字段名
   | { type: 'Identifier'; name: string }
+  // 字符串字面量
   | { type: 'StringLiteral'; value: string }
+  // 数字字面量
   | { type: 'NumberLiteral'; value: number }
-  | { type: 'FunctionCall'; name: string; args: Expr[] };
+  // 函数调用
+  | ExprFunctionCall
+  // * 通配符
+  | { type: 'Star' }
+  // 表名.* 通配符
+  | { type: 'QualifiedStar'; table: string };
 
 export type SelectItem = {
   expr: Expr;
@@ -125,10 +145,32 @@ export class SQLParser {
     return token;
   }
 
+  private isKeyword(word: string): boolean {
+    const t = this.peek();
+    const k = word.toUpperCase();
+    const type = word.toLowerCase();
+    return t.type === type || (t.type === 'ident' && String(t.value).toUpperCase() === k);
+  }
+
+  private consumeKeyword(word: string): void {
+    const t = this.peek();
+    const k = word.toUpperCase();
+    const type = word.toLowerCase();
+    if (t.type === type) {
+      this.consume(type);
+      return;
+    }
+    if (t.type === 'ident' && String(t.value).toUpperCase() === k) {
+      this.consume('ident');
+      return;
+    }
+    throw new Error(`Expected keyword ${word}, got ${t.type} ("${t.value}")`);
+  }
+
   parse(): Query {
-    this.consume('select');
+    this.consumeKeyword('SELECT');
     const selectItems = this.parseSelectList();
-    this.consume('from');
+    this.consumeKeyword('FROM');
     const from = this.parseTableName();
 
     let where: Condition | undefined;
@@ -137,24 +179,24 @@ export class SQLParser {
     let offset: number | undefined;
 
     // WHERE
-    if (this.peek().type === 'where') {
-      this.consume('where');
+    if (this.isKeyword('WHERE')) {
+      this.consumeKeyword('WHERE');
       where = this.parseCondition();
     }
 
     // ORDER BY
-    if (this.peek().type === 'order') {
-      this.consume('order');
-      this.consume('by');
+    if (this.isKeyword('ORDER')) {
+      this.consumeKeyword('ORDER');
+      this.consumeKeyword('BY');
       orderBy = [];
       do {
         const field = this.parseFieldName();
         let direction: 'ASC' | 'DESC' = 'ASC';
-        if (this.peek().type === 'asc') {
-          this.consume('asc');
+        if (this.peek().type === 'asc' || (this.peek().type === 'ident' && this.peek().value.toUpperCase() === 'ASC')) {
+          if (this.peek().type === 'asc') this.consume('asc'); else this.consume('ident');
           direction = 'ASC';
-        } else if (this.peek().type === 'desc') {
-          this.consume('desc');
+        } else if (this.peek().type === 'desc' || (this.peek().type === 'ident' && this.peek().value.toUpperCase() === 'DESC')) {
+          if (this.peek().type === 'desc') this.consume('desc'); else this.consume('ident');
           direction = 'DESC';
         }
         orderBy.push({ field, direction });
@@ -162,11 +204,11 @@ export class SQLParser {
     }
 
     // LIMIT
-    if (this.peek().type === 'limit') {
-      this.consume('limit');
+    if (this.isKeyword('LIMIT')) {
+      this.consumeKeyword('LIMIT');
       limit = Number(this.consume('number').value);
-      if (this.peek().type === 'offset') {
-        this.consume('offset');
+      if (this.isKeyword('OFFSET')) {
+        this.consumeKeyword('OFFSET');
         offset = Number(this.consume('number').value);
       }
     }
@@ -179,8 +221,11 @@ export class SQLParser {
     do {
       const expr = this.parseExpr();
       let alias = this.getDefaultAlias(expr);
-      if (this.peek().type === 'as') {
-        this.consume('as');
+      if (this.isKeyword('AS')) {
+        if (expr.type === 'Star' || expr.type === 'QualifiedStar') {
+          throw new Error('不允许为 * 或 table.* 指定别名');
+        }
+        this.consumeKeyword('AS');
         alias = this.parseAlias();
       }
       items.push({ expr, alias });
@@ -191,6 +236,14 @@ export class SQLParser {
   private parseExpr(): Expr {
     // 反引号字段
     if (this.peek().type === 'backtick') {
+      const next1 = this.peek(1).type;
+      const next2 = this.peek(2).type;
+      if (next1 === 'dot' && next2 === 'star') {
+        const raw = this.consume('backtick').value;
+        this.consume('dot');
+        this.consume('star');
+        return { type: 'QualifiedStar', table: raw.slice(1, -1) };
+      }
       const raw = this.consume('backtick').value;
       return { type: 'Identifier', name: raw.slice(1, -1) };
     }
@@ -210,7 +263,18 @@ export class SQLParser {
         this.consume('rparen');
         return { type: 'FunctionCall', name: ident.toUpperCase(), args };
       }
+      if (this.peek().type === 'dot' && this.peek(1).type === 'star') {
+        this.consume('dot');
+        this.consume('star');
+        return { type: 'QualifiedStar', table: ident };
+      }
       return { type: 'Identifier', name: ident };
+    }
+
+    // 星号，表示选择所有字段
+    if (this.peek().type === 'star') {
+      this.consume('star');
+      return { type: 'Star' };
     }
 
     // 字符串字面量
@@ -234,6 +298,8 @@ export class SQLParser {
       const argsStr = expr.args.map(a => this.formatExprArg(a)).join(', ');
       return `${expr.name}(${argsStr})`;
     }
+    if (expr.type === 'Star') return '*';
+    if (expr.type === 'QualifiedStar') return `${expr.table}.*`;
     return 'expr';
   }
 
@@ -247,6 +313,10 @@ export class SQLParser {
         return a.name;
       case 'FunctionCall':
         return `${a.name}(${a.args.map(x => this.formatExprArg(x)).join(', ')})`;
+      case 'Star':
+        return '*';
+      case 'QualifiedStar':
+        return `${a.table}.*`;
     }
   }
 
@@ -315,17 +385,17 @@ export class SQLParser {
     const expr = this.parseExpr();
 
     // IS [NOT] NULL
-    if (this.peek().type === 'is') {
-      this.consume('is');
-      const not = this.peek().type === 'not';
-      if (not) this.consume('not');
-      this.consume('null');
+    if (this.isKeyword('IS')) {
+      this.consumeKeyword('IS');
+      const not = this.isKeyword('NOT');
+      if (not) this.consumeKeyword('NOT');
+      this.consumeKeyword('NULL');
       return { type: 'IsNull', expr, not };
     }
 
     // LIKE
-    if (this.peek().type === 'like') {
-      this.consume('like');
+    if (this.isKeyword('LIKE')) {
+      this.consumeKeyword('LIKE');
       const patternToken = this.consume('string');
       const pattern = patternToken.value.slice(1, -1);
       return { type: 'Like', expr, pattern };
@@ -344,11 +414,19 @@ export class SQLParser {
       match: 'MATCH',
     };
 
-    const t = opToken.type as keyof typeof opMap | undefined;
+    let t = opToken.type as keyof typeof opMap | undefined;
     if (t && opMap[t]) {
       this.consume(t as string);
       const right = this.parseExpr();
       return { type: 'BinaryOp', op: opMap[t], left: expr, right };
+    }
+    if (opToken.type === 'ident') {
+      const v = String(opToken.value).toUpperCase();
+      if (v === 'TERM' || v === 'MATCH') {
+        this.consume('ident');
+        const right = this.parseExpr();
+        return { type: 'BinaryOp', op: v, left: expr, right };
+      }
     }
 
     throw new Error(`Expected operator after expression, got ${opToken.type}`);

@@ -5,11 +5,11 @@ export interface TableColumnSortable {
 export interface TableColumn {
   field: string;
   title: string;
-  width: number;
+  width?: number;
   fixed?: "left" | "right";
-  ellipsis: boolean;
+  ellipsis?: boolean;
   tooltip?: boolean | Record<string, any>;
   sortable?: TableColumnSortable;
-  cellClass: string;
-  show: boolean;
+  cellClass?: string;
+  show?: boolean;
 }

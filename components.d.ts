@@ -120,12 +120,15 @@ declare module 'vue' {
     TProgress: typeof import('tdesign-vue-next')['Progress']
     TRow: typeof import('tdesign-vue-next')['Row']
     TSelect: typeof import('tdesign-vue-next')['Select']
+    TSpace: typeof import('tdesign-vue-next')['Space']
+    TSwitch: typeof import('tdesign-vue-next')['Switch']
     TTabPanel: typeof import('tdesign-vue-next')['TabPanel']
     TTabs: typeof import('tdesign-vue-next')['Tabs']
     TTag: typeof import('tdesign-vue-next')['Tag']
     TTooltip: typeof import('tdesign-vue-next')['Tooltip']
     TTree: typeof import('tdesign-vue-next')['Tree']
     UpdateItem: typeof import('./src/components/update-item/index.vue')['default']
+    VerticalSplitPanel: typeof import('./src/components/SplitPanel/VerticalSplitPanel.vue')['default']
   }
 }
 
@@ -239,10 +242,13 @@ declare global {
   const TProgress: typeof import('tdesign-vue-next')['Progress']
   const TRow: typeof import('tdesign-vue-next')['Row']
   const TSelect: typeof import('tdesign-vue-next')['Select']
+  const TSpace: typeof import('tdesign-vue-next')['Space']
+  const TSwitch: typeof import('tdesign-vue-next')['Switch']
   const TTabPanel: typeof import('tdesign-vue-next')['TabPanel']
   const TTabs: typeof import('tdesign-vue-next')['Tabs']
   const TTag: typeof import('tdesign-vue-next')['Tag']
   const TTooltip: typeof import('tdesign-vue-next')['Tooltip']
   const TTree: typeof import('tdesign-vue-next')['Tree']
   const UpdateItem: typeof import('./src/components/update-item/index.vue')['default']
+  const VerticalSplitPanel: typeof import('./src/components/SplitPanel/VerticalSplitPanel.vue')['default']
 }

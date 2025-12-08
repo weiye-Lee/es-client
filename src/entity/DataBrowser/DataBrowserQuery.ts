@@ -16,8 +16,22 @@ export interface DataBrowserQueryItem extends Base {
 
 }
 
+export type DataBrowserQueryBodyMode = "SQL" | "ES|QL";
+
 export interface DataBrowserQueryBody {
+  /**
+   * 文件内容
+   */
   content: string;
+  /**
+   * 最近50条查询记录
+   */
+  records: Array<string>;
+  /**
+   * 查询模式
+   */
+  mode: DataBrowserQueryBodyMode
+
 }
 
 export interface DataBrowserQuery extends DataBrowserQueryItem, DataBrowserQueryBody {

@@ -1,7 +1,11 @@
 import {defineStore} from "pinia";
 import {SelectOption} from "$/shared/common";
-import {UseDataBrowserInstance, useDataBrowserInstance} from "@/hooks";
-
+import {
+  UseDataBrowserInstance,
+  useDataBrowserInstance,
+  UseDataBrowserQueryContent,
+  useDataBrowserQueryContent
+} from "@/hooks";
 
 export type DataBrowserType = "folder" | "index" | "alias" | "view" | "query";
 
@@ -9,11 +13,13 @@ export interface DataBrowseTab extends SelectOption {
   type: DataBrowserType;
 }
 
+type DataBrowserTab = UseDataBrowserInstance | UseDataBrowserQueryContent;
+
 export const useDataBrowseStore = defineStore("data-browser", () => {
   // 标签页
   const tabs = ref<Array<DataBrowseTab>>([]) as Ref<Array<DataBrowseTab>>;
   const tabId = ref('');
-  const tabMap = shallowRef(new Map<string, UseDataBrowserInstance>());
+  const tabMap = shallowRef(new Map<string, DataBrowserTab>());
 
 
   const openTab = (value: string, label: string) => {
@@ -30,11 +36,13 @@ export const useDataBrowseStore = defineStore("data-browser", () => {
     const tab: DataBrowseTab = {
       label: label,
       value: value,
-      type: type,
+      type: type as DataBrowserType,
     };
     tabId.value = value;
     if (type === 'query') {
-    }else {
+      const instance = useDataBrowserQueryContent(Number(val));
+      tabMap.value.set(value, instance);
+    } else {
       const instance = useDataBrowserInstance(val);
       tabMap.value.set(value, instance);
       instance.run(true);

@@ -1,23 +1,13 @@
-import { defineStore } from "pinia";
-import {
-  DataBrowserQuery,
-  DataBrowserQueryItem,
-} from "@/entity/DataBrowser/DataBrowserQuery";
+import {defineStore} from "pinia";
+import {DataBrowserQueryItem,} from "@/entity/DataBrowser/DataBrowserQuery";
 import MessageUtil from "@/utils/model/MessageUtil";
-import {
-  DialogPlugin,
-  FormItem,
-  Input,
-  Paragraph,
-  Text,
-} from "tdesign-vue-next";
+import {DialogPlugin, FormItem, Input,} from "tdesign-vue-next";
 import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
 import {
   addDataBrowserQuery,
   deleteDataBrowserQuery,
   listDataBrowserQuery,
   renameDataBrowserQuery,
-  saveDataBrowserQueryContent,
 } from "@/service/DataBrowser/DataBrwoserQueryService";
 
 export const useDataBrowserQueryStore = defineStore("dataBrowserQuery", () => {
@@ -44,8 +34,8 @@ export const useDataBrowserQueryStore = defineStore("dataBrowserQuery", () => {
     const dialog = DialogPlugin({
       default: () => (
         <div>
-          <FormItem label={"匹配模式"}>
-            <Input type="text" v-model={name.value} autofocus />
+          <FormItem label={"文件名"}>
+            <Input type="text" v-model={name.value} autofocus/>
           </FormItem>
         </div>
       ),
@@ -105,16 +95,11 @@ export const useDataBrowserQueryStore = defineStore("dataBrowserQuery", () => {
     });
   };
 
-  const save = async (id: number, content: string) => {
-    return saveDataBrowserQueryContent(id, content);
-  };
-
   return {
     query,
     init,
     add,
     rename,
-    save,
     remove,
   };
 });

@@ -8,11 +8,6 @@
       <t-select v-model="urlId" placeholder="请选择链接" filterable clearable @change="selectUrl"
                 class="url-select" :style="{width: width + 'px'}">
         <t-option v-for="url in urls" :key="url.id" :label="url.name" :value="url.id"/>
-        <template #empty>
-          <div class="select-panel-footer">
-            <t-button theme="primary" variant="text" block @click="openAddLink()">新增链接</t-button>
-          </div>
-        </template>
         <template #panel-bottom-content>
           <div class="select-panel-footer">
             <t-button theme="primary" variant="text" block @click="openAddLink()">

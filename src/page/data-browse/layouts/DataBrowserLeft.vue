@@ -11,8 +11,8 @@
         <template #label="{ node }">
           <div class="flex items-center w-full" @click="onClick(node)" @dblclick="onDbClick(node)">
             <div class="mr-8px">
-              <folder-icon v-if="node.value.startsWith('folder-')" />
-              <file-icon v-else />
+              <folder-icon v-if="node.value.startsWith('folder-')"/>
+              <file-icon v-else/>
             </div>
             <div>
               <div class="text-12px">{{ node.label }}</div>
@@ -21,49 +21,49 @@
         </template>
         <template #operations="{ node }">
           <t-button v-if="node.value === 'folder-view'" theme="primary" size="small" variant="text" shape="square"
-            :disabled="!urlId" @click="onAddView">
+                    :disabled="!urlId" @click="onAddView">
             <template #icon>
-              <add-icon />
+              <add-icon/>
             </template>
           </t-button>
           <t-button v-else-if="node.value === 'folder-query'" theme="primary" size="small" variant="text" shape="square"
-            :disabled="!urlId" @click="onAddQuery">
+                    :disabled="!urlId" @click="onAddQuery">
             <template #icon>
-              <add-icon />
+              <add-icon/>
             </template>
           </t-button>
           <t-button v-else-if="node.value.startsWith('view')" theme="danger" size="small" variant="text" shape="square"
-            :disabled="!urlId" @click="onRemoveView(node)">
+                    :disabled="!urlId" @click="onRemoveView(node)">
             <template #icon>
-              <delete-icon />
+              <delete-icon/>
             </template>
           </t-button>
-          <t-space v-else-if="node.value.startsWith('query')" size="small">
+          <div v-else-if="node.value.startsWith('query')" class="flex">
             <t-button theme="primary" size="small" variant="text" shape="square" :disabled="!urlId"
-              @click="onRenameQuery(node)">
+                      @click="onRenameQuery(node)">
               <template #icon>
-                <edit-icon />
+                <edit-icon/>
               </template>
             </t-button>
             <t-button theme="danger" size="small" variant="text" shape="square" :disabled="!urlId"
-              @click="onRemoveQuery(node)">
+                      @click="onRemoveQuery(node)">
               <template #icon>
-                <delete-icon />
+                <delete-icon/>
               </template>
             </t-button>
-          </t-space>
+          </div>
         </template>
       </t-tree>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { TreeNodeModel, TreeOptionData } from "tdesign-vue-next";
-import { useIndexStore, useUrlStore } from "@/store";
-import { AddIcon, DeleteIcon, EditIcon, FileIcon, FolderIcon } from "tdesign-icons-vue-next";
-import { useDataBrowseStore } from "@/store/components/DataBrowseStore";
-import { useDataBrowserViewStore } from "@/store/components/DataBrowserViewStore";
-import { useDataBrowserQueryStore } from "@/store/components/DataBrowserQueryStore";
+import {TreeNodeModel, TreeOptionData} from "tdesign-vue-next";
+import {useIndexStore, useUrlStore} from "@/store";
+import {AddIcon, DeleteIcon, EditIcon, FileIcon, FolderIcon} from "tdesign-icons-vue-next";
+import {useDataBrowseStore} from "@/store/components/DataBrowseStore";
+import {useDataBrowserViewStore} from "@/store/components/DataBrowserViewStore";
+import {useDataBrowserQueryStore} from "@/store/components/DataBrowserQueryStore";
 
 const dataBrowserLeftRef = useTemplateRef<HTMLDivElement>("dataBrowserLeft");
 
@@ -74,11 +74,11 @@ const actives = useSessionStorage<Array<string>>("/home/data-browser/left/active
 const height = computed(() => elementSize.height.value - 40);
 
 const index = computed(() => {
-  const { list } = useIndexStore();
+  const {list} = useIndexStore();
   return list.map(e => e.name).sort((a, b) => a.localeCompare(b, 'zh'));
 });
 const alias = computed(() => {
-  const { list } = useIndexStore();
+  const {list} = useIndexStore();
   return Array.from(new Set(list.flatMap(e => e.alias))).sort((a, b) => a.localeCompare(b, 'zh'));
 });
 
@@ -119,9 +119,9 @@ const data = computed<Array<TreeOptionData>>(() => ([
 const urlId = computed(() => useUrlStore().id);
 
 watch(() => useUrlStore().id, value => {
-  useDataBrowserViewStore().init(value), { immediate: true };
-  useDataBrowserQueryStore().init(value), { immediate: true };
-}, { immediate: true });
+  useDataBrowserViewStore().init(value);
+  useDataBrowserQueryStore().init(value);
+}, {immediate: true});
 
 function onClick(node: TreeNodeModel) {
   actives.value = [`${node.value}`];
@@ -145,13 +145,13 @@ function onAddQuery() {
 }
 
 function onRenameQuery(node: TreeNodeModel) {
-  const { label, value } = node;
+  const {label, value} = node;
   const id = Number(`${value}`.split('-')[1]);
   useDataBrowserQueryStore().rename(id, label!);
 }
 
 function onRemoveQuery(node: TreeNodeModel) {
-  const { label, value } = node;
+  const {label, value} = node;
   const id = Number(`${value}`.split('-')[1]);
   useDataBrowserQueryStore().remove(id, label!);
 }

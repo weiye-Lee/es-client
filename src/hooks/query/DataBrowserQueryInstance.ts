@@ -1,18 +1,13 @@
 import { TableColumn } from "$/shared/common/TableColumn";
 import { searchResultToTable } from "@/core/elasticsearch-client/components/SearchResultToTable";
-import { parseJsonWithBigIntSupport, stringifyJsonWithBigIntSupport } from "@/core/util";
-import { conditionToES, parseSQL } from "@/core/util/file/SqlParser";
-import { DocumentSearchResult } from "@/domain/es/DocumentSearchResult";
-import { getDataBrowserQuery } from "@/service/DataBrowser/DataBrwoserQueryService";
+import { stringifyJsonWithBigIntSupport } from "@/core/util";
+import { conditionToES, ExprFunctionCall, parseSQL } from "@/core/util/file/SqlParser";
 import { useGlobalSettingStore, useUrlStore } from "@/store";
 import type { Ref } from "vue";
 
 export interface UseDataBrowserQueryInstance {
-  urlId: number;
-  id: number;
-
   // 查询内容
-  content: Ref<string>;
+  sql: string;
 
   // ---------------------------------------- 结果相关 ----------------------------------------
   loading: Ref<boolean>;
@@ -34,9 +29,34 @@ export interface UseDataBrowserQueryInstance {
 
 }
 
-export function useDataBrowserQueryInstance(urlId: number, id: number) {
+function renderFunctionForConcat(expr: ExprFunctionCall, record: Record<string, any>): string {
+  let val = '';
+  expr.args.forEach(arg => {
+    if (arg.type === 'Identifier') {
+      val += record[arg.name];
+    } else if (arg.type === 'StringLiteral') {
+      val += arg.value;
+    } else if (arg.type === 'NumberLiteral') {
+      val += arg.value.toString();
+    } else if (arg.type === 'FunctionCall') {
+      val += renderFunctionForConcat(arg, record);
+    }
+  })
+  return val;
+}
 
-  const content = ref('');
+
+function renderFunctionCall(expr: ExprFunctionCall, record: Record<string, any>): string {
+  if (expr.name.toUpperCase().trim() === 'CONCAT') {
+    return renderFunctionForConcat(expr, record);
+  } else {
+    console.warn("不支持的函数调用：" + expr.name);
+    return "";
+  }
+}
+
+export function useDataBrowserQueryInstance(sql: string): UseDataBrowserQueryInstance {
+
 
   const loading = ref(false);
   // 显示的列
@@ -50,13 +70,7 @@ export function useDataBrowserQueryInstance(urlId: number, id: number) {
   // 每页记录数
   const pageSize = ref(useGlobalSettingStore().pageSize);
 
-
-  // 获取内容
-  getDataBrowserQuery(id).then((r) => {
-    content.value = r.record.content;
-  });
-
-  async function run(sql: string) {
+  async function run() {
     if (loading.value) return;
     loading.value = true;
     try {
@@ -102,16 +116,63 @@ export function useDataBrowserQueryInstance(urlId: number, id: number) {
       // 查询成功，处理结果
       const table = searchResultToTable(res);
       total.value = table.total;
-      records.value = table.records;
+      const r = table.records;
       // 表头需要特殊处理，因为sql中的字段存在别名等情况
-      // 如果查询的是*，则直接处理
-      if (query.select === "*") {
+      if (query.select.length === 1 && query.select[0].expr.type === 'Star') {
+        // 如果查询的是*，则直接处理
         columns.value = table.columns;
+      } else {
+        // 需要遍历select，去寻找别名，并且还要支持方法
+        const c = new Array<TableColumn>();
+        query.select.forEach(item => {
+          const { expr, alias } = item;
+          switch (expr.type) {
+            case "Star":
+            case "QualifiedStar":
+              table.columns.forEach(e => c.push(e));
+              break;
+            case "Identifier":
+              c.push({
+                title: alias || expr.name,
+                field: expr.name,
+              })
+              break;
+            case "StringLiteral":
+            case "NumberLiteral":
+              c.push({
+                title: alias || expr.value.toString(),
+                field: expr.value.toString(),
+              })
+              break;
+            case "FunctionCall":
+              // 最麻烦的方法调用，要适配多种方法，但是方法调用之会导致结果发生变化。
+              r.forEach((e, i) => {
+                const column = alias || expr.name;
+                e[column] = renderFunctionCall(expr, table.records[i]);
+              });
+              break;
+          }
+        });
+        columns.value = c;
+        records.value = r;
       }
     } finally {
       loading.value = false;
     }
   }
+
+  run().then(()=>console.debug("运行成功")).catch(e => console.error("运行失败", e));
+
+  return {
+    sql,
+    loading,
+    columns,
+    records,
+    total,
+    pageNum,
+    pageSize,
+    run,
+  };
 
 
 }
