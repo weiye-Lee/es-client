@@ -5,7 +5,7 @@
         <DbQueryEditor :tab/>
       </template>
       <template #bottom>
-        表格
+        <DbQueryView :instances="tab.instances.value" @empty="onEmpty"/>
       </template>
     </vertical-split-panel>
   </div>
@@ -14,6 +14,7 @@
 import {UseDataBrowserQueryContent} from "@/hooks";
 import VerticalSplitPanel from "@/components/SplitPanel/VerticalSplitPanel.vue";
 import DbQueryEditor from "@/page/data-browse/component/DbQueryEditor/DbQueryEditor.vue";
+import DbQueryView from "@/page/data-browse/component/DbQueryView/DbQueryView.vue";
 
 const props = defineProps({
   tab: {
@@ -23,6 +24,10 @@ const props = defineProps({
 });
 
 const {size} = props.tab;
+
+const onEmpty = () => {
+  size.value = 0;
+}
 </script>
 <style scoped lang="less">
 

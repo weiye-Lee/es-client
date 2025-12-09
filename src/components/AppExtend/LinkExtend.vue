@@ -65,6 +65,10 @@ onUnmounted(() => {
   font-weight: 500;
   line-height: 32px;
   height: 32px;
+  // 文本超出省略
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
 
   .link-content {

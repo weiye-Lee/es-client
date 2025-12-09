@@ -59,7 +59,6 @@ const onPlay = () => {
   const selection = instance.getSelection();
   if (selection && !selection.isEmpty()) {
     const selectedText = instance.getModel()?.getValueInRange(selection);
-    console.log('选中的文本:', selectedText);
     if (selectedText) {
       execute(selectedText);
       return;

@@ -5,6 +5,7 @@ import {conditionToES, ExprFunctionCall, parseSQL, Query} from "@/core/util/file
 import {useGlobalSettingStore, useUrlStore} from "@/store";
 import type {Ref} from "vue";
 import MessageUtil from "@/utils/model/MessageUtil";
+import {dayjs} from "@arco-design/web-vue/es/_utils/date";
 
 export interface UseDataBrowserQueryInstance {
   id: string;
@@ -51,13 +52,34 @@ function renderFunctionForConcat(expr: ExprFunctionCall, record: Record<string, 
   return val;
 }
 
+function renderFunctionForDataFormat(expr: ExprFunctionCall, record: Record<string, any>): string {
+  let date = '';
+  const [field, format] = expr.args;
+  if (field.type === 'Identifier') {
+    date = record[field.name];
+  } else if (field.type === 'StringLiteral') {
+    date = field.value;
+  } else if (field.type === 'NumberLiteral') {
+    date = field.value.toString();
+  } else if (field.type === 'FunctionCall') {
+    date = renderFunctionForConcat(field, record);
+  }
+  let f = 'YYYY-MM-DD HH:mm:ss';
+  if (format && format.type === 'StringLiteral') {
+    f = format.value;
+  }
+  return dayjs(date).format(f);
+}
 
 function renderFunctionCall(expr: ExprFunctionCall, record: Record<string, any>): string {
-  if (expr.name.toUpperCase().trim() === 'CONCAT') {
-    return renderFunctionForConcat(expr, record);
-  } else {
-    console.warn("不支持的函数调用：" + expr.name);
-    return "";
+  switch (expr.name.toUpperCase().trim()) {
+    case "CONCAT":
+      return renderFunctionForConcat(expr, record);
+    case "DATE_FORMAT":
+      return renderFunctionForDataFormat(expr, record);
+    default:
+      console.warn("不支持的函数调用：" + expr.name);
+      return "";
   }
 }
 
@@ -81,7 +103,7 @@ export function useDataBrowserQueryInstance(sql: string, id: string): UseDataBro
 
   try {
     // 第一步解析查询
-    const query = parseSQL(sql);
+    query = parseSQL(sql);
     // 第二部，将查询语句转为DSL
     if (query.where) {
       dsl.query = conditionToES(query.where);
@@ -137,9 +159,11 @@ export function useDataBrowserQueryInstance(sql: string, id: string): UseDataBro
       if (query.select.length === 1 && query.select[0].expr.type === 'Star') {
         // 如果查询的是*，则直接处理
         columns.value = table.columns;
+        records.value = r;
       } else {
         // 需要遍历select，去寻找别名，并且还要支持方法
         const c = new Array<TableColumn>();
+        console.log(query.select)
         query.select.forEach(item => {
           const {expr, alias} = item;
           switch (expr.type) {
@@ -162,9 +186,13 @@ export function useDataBrowserQueryInstance(sql: string, id: string): UseDataBro
               break;
             case "FunctionCall":
               // 最麻烦的方法调用，要适配多种方法，但是方法调用之会导致结果发生变化。
+              const k = alias || expr.name;
+              c.push({
+                title: k,
+                field: k,
+              })
               r.forEach((e, i) => {
-                const column = alias || expr.name;
-                e[column] = renderFunctionCall(expr, table.records[i]);
+                e[k] = renderFunctionCall(expr, table.records[i]);
               });
               break;
           }

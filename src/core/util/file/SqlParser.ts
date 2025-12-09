@@ -15,6 +15,7 @@ const lexer = moo.compile({
   comma: ',',
   dot: '.',
   star: '*',
+  semicolon: ';',
 
   // 关键字（大写字面量，解析时做大小写兼容）
   select: 'SELECT',
@@ -49,8 +50,8 @@ const lexer = moo.compile({
   string: /'(?:\\['\\]|[^'\n\\])*'/,
   number: /\d+(?:\.\d+)?/,
 
-  // 标识符：普通字段名
-  ident: /[a-zA-Z_][a-zA-Z0-9_]*/,
+  // 标识符：允许 @ 与 -，不包含 .（保留 . 用于 table.* 检测）
+  ident: /[a-zA-Z_@][a-zA-Z0-9_@-]*/,
 
   // 反引号标识符（支持空格、特殊字符）
   backtick: /`(?:\\[`\\]|[^`\n\\])*`/,

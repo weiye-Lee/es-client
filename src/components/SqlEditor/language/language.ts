@@ -35,7 +35,8 @@ export const esSqlLanguage: monaco.languages.IMonarchLanguage = {
       [/'(?:[^'\\]|\\.)*'/, 'string'],
       [/`(?:[^`\\]|\\.)*`/, 'identifier.backtick'],
       [/\d+(\.\d+)?/, 'number'],
-      [/[(),]/, '@brackets'],      // 只保留真正的括号和逗号（如果你认为逗号也算）
+      [/\(|\)/, '@brackets'],
+      [/,/, 'delimiter'],
       [/;/, 'delimiter.semicolon'], // 分号单独处理
       [/[\.\*\/\+\-]/, 'operator'],
       [/!=|<=|>=|<>/, 'operator'],
@@ -87,9 +88,9 @@ export const esSqlLanguage: monaco.languages.IMonarchLanguage = {
     // DATE_FORMAT 的第二个参数（格式字符串）
     dateFormatFormat: [
       [/,/, 'delimiter'],
-      [/'(?:[^'\\]|\\.)*'/, 'string.format'], // 特殊 token: string.format
-      [/\)/, { token: '@brackets', next: '@pop' }],
-      [/[^(),'\s`]+/, 'invalid'], // 非字符串格式视为错误（可选）
+      [/'(?:[^'\\]|\\.)*'/, 'string.format'],
+      [/\)/, { token: '@brackets', next: '@popall' }],
+      [/[^(),'\s`]+/, 'invalid'],
       [/[ \t\r\n]+/, '']
     ]
   },

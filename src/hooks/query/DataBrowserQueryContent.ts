@@ -11,6 +11,7 @@ export interface UseDataBrowserQueryContent {
   records: Ref<Array<string>>;
   mode: Ref<DataBrowserQueryBodyMode>;
   loading: Ref<boolean>;
+  instances: ShallowRef<Array<UseDataBrowserQueryInstance>>
 
   execute(sql: string): void;
 }
@@ -59,6 +60,8 @@ export const useDataBrowserQueryContent = (id: number): UseDataBrowserQueryConte
     records,
     mode,
     loading,
+    instances,
+
     execute
   }
 }
