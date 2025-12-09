@@ -1,4 +1,4 @@
-import { ElasticsearchClientHttp } from "./ElasticsearchClientHttp";
+import {ElasticsearchClientHttp} from "./ElasticsearchClientHttp";
 import {
   AllocationExplainBody,
   AllocationExplainResult,
@@ -9,17 +9,12 @@ import {
   IndexItemResult,
   Overview
 } from "../types";
-import { Analyze, ClusterState, IndexOpenOrCloseProp } from "../domain";
-import { IndexFieldBuild } from "../components/IndexFieldBuild";
-import { parseJsonWithBigIntSupport } from "$/util";
-import { indexTypeBuild } from "$/elasticsearch-client/components/IndexTypeBuild";
-import { IndexAliasAtomOptions } from "$/shared/elasticsearch";
-import {
-  BulkAction,
-  BulkRequestOptions,
-  BulkResult,
-  serializeBulkBody
-} from "$/elasticsearch-client/types/BulkAction";
+import {Analyze, ClusterState, IndexOpenOrCloseProp} from "../domain";
+import {IndexFieldBuild} from "../components/IndexFieldBuild";
+import {parseJsonWithBigIntSupport} from "$/util";
+import {indexTypeBuild} from "$/elasticsearch-client/components/IndexTypeBuild";
+import {IndexAliasAtomOptions} from "$/shared/elasticsearch";
+import {BulkAction, BulkRequestOptions, BulkResult, serializeBulkBody} from "$/elasticsearch-client/types/BulkAction";
 
 export abstract class ElasticsearchClientCommon extends ElasticsearchClientHttp {
   protected constructor(props: ElasticsearchClientProp, versionFirst: number) {
@@ -125,7 +120,7 @@ export abstract class ElasticsearchClientCommon extends ElasticsearchClientHttp 
   }
 
   async clusterHealth(): Promise<ClusterHealth> {
-    const rsp = await this.request({ method: "GET", url: "/_cluster/health" });
+    const rsp = await this.request({method: "GET", url: "/_cluster/health"});
     return parseJsonWithBigIntSupport<ClusterHealth>(rsp);
   }
 
@@ -136,7 +131,7 @@ export abstract class ElasticsearchClientCommon extends ElasticsearchClientHttp 
     });
   }
 
-  async getJson(url: string): Promise<Record<string, any>> {
+  async getJson<T extends Record<string, any> = Record<string, any>>(url: string): Promise<T> {
     const resp = await this.request({
       url,
       method: "GET"
@@ -145,7 +140,7 @@ export abstract class ElasticsearchClientCommon extends ElasticsearchClientHttp 
   }
 
   async info(): Promise<Overview> {
-    const rsp = await this.request({ method: "GET", url: "/" });
+    const rsp = await this.request({method: "GET", url: "/"});
     return parseJsonWithBigIntSupport<Overview>(rsp);
   }
 
@@ -176,7 +171,7 @@ export abstract class ElasticsearchClientCommon extends ElasticsearchClientHttp 
     return this.request({
       method: "POST",
       url: "/_aliases",
-      data: { actions: aliases }
+      data: {actions: aliases}
     });
   }
 
@@ -184,7 +179,7 @@ export abstract class ElasticsearchClientCommon extends ElasticsearchClientHttp 
     const rsp = await this.request({
       url: `/${index}/_analyze`,
       method: "POST",
-      data: { text, field }
+      data: {text, field}
     });
     return parseJsonWithBigIntSupport<Analyze>(rsp);
   }
@@ -216,8 +211,8 @@ export abstract class ElasticsearchClientCommon extends ElasticsearchClientHttp 
     }
 
     try {
-      const { type, ...requestOptions } = option;
-      const body = serializeBulkBody(actions, { type });
+      const {type, ...requestOptions} = option;
+      const body = serializeBulkBody(actions, {type});
 
       const params: Record<string, string> = {};
       if (requestOptions.refresh !== undefined) {

@@ -2,10 +2,11 @@ import MessageUtil from "@/utils/model/MessageUtil";
 import useLoadingStore from "@/store/LoadingStore";
 import {BrowserWindowType, createDataBrowserWindow} from "@/plugins/native/browser-window";
 import {Constant} from "@/global/Constant";
-import {formatJsonString} from "$/util";
+import {formatJsonString, stringifyJsonWithBigIntSupport} from "$/util";
 import {DialogInstance, DialogPlugin, TNode} from "tdesign-vue-next";
 import MonacoView from "@/components/view/MonacoView/index.vue";
 import {useUrlStore} from "@/store";
+import highlight from "highlight.js";
 
 /**
  * 对话框参数
@@ -81,4 +82,39 @@ export function showDialog(header: string, content: TNode, options?: DialogOptio
     className: "es-dialog",
     placement: "center"
   });
+}
+
+
+export function jsonToHtml(json: string | any): { html: string, original: string } {
+  // 原始值
+  let value: string;
+  // 格式化后的值
+  let html: string;
+  let needPretty = true;
+  if (typeof json === 'string') {
+    if (/^\s*(\{[\s\S]*}|\[[\s\S]*])\s*$/.test(json)) {
+      try {
+        value = formatJsonString(json)
+      } catch (e) {
+        MessageUtil.error("格式化JSON失败", e);
+        value = json as string;
+        needPretty = false;
+      }
+    } else {
+      value = json as string;
+      needPretty = false;
+    }
+  } else {
+    value = stringifyJsonWithBigIntSupport(json);
+  }
+  // 原始值
+  if (needPretty && value !== '') {
+    let highlightResult = highlight.highlight(value, {
+      language: 'json'
+    });
+    html = highlightResult.value;
+  } else {
+    html = value;
+  }
+  return {html, original: value};
 }

@@ -172,17 +172,13 @@ function handlerReplicaClass(shard: Shard | null): string {
 function showClusterNode(node: string) {
   const {client} = useUrlStore();
   if (!client) return MessageUtil.error("请选择实例");
-  showJsonDialogByAsync(`集群节点信息【${node}】`, client.getJson('/_nodes').then(e => e.nodes[node]).then(stringifyJsonWithBigIntSupport), {
-    width: '600px'
-  })
+  showJsonDialogByAsync(`集群节点信息【${node}】`, client.getJson('/_nodes').then(e => e.nodes[node]).then(stringifyJsonWithBigIntSupport),)
 }
 
 function showNode(node: string) {
   const {client} = useUrlStore();
   if (!client) return MessageUtil.error("请选择实例");
-  showJsonDialogByAsync(`节点信息【${node}】`, client.getJson('/_nodes/stats').then(e => e.nodes[node]).then(stringifyJsonWithBigIntSupport), {
-    width: '600px'
-  })
+  showJsonDialogByAsync(`节点信息【${node}】`, client.getJson('/_nodes/stats').then(e => e.nodes[node]).then(stringifyJsonWithBigIntSupport))
 }
 
 </script>

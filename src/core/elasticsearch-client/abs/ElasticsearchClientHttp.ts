@@ -1,34 +1,25 @@
-import type { ElasticsearchClient } from "../client";
+import type {ElasticsearchClient} from "../client";
 import {
+  AllocationExplainBody,
+  AllocationExplainResult,
   BaseSearchProp,
   BaseSearchResult,
   ClusterHealth,
   DataSearchProp,
   DataSearchResult,
+  DevToolProp,
   ElasticsearchClientProp,
   IndexItem,
   IndexItemResult,
-  Overview,
-  DevToolProp,
-  AllocationExplainBody,
-  AllocationExplainResult
+  Overview
 } from "../types";
-import { AxiosError, AxiosRequestConfig } from "axios";
-import {
-  Analyze,
-  IndexTemplate,
-  IndexTemplateListItem,
-  IndexOpenOrCloseProp
-} from "$/elasticsearch-client/domain";
-import { IlmExplainResponse } from "$/elasticsearch-client/domain/IlmExplainResponse";
-import { IndexAliasAtomOptions } from "$/shared/elasticsearch";
-import { parseJsonWithBigIntSupport } from "$/util";
-import {
-  BulkAction,
-  BulkRequestOptions,
-  BulkResult
-} from "$/elasticsearch-client/types/BulkAction";
-import { EsRequestError } from "$/shared";
+import {AxiosError, AxiosRequestConfig} from "axios";
+import {Analyze, IndexOpenOrCloseProp, IndexTemplate, IndexTemplateListItem} from "$/elasticsearch-client/domain";
+import {IlmExplainResponse} from "$/elasticsearch-client/domain/IlmExplainResponse";
+import {IndexAliasAtomOptions} from "$/shared/elasticsearch";
+import {parseJsonWithBigIntSupport} from "$/util";
+import {BulkAction, BulkRequestOptions, BulkResult} from "$/elasticsearch-client/types/BulkAction";
+import {EsRequestError} from "$/shared";
 
 export abstract class ElasticsearchClientHttp implements ElasticsearchClient {
   public readonly props: ElasticsearchClientProp;
@@ -88,7 +79,7 @@ export abstract class ElasticsearchClientHttp implements ElasticsearchClient {
 
   abstract getText(url: string): Promise<string>;
 
-  abstract getJson(url: string): Promise<Record<string, any>>;
+  abstract getJson<T extends Record<string, any> = Record<string, any>>(url: string): Promise<T>;
 
   abstract info(): Promise<Overview>;
 
