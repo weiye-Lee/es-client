@@ -11,6 +11,9 @@
 <p align="center"><strong>Lightweight, Efficient, and Secure Elasticsearch Desktop Client</strong></p>
 
 <p align="center">
+<a href="https://gitcode.com/q2316367743/es-client">
+<img src="https://gitcode.com/q2316367743/es-client/star/badge.svg" alt="GitCode Star">
+</a>
 <a href="https://gitee.com/qiaoshengda/es-client">
 <img src="https://gitee.com/qiaoshengda/es-client/badge/star.svg?theme=white" alt="Gitee Stars">
 </a>
@@ -113,6 +116,8 @@ Plugin System: Chrome / Edge
 Gitee: [https://gitee.com/qiaoshengda/es-client](https://gitee.com/qiaoshengda/es-client) (Main repository, recommended for Issues)
 
 GitHub: [https://github.com/q2316367743/es-client](https://github.com/q2316367743/es-client)
+
+GitCode: [https://gitcode.com/q2316367743/es-client](https://gitcode.com/q2316367743/es-client)
 
 Documentation: [Documentation Center](https://es-client.esion.xyz/docs/app/es-client-open)
 

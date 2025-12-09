@@ -117,6 +117,8 @@ Gitee：[https://gitee.com/qiaoshengda/es-client](https://gitee.com/qiaoshengda/
 
 GitHub：[https://github.com/q2316367743/es-client](https://github.com/q2316367743/es-client)
 
+GitCode: [https://gitcode.com/q2316367743/es-client](https://gitcode.com/q2316367743/es-client)
+
 文档：[文档中心](https://es-client.esion.xyz/docs/app/es-client-open)
 
 反馈：[反馈中心](https://es-client.esion.xyz/feedback/app/es-client-open)
