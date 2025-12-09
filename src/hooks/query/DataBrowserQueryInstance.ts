@@ -155,15 +155,23 @@ export function useDataBrowserQueryInstance(sql: string, id: string): UseDataBro
       const table = searchResultToTable(res);
       total.value = table.total;
       const r = table.records;
+      const c: Array<TableColumn> = [{
+        field: "_id",
+        title: "_id",
+        width: 240,
+        ellipsis: true,
+        cellClass: "",
+        show: true,
+        sortable: {
+          sortDirections: ["ascend", "descend"] as ("ascend" | "descend")[]
+        }
+      }];
       // 表头需要特殊处理，因为sql中的字段存在别名等情况
       if (query.select.length === 1 && query.select[0].expr.type === 'Star') {
         // 如果查询的是*，则直接处理
-        columns.value = table.columns;
-        records.value = r;
+        c.push(...table.columns);
       } else {
         // 需要遍历select，去寻找别名，并且还要支持方法
-        const c = new Array<TableColumn>();
-        console.log(query.select)
         query.select.forEach(item => {
           const {expr, alias} = item;
           switch (expr.type) {
@@ -197,9 +205,9 @@ export function useDataBrowserQueryInstance(sql: string, id: string): UseDataBro
               break;
           }
         });
-        columns.value = c;
-        records.value = r;
       }
+      columns.value = c;
+      records.value = r;
     } catch (e) {
       MessageUtil.error(`运行「${sql}」失败`, e)
     } finally {

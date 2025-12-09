@@ -1,5 +1,5 @@
 <template>
-  <div class="abs-0" ref="containerRef">
+  <div class="abs-0 overflow-hidden" ref="containerRef">
     <!-- tab -->
     <TabChrome v-model="current" :tabs="tabs" @remove="onRemove"/>
     <!-- 表格 -->
@@ -29,7 +29,7 @@ const containerRef = ref<HTMLElement>();
 
 const containerSize = useElementSize(containerRef);
 
-const height = computed(() => containerSize.height.value - 44);
+const height = computed(() => containerSize.height.value - 32);
 
 const tabs = computed<Array<SelectOption>>(() => {
   if (props.instances.length === 0) return [];

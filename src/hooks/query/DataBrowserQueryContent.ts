@@ -45,9 +45,63 @@ export const useDataBrowserQueryContent = (id: number): UseDataBrowserQueryConte
       .finally(() => loading.value = false);
   });
 
+  function splitSQLStatements(input: string): string[] {
+    const res: string[] = [];
+    let buf = '';
+    let i = 0;
+    let inSingle = false;
+    let inBacktick = false;
+    let inLineComment = false;
+    while (i < input.length) {
+      const ch = input[i];
+      const prev = i > 0 ? input[i - 1] : '';
+      const next = i + 1 < input.length ? input[i + 1] : '';
+      if (inLineComment) {
+        if (ch === '\n') {
+          inLineComment = false;
+          buf += ch;
+        }
+        i++;
+        continue;
+      }
+      if (!inSingle && !inBacktick && ch === '/' && next === '/') {
+        inLineComment = true;
+        i += 2;
+        continue;
+      }
+      if (!inBacktick && ch === "'" && prev !== '\\') {
+        inSingle = !inSingle;
+        buf += ch;
+        i++;
+        continue;
+      }
+      if (!inSingle && ch === '`') {
+        if (prev !== '\\') {
+          inBacktick = !inBacktick;
+        }
+        buf += ch;
+        i++;
+        continue;
+      }
+      if (!inSingle && !inBacktick && ch === ';') {
+        const s = buf.trim();
+        if (s.length) res.push(s);
+        buf = '';
+        i++;
+        continue;
+      }
+      buf += ch;
+      i++;
+    }
+    const s = buf.trim();
+    if (s.length) res.push(s);
+    return res;
+  }
+
   const execute = (sql: string) => {
-    // TODO：此处要拆分sql
-    instances.value = [useDataBrowserQueryInstance(sql, Date.now() + '')];
+    const statements = splitSQLStatements(sql);
+    const ts = Date.now();
+    instances.value = statements.map((s, idx) => useDataBrowserQueryInstance(s, `${ts}_${idx}`));
     if (size.value < 100) {
       size.value = 400;
     }
