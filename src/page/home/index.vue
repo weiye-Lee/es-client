@@ -2,37 +2,36 @@
   <div class="home">
     <!-- 上面的搜索条件 -->
     <div class="home-option">
-      <a-input-group>
+      <t-input-group>
         <!-- 输入框 -->
-        <a-input v-model="keyword" placeholder="请输入索引名称"
-                 style="width: 45vw;height: 32px;" allow-clear></a-input>
-        <a-trigger trigger="click">
-          <a-button type="secondary">
+        <t-input v-model="keyword" placeholder="请输入索引名称" style="width: 45vw;height: 32px;" clearable/>
+        <t-popup trigger="click" show-arrow>
+          <t-button theme="default" shape="square" variant="outline">
             <template #icon>
               <icon-more/>
             </template>
-          </a-button>
+          </t-button>
           <template #content>
-            <a-descriptions class="home-query-status">
-              <a-descriptions-item label="状态">
-                <a-radio-group v-model="status" type="button">
-                  <a-radio :value="Status.NONE">忽略</a-radio>
-                  <a-radio :value="Status.OPEN">开启</a-radio>
-                  <a-radio :value="Status.CLOSE">关闭</a-radio>
-                </a-radio-group>
-              </a-descriptions-item>
-            </a-descriptions>
+            <t-descriptions class="home-query-status">
+              <t-descriptions-item label="状态">
+                <t-radio-group v-model="status" type="button">
+                  <t-radio :value="Status.NONE">忽略</t-radio>
+                  <t-radio :value="Status.OPEN">开启</t-radio>
+                  <t-radio :value="Status.CLOSE">关闭</t-radio>
+                </t-radio-group>
+              </t-descriptions-item>
+            </t-descriptions>
           </template>
-        </a-trigger>
-        <a-select v-model="order" placeholder="索引排序" style="width: 120px;margin-left: 7px;">
-          <a-option :value="OrderType.NAME_ASC">名称正序</a-option>
-          <a-option :value="OrderType.NAME_DESC">名称倒序</a-option>
-        </a-select>
-      </a-input-group>
+        </t-popup>
+        <t-select v-model="order" placeholder="索引排序" style="width: 120px;margin-left: 7px;">
+          <t-option :value="OrderType.NAME_ASC" label="名称正序"/>
+          <t-option :value="OrderType.NAME_DESC" label="名称倒序"/>
+        </t-select>
+      </t-input-group>
       <!-- 新增索引 -->
-      <a-button type="primary" style="margin-left: 10px" @click="indexAdd()" :disabled="!url">
+      <t-button theme="primary" style="margin-left: 10px" @click="indexAdd()" :disabled="!url">
         新建
-      </a-button>
+      </t-button>
     </div>
     <!-- 索引容器 -->
     <div class="home-container" ref="homeContainer">
@@ -45,21 +44,20 @@
           </a-list-item>
         </template>
         <template #empty>
-          <a-empty v-if="items.length === 0" description="空空如也" style="margin-top: 20%"/>
+          <empty-result title="空空如也"/>
         </template>
       </a-list>
-      <a-back-top target-container=".home-container .arco-scrollbar-container"/>
+      <t-back-top container=".home-container .arco-scrollbar-container"/>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {useIndexStore} from '@/store';
+import {useIndexStore, useUrlStore} from '@/store';
 import IndexItem from "./components/index-item.vue";
 import {useFuse} from "@vueuse/integrations/useFuse";
 import {OrderType, Status, useHomeStore} from "@/store/components/HomeStore";
 import {indexAdd} from "@/page/home/components/IndexAdd";
-import {useUrlStore} from "@/store";
 
 
 const size = useWindowSize();

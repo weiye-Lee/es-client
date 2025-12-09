@@ -58,7 +58,10 @@ export default defineConfig(({mode}) => {
       outDir: outDir,
     },
     server: {
-      port: 7743
+      port: 7743,
+      proxy: {
+        '/es': "http://10.20.30.2:9200"
+      }
     },
     // 强制预构建插件包
     optimizeDeps: {

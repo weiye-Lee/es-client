@@ -2,6 +2,7 @@ import type {Ref} from "vue";
 import {getDataBrowserQuery, saveDataBrowserQueryContent} from "@/service/DataBrowser/DataBrwoserQueryService";
 import MessageUtil from "@/utils/model/MessageUtil";
 import {DataBrowserQueryBodyMode} from "@/entity/DataBrowser/DataBrowserQuery";
+import {cloneDeep} from "es-toolkit";
 
 export interface UseDataBrowserQueryContent {
   content: Ref<string>;
@@ -26,11 +27,11 @@ export const useDataBrowserQueryContent = (id: number): UseDataBrowserQueryConte
 
   watchDebounced([content, records, mode], () => {
     loading.value = true;
-    saveDataBrowserQueryContent(id, {
+    saveDataBrowserQueryContent(id, cloneDeep({
       content: content.value,
       records: records.value,
       mode: mode.value
-    }).catch(e => MessageUtil.error(`查询「${id}」保存失败`, e))
+    })).catch(e => MessageUtil.error(`查询「${id}」保存失败`, e))
       .finally(() => loading.value = false);
   });
 

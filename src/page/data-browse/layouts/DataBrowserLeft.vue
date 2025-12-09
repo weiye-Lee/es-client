@@ -9,7 +9,8 @@
         type: 'virtual'
       }" :height="height" :actived="actives">
         <template #label="{ node }">
-          <div class="flex items-center w-full" @click="onClick(node)" @dblclick="onDbClick(node)">
+          <div class="flex items-center w-full" @click="onClick(node)" @dblclick="onDbClick(node)"
+               @contextmenu="openContextmenu(node, $event)">
             <div class="mr-8px">
               <folder-icon v-if="node.value.startsWith('folder-')"/>
               <file-icon v-else/>
@@ -61,9 +62,10 @@
 import {TreeNodeModel, TreeOptionData} from "tdesign-vue-next";
 import {useIndexStore, useUrlStore} from "@/store";
 import {AddIcon, DeleteIcon, EditIcon, FileIcon, FolderIcon} from "tdesign-icons-vue-next";
-import {useDataBrowseStore} from "@/store/components/DataBrowseStore";
+import {decodeValue, encodeValue, useDataBrowseStore} from "@/store/components/DataBrowseStore";
 import {useDataBrowserViewStore} from "@/store/components/DataBrowserViewStore";
 import {useDataBrowserQueryStore} from "@/store/components/DataBrowserQueryStore";
+import {openContextmenu} from "@/page/data-browse/func/DbLeftContextmenu";
 
 const dataBrowserLeftRef = useTemplateRef<HTMLDivElement>("dataBrowserLeft");
 
@@ -87,32 +89,32 @@ const query = computed(() => useDataBrowserQueryStore().query);
 const data = computed<Array<TreeOptionData>>(() => ([
   {
     label: '索引',
-    value: 'folder-index',
+    value: encodeValue("folder", "index"),
     children: index.value.map(e => ({
       label: e,
-      value: `index-${e}`
+      value: encodeValue('index', e)
     }))
   }, {
     label: '别名',
-    value: 'folder-alias',
+    value: encodeValue("folder", "alias"),
     children: alias.value.map(e => ({
       label: e,
-      value: `alias-${e}`
+      value: encodeValue('alias', e)
     }))
   }, {
     label: '视图',
-    value: 'folder-view',
+    value: encodeValue("folder", "view"),
     children: view.value.map(e => ({
       label: e.pattern,
-      value: `view-${e.pattern}`,
+      value: encodeValue('view', e.pattern),
       sourceId: e.id
     }))
   }, {
     label: '查询',
-    value: 'folder-query',
+    value: encodeValue("folder", "query"),
     children: query.value.map(e => ({
       label: e.name,
-      value: `query-${e.id}`
+      value: encodeValue('query', e.id)
     }))
   }
 ]));
@@ -146,14 +148,14 @@ function onAddQuery() {
 
 function onRenameQuery(node: TreeNodeModel) {
   const {label, value} = node;
-  const id = Number(`${value}`.split('-')[1]);
-  useDataBrowserQueryStore().rename(id, label!);
+  const {id} = decodeValue(`${value}`);
+  useDataBrowserQueryStore().rename(Number(id), label!);
 }
 
 function onRemoveQuery(node: TreeNodeModel) {
   const {label, value} = node;
-  const id = Number(`${value}`.split('-')[1]);
-  useDataBrowserQueryStore().remove(id, label!);
+  const {id} = decodeValue(`${value}`);
+  useDataBrowserQueryStore().remove(Number(id), label!);
 }
 
 </script>

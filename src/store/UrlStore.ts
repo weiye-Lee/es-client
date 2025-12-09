@@ -59,6 +59,14 @@ export const useUrlStore = defineStore('url', () => {
     title.value = targetUrl.name || 'es-client';
     client.value = createElasticsearchClient({
       ...url.value,
+      id: url.value.id + '',
+      created_at: 0,
+      updated_at: 0,
+      is_auth: url.value.isAuth ? 1 : 0,
+      platform: 'elasticsearch',
+      auth_type: url.value.authType,
+      auth_user: url.value.authUser,
+      auth_password: url.value.authPassword,
       adapter: useRequest
     });
     return true;

@@ -6,11 +6,12 @@ import "@/assets/less"
 import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 // 引入样式
 import '@arco-design/web-vue/dist/arco.css';
+import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 // @ts-ignore
 import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 // @ts-ignore
 import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
-import {registerLanguageForHttp} from "@/components/rest-client-editor";
+import {registerLanguageForHttp} from "@/components/RestClientEditor";
 // vxe-ui
 import VxeUIBase from 'vxe-pc-ui'
 import 'vxe-pc-ui/es/style.css'

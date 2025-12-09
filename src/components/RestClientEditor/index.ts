@@ -1,8 +1,8 @@
 import * as monaco from "monaco-editor";
-import {language} from "@/components/rest-client-editor/language";
-import configuration from "@/components/rest-client-editor/configuration";
-import provider from "@/components/rest-client-editor/provider";
-import {restFoldingRangeProvider} from "@/components/rest-client-editor/foldingRange";
+import {language} from "@/components/RestClientEditor/language";
+import configuration from "@/components/RestClientEditor/configuration";
+import provider from "@/components/RestClientEditor/provider";
+import {restFoldingRangeProvider} from "@/components/RestClientEditor/foldingRange";
 
 export {default as RestClientEditor} from "./index.vue";
 

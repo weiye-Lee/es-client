@@ -7,16 +7,15 @@
             <play-icon/>
           </template>
         </t-button>
-        <t-divider theme="vertical" />
         <t-button theme="success" variant="text" shape="square" size="small">
           <template #icon>
             <history-icon />
           </template>
         </t-button>
-        <t-divider theme="vertical" />
-        <t-switch v-model="mode" :custom-value="['SQL', 'ES|QL']">
-          <template #label="slotProps">{{ slotProps.value ? 'SQL模式' : 'ES|QL模式' }}</template>
-        </t-switch>
+        <t-select v-model="mode" size="small" auto-width>
+          <t-option value="SQL" label="SQL"></t-option>
+          <t-option value="ES|QL" label="ES|QL"></t-option>
+        </t-select>
       </t-space>
       <t-space>
         <t-button theme="primary" variant="text" shape="square" size="small">
@@ -27,13 +26,14 @@
       </t-space>
     </div>
     <div class="content">
-
+      <sql-editor v-model="content" />
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import {HistoryIcon, PlayIcon, QuestionnaireIcon} from "tdesign-icons-vue-next";
 import {UseDataBrowserQueryContent} from "@/hooks";
+import SqlEditor from "@/components/SqlEditor/SqlEditor.vue";
 
 const props = defineProps({
   tab: {

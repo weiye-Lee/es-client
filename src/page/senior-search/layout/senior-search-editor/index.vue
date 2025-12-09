@@ -12,7 +12,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {RestClientEditor} from "@/components/rest-client-editor";
+import {RestClientEditor} from "@/components/RestClientEditor";
 import SsOption from "@/page/senior-search/layout/senior-search-editor/components/ss-option/index.vue";
 import {enableFilter} from "@/store/record/SeniorFilterRecordStore";
 

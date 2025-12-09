@@ -1,78 +1,78 @@
 <template>
   <div class="home-index-card">
     <!-- 标题 -->
-    <div class="title" :style="{maxWidth: maxWidth}">
-      <div class="index-item-title" type="primary" :style="{ color: indexStateTitle }" @click="indexInfo()"
-           :title="index.name">{{ index.name }}
-      </div>
-      <a-button shape="round" type="dashed" size="small" @click="execCopy(index.name)">复制</a-button>
+    <div class="title items-center" :style="{maxWidth: maxWidth}">
+      <t-link theme="primary" size="large" @click="indexInfo()"
+              :title="index.name">{{ index.name }}
+      </t-link>
+      <t-button shape="round" variant="dashed" size="small" @click="execCopy(index.name)" class="ml-8px">复制</t-button>
     </div>
     <!-- 别名 -->
     <div class="alias">
-      <a-space>
-                <span class="arco-tag arco-tag-size-medium arco-tag-blue arco-tag-checked"
-                      v-for="(item, idx) in index.alias" :key="idx">
-                {{ item }}
-                <icon-close :size="16" @click="removeAlias(item)" class="alias-close"/>
-            </span>
-      </a-space>
-      <a-button type="primary" status="normal" size="mini" @click="newAlias()">新增
-      </a-button>
+      <t-space v-if="index.alias && index.alias.length > 0" size="small" class="mr-8px">
+        <div class="arco-tag arco-tag-size-medium arco-tag-blue arco-tag-checked"
+             v-for="(item, idx) in index.alias" :key="idx">
+          {{ item }}
+          <icon-close :size="16" @click="removeAlias(item)" class="alias-close"/>
+        </div>
+      </t-space>
+      <t-button theme="primary" size="small" @click="newAlias()">新增
+      </t-button>
     </div>
     <!-- 操作 -->
     <div class="option">
-      <a-tooltip :effect="theme" content="迁移索引" placement="bottom">
-        <a-button type="text" @click="indexReindex(index.name)">
+      <t-tooltip :effect="theme" content="迁移索引" placement="bottom">
+        <t-button variant="text" theme="primary" shape="square" @click="indexReindex(index.name)">
           <template #icon>
-            <icon-rotate-right/>
+            <git-branch-icon/>
           </template>
-        </a-button>
-      </a-tooltip>
-      <a-tooltip :effect="theme" :content="indexStateTooltip" placement="bottom">
-        <a-popconfirm :content="`确认${indexStateTooltip}索引？`" @ok="indexOperation"
-                      :ok-text="indexStateTooltip">
-          <a-button type="text" :status="indexStateBtn">
+        </t-button>
+      </t-tooltip>
+      <t-tooltip :effect="theme" :content="indexStateTooltip" placement="bottom">
+        <t-popconfirm :content="`确认${indexStateTooltip}索引？`" @confirm="indexOperation"
+                      :confirm-btn="indexStateTooltip">
+          <t-button variant="text" shape="square" :theme="indexStateBtn">
             <template #icon>
-              <icon-pause v-if="indexStateBtn === 'danger'"/>
-              <icon-play-arrow v-else/>
+              <pause-icon v-if="indexStateBtn === 'danger'"/>
+              <play-icon v-else/>
             </template>
-          </a-button>
-        </a-popconfirm>
-      </a-tooltip>
-      <a-tooltip :effect="theme" content="删除索引" placement="bottom">
-        <a-button type="text" @click="removeIndex()">
+          </t-button>
+        </t-popconfirm>
+      </t-tooltip>
+      <t-tooltip :effect="theme" content="删除索引" placement="bottom">
+        <t-button variant="text" theme="primary" shape="square" @click="removeIndex()">
           <template #icon>
-            <icon-delete/>
+            <delete-icon/>
           </template>
-        </a-button>
-      </a-tooltip>
+        </t-button>
+      </t-tooltip>
     </div>
     <!-- 拓展面板按钮 -->
     <div class="expand-btn">
       <!-- 查询跳转 -->
-      <a-button-group type="text" status="success">
-        <a-tooltip :effect="theme" content="跳转到数据浏览" placement="bottom">
-          <a-button @click="jumpToDataBrowser()" style="border: none">
+      <div class="flex">
+        <t-tooltip :effect="theme" content="跳转到数据浏览" placement="bottom">
+          <t-button theme="success" variant="text" shape="square" @click="jumpToDataBrowser()" style="border: none">
             <template #icon>
-              <icon-apps/>
+              <table2-icon/>
             </template>
-          </a-button>
-        </a-tooltip>
-        <a-tooltip :effect="theme" content="跳转到基础查询" placement="bottom">
-          <a-button @click="jumpToBaseSearch()" style="border: none">
+          </t-button>
+        </t-tooltip>
+        <t-tooltip :effect="theme" content="跳转到基础查询" placement="bottom">
+          <t-button theme="success" variant="text" shape="square" @click="jumpToBaseSearch()" style="border: none">
             <template #icon>
-              <icon-search/>
+              <search-icon/>
             </template>
-          </a-button>
-        </a-tooltip>
-        <a-tooltip :effect="theme" content="跳转到高级查询" placement="bottom">
-          <a-button @click="jumpToSeniorSearch()" style="border: none">
+          </t-button>
+        </t-tooltip>
+        <t-tooltip :effect="theme" content="跳转到高级查询" placement="bottom">
+          <t-button theme="success" variant="text" shape="square" @click="jumpToSeniorSearch()" style="border: none">
             <template #icon>
-              <icon-filter/>
+              <filter-icon/>
             </template>
-          </a-button>
-        </a-tooltip>
-      </a-button-group>
+          </t-button>
+        </t-tooltip>
+      </div>
     </div>
   </div>
 </template>
@@ -87,7 +87,7 @@ import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
 import Optional from "@/utils/Optional";
 import {useIndexStore} from "@/store";
 import {useGlobalStore} from "@/store/GlobalStore";
-import {useDataBrowseStore} from "@/store/components/DataBrowseStore";
+import {encodeValue, useDataBrowseStore} from "@/store/components/DataBrowseStore";
 import {baseSearchLoadEvent} from "@/store/components/BaseSearchStore";
 import {useSeniorSearchStore} from "@/store/components/SeniorSearchStore";
 import IndexView from "@/view/index/IndexView";
@@ -97,9 +97,20 @@ import PageNameEnum from "@/enumeration/PageNameEnum";
 import {stringifyJsonWithBigIntSupport} from "$/util";
 import {copyText} from "@/utils/BrowserUtil";
 import {indexAliasAdd} from "@/page/home/components/IndexAliasAdd";
+import {
+  AppIcon,
+  DeleteIcon,
+  FilterIcon,
+  GitBranchIcon,
+  PauseIcon,
+  PlayIcon,
+  SearchIcon,
+  Table2Icon
+} from "tdesign-icons-vue-next";
 
 export default defineComponent({
   name: 'index-item',
+  components: {Table2Icon, FilterIcon, SearchIcon, AppIcon, DeleteIcon, PlayIcon, PauseIcon, GitBranchIcon},
   props: {
     index: {
       type: Object as PropType<IndexView>,
@@ -116,13 +127,13 @@ export default defineComponent({
     maxWidth() {
       return (this.width - 210) + 'px'
     },
-    indexStateBtn(): 'danger' | 'success' | 'normal' {
+    indexStateBtn(): 'danger' | 'success' | 'primary' {
       if (this.index.state === 'open') {
         return 'danger';
       } else if (this.index.state === 'close') {
         return 'success';
       } else {
-        return 'normal'
+        return 'primary'
       }
     },
 
@@ -214,7 +225,8 @@ export default defineComponent({
     },
     jumpToDataBrowser() {
       if (this.index) {
-        useDataBrowseStore().loadEvent(this.index);
+        useDataBrowseStore().openTab(encodeValue("index", this.index.name), this.index.name);
+        this.$router.push(PageNameEnum.DATA_BROWSE);
       }
     },
     jumpToSeniorSearch() {

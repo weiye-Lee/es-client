@@ -1,4 +1,4 @@
-import { Url } from "@/entity/Url";
+import { Url } from "$/entity";
 import {RequestConfig} from "@/plugins/native/axios";
 
 export interface ElasticsearchClientProp extends Url {

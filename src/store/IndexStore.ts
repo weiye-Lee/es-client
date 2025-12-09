@@ -88,7 +88,7 @@ export const useIndexStore = defineStore('index', {
 
         // 更新版本信息，但是只需要异步即可
         client.info().then(overview => {
-          useUrlStore().update(client.props.id, {
+          useUrlStore().update(Number(client.props.id), {
             version: overview.version.number
           }).catch(e => NotificationUtil.error(e, "更新版本信息失败"));
         }).catch(e => NotificationUtil.error(e, "获取版本信息失败"));

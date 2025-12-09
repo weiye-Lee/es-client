@@ -1,24 +1,33 @@
 <template>
   <div class="setting-url">
     <div class="setting-url-toolbar">
-      <a-input v-model="keyword" style="width: 40vw;" placeholder="链接名称" allow-clear/>
-      <a-dropdown-button @click="openAddLink()" type="primary">
-        新增
-        <template #content>
-          <a-doption @click="exportUrlToJson()">
+      <t-input v-model="keyword" style="width: 40vw;" placeholder="链接名称" clearable/>
+      <t-space size="small">
+        <t-button theme="primary" @click="openAddLink">
+          新增
+        </t-button>
+        <t-dropdown trigger="click">
+          <t-button theme="primary" shape="square">
             <template #icon>
-              <icon-export/>
+              <more-icon />
             </template>
-            数据导出
-          </a-doption>
-          <a-doption @click="importUrlByJson()">
-            <template #icon>
-              <icon-import/>
-            </template>
-            数据导入
-          </a-doption>
-        </template>
-      </a-dropdown-button>
+          </t-button>
+          <t-dropdown-menu>
+            <t-dropdown-item @click="exportUrlToJson()">
+              <template #prefix-icon>
+                <file-export-icon />
+              </template>
+              数据导出
+            </t-dropdown-item>
+            <t-dropdown-item @click="importUrlByJson()">
+              <template #prefix-icon>
+                <file-import-icon />
+              </template>
+              数据导入
+            </t-dropdown-item>
+          </t-dropdown-menu>
+        </t-dropdown>
+      </t-space>
     </div>
     <a-table ref="urlTable" :data="urls" class="data" sticky-header style="height: 100%;" :draggable="draggable"
              :pagination="false"
@@ -28,7 +37,7 @@
                         fixed="left"></a-table-column>
         <a-table-column data-index="value" title="链接" :width="260">
           <template #cell="{ record }">
-            <a-link @click="open(record.value)" type="primary" target="_blank">{{ record.value }}</a-link>
+            <t-link @click="open(record.value)" theme="primary" target="_blank">{{ record.value }}</t-link>
             <div class="url-copy" @click="execCopy(record.value)">复制</div>
           </template>
         </a-table-column>
@@ -40,14 +49,14 @@
         </a-table-column>
         <a-table-column title="操作" :width="170" fixed="right">
           <template #cell="{ record }">
-            <a-button type="primary" size="small" @click="openUpdateLink(record)">修改</a-button>
-            <a-popconfirm @ok="remove(record.id, record.value)" content="是否删除链接，删除后将无法恢复"
-                          ok-text="删除" position="br" :ok-button-props="{status: 'danger'}">
-              <a-button type="primary" status="danger" size="small"
+            <t-button theme="primary" size="small" @click="openUpdateLink(record)">修改</t-button>
+            <t-popconfirm @confirm="remove(record.id, record.value)" content="是否删除链接，删除后将无法恢复"
+                          confirm-btn="删除" placement="bottom-right" >
+              <t-button theme="danger" size="small"
                         style="margin-left: 8px;">
                 删除
-              </a-button>
-            </a-popconfirm>
+              </t-button>
+            </t-popconfirm>
           </template>
         </a-table-column>
       </template>
@@ -65,6 +74,7 @@ import {copyText, download, openUrl} from "@/utils/BrowserUtil";
 import Constant from "@/global/Constant";
 import {openAddLink, openUpdateLink} from "@/page/setting/pages/link/components/EditLink";
 import {parseJsonWithBigIntSupport, stringifyJsonWithBigIntSupport} from "$/util";
+import {FileExportIcon, FileImportIcon, MoreIcon} from "tdesign-icons-vue-next";
 
 const size = useWindowSize();
 

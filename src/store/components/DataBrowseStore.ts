@@ -15,6 +15,17 @@ export interface DataBrowseTab extends SelectOption {
 
 type DataBrowserTab = UseDataBrowserInstance | UseDataBrowserQueryContent;
 
+export function decodeValue(value: string): { type: string, id: string } {
+  const split = value.indexOf("-");
+  const type = value.substring(0, split) as DataBrowserType;
+  const id = value.substring(split + 1);
+  return {type, id};
+}
+
+export function encodeValue(type: DataBrowserType, id: string | number): string {
+  return `${type}-${id}`;
+}
+
 export const useDataBrowseStore = defineStore("data-browser", () => {
   // 标签页
   const tabs = ref<Array<DataBrowseTab>>([]) as Ref<Array<DataBrowseTab>>;
@@ -23,9 +34,7 @@ export const useDataBrowseStore = defineStore("data-browser", () => {
 
 
   const openTab = (value: string, label: string) => {
-    const split = value.indexOf("-");
-    const type = value.substring(0, split) as DataBrowserType;
-    const val = value.substring(split + 1);
+    const {type, id: val} = decodeValue(value);
 
     if (tabs.value.some(e => e.value === value)) {
       tabId.value = value;
