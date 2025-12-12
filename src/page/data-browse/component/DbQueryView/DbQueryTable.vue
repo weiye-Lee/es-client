@@ -7,6 +7,13 @@
     :row-config="rowConfig"
     empty-text="什么也没有"
   >
+    <vxe-column type="expand" width="80" title="详细" fixed="left">
+      <template #content="{ row }">
+        <div class="expand-wrapper h-300px">
+          <MonacoView :value="row['_source']" />
+        </div>
+      </template>
+    </vxe-column>
     <vxe-column
       v-for="column in columns"
       :key="column.title"
@@ -21,6 +28,7 @@
 <script lang="ts" setup>
 import {columnConfig, rowConfig} from "@/page/data-browse/component/DbContainer/args";
 import {DataSearchColumnConfig} from "$/elasticsearch-client";
+import MonacoView from "@/components/view/MonacoView/index.vue";
 
 defineProps({
   columns: {

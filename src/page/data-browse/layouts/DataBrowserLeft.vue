@@ -27,13 +27,15 @@
               <add-icon/>
             </template>
           </t-button>
-          <t-button v-else-if="node.value === 'folder-query'" theme="primary" size="small" variant="text" shape="square"
+          <t-button v-else-if="node.value === 'folder-query'" theme="primary" size="small" variant="text"
+                    shape="square"
                     :disabled="!urlId" @click="onAddQuery">
             <template #icon>
               <add-icon/>
             </template>
           </t-button>
-          <t-button v-else-if="node.value.startsWith('view')" theme="danger" size="small" variant="text" shape="square"
+          <t-button v-else-if="node.value.startsWith('view')" theme="danger" size="small" variant="text"
+                    shape="square"
                     :disabled="!urlId" @click="onRemoveView(node)">
             <template #icon>
               <delete-icon/>
@@ -149,14 +151,15 @@ function onAddQuery() {
 function onRenameQuery(node: TreeNodeModel) {
   const {label, value} = node;
   const {id} = decodeValue(`${value}`);
-  useDataBrowserQueryStore().rename(Number(id), label!);
+  useDataBrowserQueryStore().rename(id, label!);
 }
 
 function onRemoveQuery(node: TreeNodeModel) {
   const {label, value} = node;
   const {id} = decodeValue(`${value}`);
-  useDataBrowserQueryStore().remove(Number(id), label!);
+  useDataBrowserQueryStore().remove(id, label!);
 }
 
 </script>
-<style scoped lang="less"></style>
+<style scoped lang="less">
+</style>

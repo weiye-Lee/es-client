@@ -30,5 +30,4 @@ const onEmpty = () => {
 }
 </script>
 <style scoped lang="less">
-
 </style>

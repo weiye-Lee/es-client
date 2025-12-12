@@ -5,7 +5,7 @@
       variant="text"
       shape="square"
       size="small"
-      :disabled="isFirst"
+      :disabled="isFirst || loading"
       @click="toFirst()"
     >
       <template #icon>
@@ -17,7 +17,7 @@
       variant="text"
       shape="square"
       size="small"
-      :disabled="isFirst"
+      :disabled="isFirst || loading"
       @click="prePage()"
     >
       <template #icon>
@@ -30,6 +30,7 @@
         variant="text"
         size="small"
         style="font-size: 12px; line-height: 20px"
+        :disabled="loading"
       >
         {{ begin }} - {{ end }}
       </t-button>
@@ -50,7 +51,7 @@
       variant="text"
       shape="square"
       size="small"
-      :disabled="isLast"
+      :disabled="isLast || loading"
       @click="nextPage()"
     >
       <template #icon>
@@ -62,7 +63,7 @@
       variant="text"
       shape="square"
       size="small"
-      :disabled="isLast"
+      :disabled="isLast || loading"
       @click="toLast()"
     >
       <template #icon>
@@ -92,6 +93,10 @@ const props = defineProps({
   total: {
     type: Number,
     default: 0
+  },
+  loading: {
+    type: Boolean,
+    default: false
   }
 });
 const emit = defineEmits(['update:limit', 'update:offset']);

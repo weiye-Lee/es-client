@@ -1,17 +1,19 @@
 <template>
-  <div class="abs-8">
-    <!--    顶部tab-->
+  <div class="data-browser-right abs-0">
+    <div class="abs-0">
+      <!--    顶部tab-->
 
-    <TabChrome v-model="tabId" :tabs="tabs" @remove="removeTab" :class="{'theme-dark': isDark}"/>
+      <TabChrome v-model="tabId" :tabs="tabs" @remove="removeTab" :class="{'theme-dark': isDark}"/>
 
-    <div class="dbr-container" >
-      <div v-for="tab in tabs" :key="tab.value" v-show="tabId === tab.value">
-        <DataBrowserQueryTab v-if="tab.type === 'query'" :tab="tabMap.get(tab.value)! as UseDataBrowserQueryContent" />
-        <DataBrowserIndexTab v-else :tab="tabMap.get(tab.value)! as UseDataBrowserInstance" />
+      <div class="dbr-container" >
+        <div v-for="tab in tabs" :key="tab.value" v-show="tabId === tab.value">
+          <DataBrowserQueryTab v-if="tab.type === 'query'" :tab="tabMap.get(tab.value)! as UseDataBrowserQueryContent" />
+          <DataBrowserIndexTab v-else :tab="tabMap.get(tab.value)! as UseDataBrowserInstance" />
+        </div>
       </div>
-    </div>
 
-    <empty-result v-if="tabs.length === 0" title="请双击选择索引"/>
+      <empty-result v-if="tabs.length === 0" title="请双击选择索引"/>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>

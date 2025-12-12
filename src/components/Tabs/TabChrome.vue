@@ -40,7 +40,6 @@ const onRemove = (tab: SelectOption) => emit('remove', tab);
   overflow-x: auto;
   overflow-y: hidden;
   background-color: var(--td-bg-color-component);
-  border-radius: var(--td-radius-medium);
 
   .tab-chrome-pane {
     //group relative flex items-center px-4 h-32px
