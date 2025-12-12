@@ -8,7 +8,8 @@ import {
 } from "@/hooks";
 import {useUrlStore} from "@/store";
 
-export type DataBrowserType = "folder" | "index" | "alias" | "view" | "query";
+export type BaseBrowserBaseType = "index" | "alias" | "view";
+export type DataBrowserType = "folder" | BaseBrowserBaseType | "query";
 
 export interface DataBrowseTab extends SelectOption {
   type: DataBrowserType;
@@ -59,7 +60,7 @@ export const useDataBrowseStore = defineStore("data-browser", () => {
       const instance = useDataBrowserQueryContent(val);
       tabMap.value.set(value, instance);
     } else {
-      const instance = useDataBrowserInstance(val);
+      const instance = useDataBrowserInstance(val, type);
       tabMap.value.set(value, instance);
       instance.run(true);
     }

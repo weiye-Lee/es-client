@@ -8,7 +8,7 @@
       :row-config="rowConfig"
       :empty-text="emptyText"
       :loading="loading"
-      :menu-config="menuConfig"
+      :menu-config="menuConfig(tab)"
       :virtual-y-config="virtualYConfig"
       @menu-click="contextMenuClickEvent"
     >

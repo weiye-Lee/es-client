@@ -9,10 +9,12 @@ import {
   buildDataBrowserQuery
 } from "$/elasticsearch-client/components/DataBrowserQuery";
 import {DataSearchColumnConfig} from "$/elasticsearch-client";
+import {BaseBrowserBaseType} from "@/store/components/DataBrowseStore";
 
 export interface UseDataBrowserInstance {
   id: string;
   index: string;
+  type: BaseBrowserBaseType;
 
   pageNum: Ref<number>;
   pageSize: Ref<number>;
@@ -41,7 +43,7 @@ export interface UseDataBrowserInstance {
   buildSearch: () => Record<string, any>;
 }
 
-export const useDataBrowserInstance = (index: string): UseDataBrowserInstance => {
+export const useDataBrowserInstance = (index: string, type: BaseBrowserBaseType): UseDataBrowserInstance => {
   // 唯一ID
   const id = useSnowflake().nextId();
   // 当前查询的索引
@@ -186,6 +188,7 @@ export const useDataBrowserInstance = (index: string): UseDataBrowserInstance =>
   return {
     id,
     index,
+    type,
     pageNum,
     pageSize,
     total,

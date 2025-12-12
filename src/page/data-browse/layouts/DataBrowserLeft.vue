@@ -13,6 +13,15 @@
                  @contextmenu="openContextmenu(node, $event)">
               <div class="mr-8px">
                 <folder-icon v-if="node.value.startsWith('folder-')"/>
+                <bookmark-double-icon v-else-if="node.value.startsWith('view-')"
+                                      :fill-color='["transparent","transparent"]'
+                                      :stroke-color='["currentColor","#0052d9"]' :stroke-width="2"/>
+                <tag-icon v-else-if="node.value.startsWith('alias-')" :fill-color='["transparent","transparent"]'
+                          :stroke-color='["currentColor","#0052d9"]' :stroke-width="2"/>
+                <table-icon v-else-if="node.value.startsWith('index-')" :fill-color='["transparent","transparent"]'
+                            :stroke-color='["currentColor","#0052d9"]' :stroke-width="2"/>
+                <code-icon v-else-if="node.value.startsWith('query-')" :fill-color='["transparent","transparent"]'
+                           :stroke-color='["currentColor","#0052d9"]' :stroke-width="2"/>
                 <file-icon v-else/>
               </div>
               <div>
@@ -38,7 +47,7 @@
                       shape="square"
                       :disabled="!urlId" @click="onRemoveView(node)">
               <template #icon>
-                <delete-icon/>
+                <delete-icon style="color: var(--td-error-color)"/>
               </template>
             </t-button>
             <div v-else-if="node.value.startsWith('query')" class="flex">
@@ -51,7 +60,7 @@
               <t-button theme="danger" size="small" variant="text" shape="square" :disabled="!urlId"
                         @click="onRemoveQuery(node)">
                 <template #icon>
-                  <delete-icon/>
+                  <delete-icon style="color: var(--td-error-color)"/>
                 </template>
               </t-button>
             </div>
@@ -64,7 +73,17 @@
 <script lang="ts" setup>
 import {TreeNodeModel, TreeOptionData} from "tdesign-vue-next";
 import {useIndexStore, useUrlStore} from "@/store";
-import {AddIcon, DeleteIcon, EditIcon, FileIcon, FolderIcon} from "tdesign-icons-vue-next";
+import {
+  AddIcon,
+  BookmarkDoubleIcon,
+  CodeIcon,
+  DeleteIcon,
+  EditIcon,
+  FileIcon,
+  FolderIcon,
+  TableIcon,
+  TagIcon
+} from "tdesign-icons-vue-next";
 import {decodeValue, encodeValue, useDataBrowseStore} from "@/store/components/DataBrowseStore";
 import {useDataBrowserViewStore} from "@/store/components/DataBrowserViewStore";
 import {useDataBrowserQueryStore} from "@/store/components/DataBrowserQueryStore";

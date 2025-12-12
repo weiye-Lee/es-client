@@ -8,7 +8,7 @@
         <refresh-icon />
       </db-simple-item>
       <div class="sep"></div>
-      <db-simple-item tip="新增" :disable="!index" @click="recordAdd">
+      <db-simple-item v-if="type === 'index'" tip="新增" :disable="!index" @click="recordAdd">
         <add-icon />
       </db-simple-item>
     </div>
@@ -61,7 +61,6 @@ import {
   AddIcon, HelpCircleIcon,
   MoreIcon,
   PrintIcon,
-  QuestionnaireIcon,
   RefreshIcon,
   SearchIcon
 } from "tdesign-icons-vue-next";
@@ -79,7 +78,7 @@ const props = defineProps({
   }
 });
 
-const { index, total, run, add, buildSearch } =
+const { index, type, total, run, add, buildSearch } =
   props.tab as UseDataBrowserInstance;
 
 const executeQuery = () => run();
