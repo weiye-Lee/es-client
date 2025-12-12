@@ -37,7 +37,11 @@ export const useDataBrowserViewStore = defineStore('dataBrowserView', () => {
         <FormItem label={"匹配模式"}>
           <Input type="text" v-model={pattern.value} autofocus/>
         </FormItem>
-        <div>
+        <div style={{
+          border: "2px solid var(--td-border-level-1-color)",
+          padding: '8px',
+          borderRadius: "var(--td-radius-medium)"
+        }}>
           <Paragraph>
             在本客户端中，“视图”是一种通过 索引名称的通配符模式（如 <Text code>logs-*</Text>）来动态匹配多个 Elasticsearch
             索引的方式。

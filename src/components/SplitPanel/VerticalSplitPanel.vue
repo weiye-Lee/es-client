@@ -52,7 +52,7 @@ function clamp() {
 function updateContainerHeight() {
   if (containerRef.value) {
     containerHeight.value = containerRef.value.clientHeight
-    clamp()
+    // clamp()
   }
 }
 

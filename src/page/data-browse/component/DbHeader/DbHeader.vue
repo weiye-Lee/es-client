@@ -2,7 +2,7 @@
   <div class="flex justify-between db-header">
     <!-- 左侧条件 -->
     <div class="left flex">
-      <page-help :tab />
+      <db-page :tab />
       <div class="sep"></div>
       <db-simple-item tip="刷新" :disable="!index" @click="executeQuery">
         <refresh-icon />
@@ -55,7 +55,7 @@ import {Constant} from "@/global/Constant";
 import MessageUtil from "@/utils/model/MessageUtil";
 import { execAdd } from "@/page/data-browse/component/DbHeader/DbContextmenu";
 import DbSimpleItem from "@/page/data-browse/component/DbHeader/components/DbSimpleItem.vue";
-import PageHelp from "@/page/data-browse/component/DbHeader/components/PageHelp.vue";
+import DbPage from "@/page/data-browse/component/DbHeader/components/DbPage.vue";
 import DbTableHeader from "@/page/data-browse/component/DbHeader/components/DbTableHeader.vue";
 import {
   AddIcon,

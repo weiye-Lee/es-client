@@ -20,19 +20,14 @@ export interface UseDataBrowserQueryInstance {
   // 总记录数
   total: Ref<number>;
   // 当前页码
-  pageNum: Ref<number>;
+  offset: Ref<number>;
   // 每页记录数
-  pageSize: Ref<number>;
+  limit: Ref<number>;
 
   /**
-   * 下一页
+   * 刷新数据
    */
-  next(): Promise<void>;
-
-  /**
-   * 上一页
-   */
-  prefix(): Promise<void>;
+  refresh(): Promise<void>;
 
 }
 
@@ -94,9 +89,9 @@ export function useDataBrowserQueryInstance(sql: string, id: string): UseDataBro
   // 总记录数
   const total = ref(0);
   // 当前页码
-  const pageNum = ref(1);
+  const offset = ref(0);
   // 每页记录数
-  const pageSize = ref(useGlobalSettingStore().pageSize);
+  const limit = ref(useGlobalSettingStore().pageSize);
 
   const dsl: Record<string, any> = {};
   let query: Query | null = null;
@@ -137,20 +132,23 @@ export function useDataBrowserQueryInstance(sql: string, id: string): UseDataBro
         }
       })
     }
+    // 第五步，解析limit和offset
+    if (typeof query.limit === 'number') limit.value = query.limit;
+    if (typeof query.offset === 'number') offset.value = query.offset;
   } catch (e) {
     MessageUtil.error(`解析「${sql}」失败`, e)
     parse = false;
   }
 
-  async function run() {
+  async function refresh() {
     if (!query) return MessageUtil.error(`请先解析SQL「${sql}」`);
     if (loading.value) return;
     loading.value = true;
     try {
-      // 第四步，添加分页
-      dsl.from = (pageNum.value - 1) * pageSize.value;
-      dsl.size = pageSize.value;
-      // 第四步，执行查询
+      // 第一步，添加分页
+      dsl.from = offset.value;
+      dsl.size = limit.value;
+      // 第二步，执行查询
       const {client} = useUrlStore();
       if (!client) return Promise.reject(new Error("请先连接ES"));
       const res = await client.seniorSearch({
@@ -227,26 +225,10 @@ export function useDataBrowserQueryInstance(sql: string, id: string): UseDataBro
 
   if (parse) {
     // 第一次运行
-    run().then(() => console.debug("运行成功")).catch(e => MessageUtil.error(`运行「${sql}」失败`, e));
+    refresh().then(() => console.debug("运行成功")).catch(e => MessageUtil.error(`运行「${sql}」失败`, e));
   }
 
-  function next() {
-    if (!parse) return Promise.reject(new Error("请先解析SQL"));
-    pageNum.value++;
-    if (pageNum.value > total.value / pageSize.value) {
-      pageNum.value = total.value / pageSize.value;
-    }
-    return run();
-  }
-
-  function prefix() {
-    if (!parse) return Promise.reject(new Error("请先解析SQL"));
-    pageNum.value--;
-    if (pageNum.value < 1) {
-      pageNum.value = 1;
-    }
-    return run();
-  }
+  watch([limit, offset], refresh);
 
   return {
     id,
@@ -255,10 +237,9 @@ export function useDataBrowserQueryInstance(sql: string, id: string): UseDataBro
     columns,
     records,
     total,
-    pageNum,
-    pageSize,
-    next,
-    prefix
+    offset,
+    limit,
+    refresh
   };
 
 

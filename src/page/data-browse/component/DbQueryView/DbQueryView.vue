@@ -2,9 +2,14 @@
   <div class="abs-0 overflow-hidden" ref="containerRef">
     <!-- tab -->
     <TabChrome v-model="current" :tabs="tabs" @remove="onRemove"/>
+    <!-- 操作栏 -->
     <!-- 表格 -->
     <div class="db-query-view-content">
       <div v-for="instance in instances" :key="instance.id" v-show="current === instance.id">
+        <div>
+          <db-page-help v-model:limit="instance.limit.value" v-model:offset="instance.offset.value"
+                        :total="instance.total.value"/>
+        </div>
         <DbQueryTable :columns="instance.columns.value" :records="instance.records.value" :height/>
       </div>
     </div>
@@ -14,6 +19,7 @@
 import {UseDataBrowserQueryInstance} from "@/hooks/query/DataBrowserQueryInstance";
 import {SelectOption} from "$/shared/common";
 import DbQueryTable from "@/page/data-browse/component/DbQueryView/DbQueryTable.vue";
+import DbPageHelp from "@/page/data-browse/component/DbPageHelp/DbPageHelp.vue";
 
 const props = defineProps({
   instances: {
@@ -29,7 +35,7 @@ const containerRef = ref<HTMLElement>();
 
 const containerSize = useElementSize(containerRef);
 
-const height = computed(() => containerSize.height.value - 32);
+const height = computed(() => containerSize.height.value - 56);
 
 const tabs = computed<Array<SelectOption>>(() => {
   if (props.instances.length === 0) return [];

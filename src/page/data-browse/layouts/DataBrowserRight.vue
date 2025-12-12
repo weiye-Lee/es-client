@@ -35,7 +35,7 @@ const removeTab = ({ value }: any) => {
 <style scoped lang="less">
 .dbr-container {
   position: absolute;
-  top: 44px;
+  top: 32px;
   left: 0;
   right: 0;
   bottom: 0;
