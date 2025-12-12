@@ -6,15 +6,29 @@
     <!-- 表格 -->
     <div class="db-query-view-content">
       <div v-for="instance in instances" :key="instance.id" v-show="current === instance.id">
-        <div class="flex">
-          <db-page-help v-model:limit="instance.limit.value" v-model:offset="instance.offset.value"
-                        :total="instance.total.value" :loading="instance.loading.value"/>
-          <t-button theme="primary" variant="text" size="small" shape="square" :loading="instance.loading.value"
-                    @click="instance.refresh()">
-            <template #icon>
-              <refresh-icon/>
-            </template>
-          </t-button>
+        <div class="flex justify-between">
+          <div class="flex">
+            <db-page-help v-model:limit="instance.limit.value" v-model:offset="instance.offset.value"
+                          :total="instance.total.value" :loading="instance.loading.value"/>
+            <t-button theme="primary" variant="text" size="small" shape="square" :loading="instance.loading.value"
+                      @click="instance.refresh()">
+              <template #icon>
+                <refresh-icon/>
+              </template>
+            </t-button>
+          </div>
+          <div class="flex">
+            <t-button theme="primary" variant="text" size="small" shape="square">
+              <template #icon>
+                <print-icon/>
+              </template>
+            </t-button>
+            <t-button theme="primary" variant="text" size="small" shape="square">
+              <template #icon>
+                <search-icon/>
+              </template>
+            </t-button>
+          </div>
         </div>
         <DbQueryTable :columns="instance.columns.value" :records="instance.records.value" :height/>
       </div>
@@ -26,7 +40,7 @@ import {UseDataBrowserQueryInstance} from "@/hooks/query/DataBrowserQueryInstanc
 import {SelectOption} from "$/shared/common";
 import DbQueryTable from "@/page/data-browse/component/DbQueryView/DbQueryTable.vue";
 import DbPageHelp from "@/page/data-browse/component/DbPageHelp/DbPageHelp.vue";
-import {RefreshIcon} from "tdesign-icons-vue-next";
+import {PrintIcon, RefreshIcon, SearchIcon} from "tdesign-icons-vue-next";
 
 const props = defineProps({
   instances: {

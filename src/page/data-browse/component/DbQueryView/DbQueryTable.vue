@@ -3,6 +3,7 @@
     ref="tableRef"
     :data="records"
     :height="height"
+    stripe
     :column-config="columnConfig"
     :row-config="rowConfig"
     empty-text="什么也没有"

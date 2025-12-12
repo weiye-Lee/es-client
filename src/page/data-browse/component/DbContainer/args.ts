@@ -101,7 +101,7 @@ export const menuConfig: VxeTablePropTypes.MenuConfig = {
 };
 
 export const columnConfig: VxeTablePropTypes.ColumnConfig = {
-  resizable: true
+  resizable: true,
 };
 
 export const rowConfig: VxeTablePropTypes.RowConfig = {
