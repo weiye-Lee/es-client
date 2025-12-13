@@ -87,7 +87,7 @@ function pin() {
 </script>
 <style scoped lang="less">
 .senior-search-display {
-  height: 100%;
+  height: calc(100vh - 118px);
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 32px;

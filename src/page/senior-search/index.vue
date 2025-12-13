@@ -1,5 +1,6 @@
 <template>
   <div class="senior-search">
+    <t-alert class="mb-8px" theme="warning">高级搜索下一个版本将会移除，请尽快迁移到开发者工具中</t-alert>
 
     <SplitPanel v-model="panelSize">
       <template #left>

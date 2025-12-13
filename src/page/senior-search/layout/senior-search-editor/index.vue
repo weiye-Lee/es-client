@@ -16,7 +16,7 @@ import {RestClientEditor} from "@/components/RestClientEditor";
 import SsOption from "@/page/senior-search/layout/senior-search-editor/components/ss-option/index.vue";
 
 const size = useWindowSize();
-const height = computed(() => (size.height.value - 56) + 'px');
+const height = computed(() => (size.height.value - 118) + 'px');
 
 
 </script>

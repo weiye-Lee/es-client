@@ -44,7 +44,7 @@ const requests = computed(() => useSeniorSearchRequestStore().requests);
 <style scoped lang="less">
 .ss-display-quick {
   position: relative;
-  height: 100%;
+  height: calc(100% - 16px);
   width: 100%;
   padding: 8px;
 }
