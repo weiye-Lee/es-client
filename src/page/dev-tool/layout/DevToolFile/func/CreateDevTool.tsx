@@ -16,7 +16,7 @@ export async function createDevTool(props?: Partial<DevToolFileCreateProp>) {
   const devTool = ref<DevToolFileCreateProp>({
     folder: false,
     name: "",
-    parentId: 0
+    parentId: '0'
   });
 
   Object.assign(devTool.value, props);

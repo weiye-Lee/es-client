@@ -44,7 +44,7 @@ export function openContextmenu(node: TreeNodeModel, e: PointerEvent) {
           if (type === 'view') {
             MessageUtil.error("暂不支持重命名视图");
           } else {
-            useDataBrowserQueryStore().rename(Number(id), node.label!).catch(e => MessageUtil.error("重命名失败", e));
+            useDataBrowserQueryStore().rename(id, node.label!).catch(e => MessageUtil.error("重命名失败", e));
           }
         }
       }, {
@@ -52,9 +52,9 @@ export function openContextmenu(node: TreeNodeModel, e: PointerEvent) {
         icon: () => <DeleteIcon/>,
         onClick: () => {
           if (type === 'view') {
-            useDataBrowserViewStore().remove(Number(id), node.label!).catch(e => MessageUtil.error("删除失败", e));
+            useDataBrowserViewStore().remove(id, node.label!).catch(e => MessageUtil.error("删除失败", e));
           } else {
-            useDataBrowserQueryStore().remove(Number(id), node.label!).catch(e => MessageUtil.error("删除失败", e));
+            useDataBrowserQueryStore().remove(id, node.label!).catch(e => MessageUtil.error("删除失败", e));
           }
         }
       });
