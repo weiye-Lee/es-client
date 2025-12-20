@@ -23,6 +23,9 @@ import {exportData} from "@/components/DataExport/func";
 import MessageUtil from "@/utils/model/MessageUtil";
 import AppLink from "@/components/AppLink/AppLink.vue";
 import {useLoading} from "@/hooks/UseLoading";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 const allowExportTypes: Array<ExportType> = [ExportType.JSON];
 
@@ -36,59 +39,59 @@ export function showDataExportDrawer(config: ConditionExportEvent) {
 
   // 显示对话框
   DrawerPlugin({
-    header: "数据导出",
+    header: t('module.data_export.title'),
     size: "600px",
     default: () => <Form data={instance.value}>
-      <Alert title={"导出卡顿？"}>
-        <span>👉 想一键导出 10 万+ 行到 CSV/Excel/JSON？试试 </span>
+      <Alert title={t('module.data_export.tips.title')}>
+        <span>{t('module.data_export.tips.content_pre')}</span>
         <AppLink event="导出"/>
-        <span>！</span>
+        <span>{t('module.data_export.tips.content_post')}</span>
       </Alert>
-      <FormItem label="文件名" labelAlign={"top"}>
+      <FormItem label={t('module.data_export.form.filename')} labelAlign={"top"}>
         <Input v-model={instance.value.name}/>
       </FormItem>
-      <FormItem label="文件类型" labelAlign={"top"}>
+      <FormItem label={t('module.data_export.form.file_type')} labelAlign={"top"}>
         <Select v-model={instance.value.type}>
-          <Option value={ExportType.JSON} label={"JSON文件(*.json)"}>JSON文件(*.json)</Option>
-          <Option value={ExportType.XLSX} label={"表格(*.xlsx)"}>表格(*.xlsx)</Option>
-          <Option value={ExportType.CSV} label={"CSV(*.csv)"}>CSV(*.csv)</Option>
-          <Option value={ExportType.TSV} label={"管道分隔(*.txt)"}>管道分隔(*.txt)</Option>
-          <Option value={ExportType.TXT} label={"文本文件(*.txt)"}>文本文件(*.txt)</Option>
+          <Option value={ExportType.JSON} label={t('module.data_export.options.file_type.json')}>{t('module.data_export.options.file_type.json')}</Option>
+          <Option value={ExportType.XLSX} label={t('module.data_export.options.file_type.xlsx')}>{t('module.data_export.options.file_type.xlsx')}</Option>
+          <Option value={ExportType.CSV} label={t('module.data_export.options.file_type.csv')}>{t('module.data_export.options.file_type.csv')}</Option>
+          <Option value={ExportType.TSV} label={t('module.data_export.options.file_type.tsv')}>{t('module.data_export.options.file_type.tsv')}</Option>
+          <Option value={ExportType.TXT} label={t('module.data_export.options.file_type.txt')}>{t('module.data_export.options.file_type.txt')}</Option>
         </Select>
       </FormItem>
       {isText(instance)}
-      <FormItem label="导出范围" labelAlign={"top"}>
+      <FormItem label={t('module.data_export.form.export_scope')} labelAlign={"top"}>
         <Select v-model={instance.value.scope}>
-          <Option value={ExportScope.CURRENT} label={"当前页面"}>当前页面</Option>
-          <Option value={ExportScope.ALL} label={"全部"}>全部</Option>
-          <Option value={ExportScope.CUSTOM} label={"自定义范围"}>自定义范围</Option>
+          <Option value={ExportScope.CURRENT} label={t('module.data_export.options.scope.current_page')}>{t('module.data_export.options.scope.current_page')}</Option>
+          <Option value={ExportScope.ALL} label={t('module.data_export.options.scope.all')}>{t('module.data_export.options.scope.all')}</Option>
+          <Option value={ExportScope.CUSTOM} label={t('module.data_export.options.scope.custom')}>{t('module.data_export.options.scope.custom')}</Option>
         </Select>
       </FormItem>
       {isCustom(instance)}
       {isCurrent(instance)}
-      <FormItem label="来源" labelAlign={"top"}>
+      <FormItem label={t('module.data_export.form.source')} labelAlign={"top"}>
         <Select v-model={instance.value.source}>
-          <Option value={ExportSource.ALL} label={"全部"}
-                  disabled={!allowExportTypes.includes(instance.value.type)}>全部
+          <Option value={ExportSource.ALL} label={t('module.data_export.options.source.all')}
+                  disabled={!allowExportTypes.includes(instance.value.type)}>{t('module.data_export.options.source.all')}
           </Option>
-          <Option value={ExportSource.HIT} label={"只导出hits"}>只导出hits</Option>
-          <Option value={ExportSource.SOURCE} label={"只导出_source内容"}>只导出_source内容</Option>
+          <Option value={ExportSource.HIT} label={t('module.data_export.options.source.hit')}>{t('module.data_export.options.source.hit')}</Option>
+          <Option value={ExportSource.SOURCE} label={t('module.data_export.options.source.source')}>{t('module.data_export.options.source.source')}</Option>
         </Select>
       </FormItem>
-      <FormItem label="API类型" labelAlign={"top"}>
+      <FormItem label={t('module.data_export.form.api_type')} labelAlign={"top"}>
         {{
           default: () => <RadioGroup v-model={instance.value.apiType} theme="button"
                                      disabled={instance.value.scope != ExportScope.ALL}>
-            <Radio value={ApiType.BASE}>基础API</Radio>
-            <Radio value={ApiType.SCROLL}>scroll api</Radio>
+            <Radio value={ApiType.BASE}>{t('module.data_export.options.api_type.base')}</Radio>
+            <Radio value={ApiType.SCROLL}>{t('module.data_export.options.api_type.scroll')}</Radio>
           </RadioGroup>,
           help: () => {
             if (instance.value.scope != ExportScope.ALL) {
-              return <span>只有导出范围是全部才可以选择API</span>
+              return <span>{t('module.data_export.help.api_scope')}</span>
             } else if (instance.value.apiType === ApiType.BASE) {
-              return <span>基础分页API</span>
+              return <span>{t('module.data_export.help.api_base')}</span>
             } else if (instance.value.apiType === ApiType.SCROLL) {
-              return <span>scroll api，适合导出大批量数据，没有10000条限制</span>
+              return <span>{t('module.data_export.help.api_scroll')}</span>
             }
           }
         }}
@@ -97,10 +100,10 @@ export function showDataExportDrawer(config: ConditionExportEvent) {
     </Form>,
     onConfirm() {
       // 打开
-      const loading = useLoading('开始导出');
+      const loading = useLoading(t('module.data_export.message.start_export'));
       exportData(instance.value)
-        .then(() => MessageUtil.success("导出成功"))
-        .catch(e => MessageUtil.error("导出失败", e))
+        .then(() => MessageUtil.success(t('module.data_export.message.export_success')))
+        .catch(e => MessageUtil.error(t('module.data_export.message.export_failed'), e))
         .finally(() => loading.close());
     }
   });
@@ -127,7 +130,7 @@ function getDefaultConfig(config: ConditionExportEvent): ExportConfig {
 
 function isText(instance: Ref<ExportConfig>) {
   if (instance.value.type === ExportType.TXT) {
-    return <FormItem label="分隔符" labelAlign={"top"}>
+    return <FormItem label={t('module.data_export.form.separator')} labelAlign={"top"}>
       <Input v-model={instance.value.separator}/>
     </FormItem>;
   }
@@ -135,7 +138,7 @@ function isText(instance: Ref<ExportConfig>) {
 
 function isCustom(instance: Ref<ExportConfig>) {
   if (instance.value.scope === ExportScope.CUSTOM) {
-    return <FormItem label="范围" labelAlign={"top"}>
+    return <FormItem label={t('module.data_export.form.range')} labelAlign={"top"}>
       <InputGroup>
         <InputNumber v-model={instance.value.customStart} min={1}/>
         <span> - </span>
@@ -147,7 +150,7 @@ function isCustom(instance: Ref<ExportConfig>) {
 
 function isCurrent(instance: Ref<ExportConfig>) {
   if (instance.value.scope !== ExportScope.CURRENT) {
-    return <FormItem label="每页大小" labelAlign={"top"}>
+    return <FormItem label={t('module.data_export.form.page_size')} labelAlign={"top"}>
       <InputNumber v-model={instance.value.size} min={1}/>
     </FormItem>
   }
@@ -155,11 +158,11 @@ function isCurrent(instance: Ref<ExportConfig>) {
 
 function isScroll(instance: Ref<ExportConfig>) {
   if (instance.value.apiType === ApiType.SCROLL) {
-    return <FormItem label="滚动时间" labelAlign={"top"}>
+    return <FormItem label={t('module.data_export.form.scroll_time')} labelAlign={"top"}>
       {{
         default: () => <Input v-model={instance.value.scrollTime}/>,
         help: () => {
-          return <span>如果使用滚动API报错，可以适当加大此参数</span>
+          return <span>{t('module.data_export.help.scroll_error')}</span>
         }
       }}
     </FormItem>

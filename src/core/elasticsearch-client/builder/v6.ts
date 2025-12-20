@@ -4,8 +4,8 @@ import {
   BaseSearchResult,
   DataSearchProp,
   DataSearchResult,
-  ElasticsearchClientProp,
-  DevToolProp
+  DevToolProp,
+  ElasticsearchClientProp
 } from "$/elasticsearch-client";
 import { IndexTemplate, IndexTemplateListItem } from "$/elasticsearch-client/domain";
 import { IlmExplainResponse } from "$/elasticsearch-client/domain/IlmExplainResponse";
@@ -197,16 +197,12 @@ export class ElasticsearchClientV6 extends ElasticsearchClientCommon {
   // ---------------------------------------- 搜索操作 ----------------------------------------
 
   async dataSearch(props: DataSearchProp): Promise<DataSearchResult> {
-    const { index, type } = props;
-
-    if (!type) {
-      return Promise.reject(new Error("v6版本数据搜索必须指定type"));
-    }
+    const { index } = props;
 
     try {
       const response = await this.request({
         method: "POST",
-        url: type ? `/${index}/${type}/_search` : `/${index}/_search`,
+        url: `/${index}/_search`,
         data: stringifyJsonWithBigIntSupport(buildDataBrowserData(props, this.versionFirst))
       });
       return searchResultToTable(response);
@@ -216,22 +212,18 @@ export class ElasticsearchClientV6 extends ElasticsearchClientCommon {
   }
 
   async baseSearch(props: BaseSearchProp): Promise<BaseSearchResult> {
-    const { index, type } = props;
-
-    if (!type) {
-      return Promise.reject(new Error("v6版本基础搜索必须指定type"));
-    }
+    const { index } = props;
 
     const response = await this.request({
       method: "POST",
-      url: type ? `/${index}/${type}/_search` : `/${index}/_search`,
+      url: `/${index}/_search`,
       data: stringifyJsonWithBigIntSupport(buildBaseSearchData(props, this.versionFirst))
     });
 
     const result = parseJsonWithBigIntSupport(response);
 
     return {
-      total: result.hits.total.value || result.hits.total,
+      total: result.hits.total,
       data: response
     };
   }

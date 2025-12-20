@@ -20,7 +20,7 @@
             </t-link>
           </span>
           <span v-else-if="item.pull">
-            <t-tooltip content="贡献者">
+            <t-tooltip :content="$t('module.update_item.contributor')">
               <t-link status="success" @click="open(item.pull?.url)">@ {{ item.pull?.name }}</t-link>
             </t-tooltip>
           </span>
@@ -29,15 +29,16 @@
     </ol>
     <t-typography-paragraph v-if="log.remark">{{ log.remark }}</t-typography-paragraph>
     <div v-if="log.doc">
-      更多详细的更新信息与功能变化，请在
-      <t-link target="_blank" @click="open(log?.doc)">此处</t-link>
-      中查看
+      {{ $t('module.update_item.more_info_pre') }}
+      <t-link target="_blank" @click="open(log?.doc)">{{ $t('module.update_item.more_info_link') }}</t-link>
+      {{ $t('module.update_item.more_info_post') }}
     </div>
   </div>
 </template>
 <script lang="ts">
 import {Log, LogItemEnum} from "@/view/Data";
 import {openUrl} from "@/utils/BrowserUtil";
+import i18n from "@/i18n";
 
 export default defineComponent({
   name: 'update-item',
@@ -49,22 +50,22 @@ export default defineComponent({
       switch (value) {
         case LogItemEnum.ADD:
           return {
-            name: '新增',
+            name: i18n.global.t('module.update_item.tag.add'),
             color: 'primary'
           };
         case LogItemEnum.UPDATE:
           return {
-            name: '更新',
+            name: i18n.global.t('module.update_item.tag.update'),
             color: 'success'
           };
         case LogItemEnum.REPAIR:
           return {
-            name: '修复',
+            name: i18n.global.t('module.update_item.tag.repair'),
             color: 'danger'
           };
         case LogItemEnum.OPTIMIZATION:
           return {
-            name: '优化',
+            name: i18n.global.t('module.update_item.tag.optimization'),
             color: 'warning'
           };
         default:

@@ -6,6 +6,7 @@ import {
 import { TableColumn } from "$/shared/common/TableColumn";
 import { TableRecord } from "$/shared/common/TableRecord";
 import { stringifyJsonWithBigIntSupport } from "$/util";
+import i18n from "@/i18n";
 
 export interface MappingTableResult {
   dynamic?: boolean | "true" | "false" | "strict";
@@ -58,7 +59,7 @@ export function mappingToTable(mapping: IndexMapping, name?: string): MappingTab
     columns: [
       {
         field: "name",
-        title: "字段名",
+        title: i18n.global.t('core.mapping.field_name'),
         width: 200,
         fixed: "left",
         ellipsis: true,
@@ -71,7 +72,7 @@ export function mappingToTable(mapping: IndexMapping, name?: string): MappingTab
       },
       {
         field: "type",
-        title: "字段类型",
+        title: i18n.global.t('core.mapping.field_type'),
         width: 100,
         ellipsis: true,
         tooltip: true,
@@ -83,7 +84,7 @@ export function mappingToTable(mapping: IndexMapping, name?: string): MappingTab
       },
       {
         field: "analyzer",
-        title: "分词器",
+        title: i18n.global.t('core.mapping.analyzer'),
         width: 100,
         ellipsis: true,
         tooltip: true,
@@ -95,7 +96,7 @@ export function mappingToTable(mapping: IndexMapping, name?: string): MappingTab
       },
       {
         field: "index",
-        title: "索引",
+        title: i18n.global.t('core.mapping.index'),
         width: 100,
         ellipsis: true,
         tooltip: true,
@@ -107,7 +108,7 @@ export function mappingToTable(mapping: IndexMapping, name?: string): MappingTab
       },
       {
         field: "doc_values",
-        title: "存储",
+        title: i18n.global.t('core.mapping.store'),
         width: 100,
         ellipsis: true,
         tooltip: true,
@@ -119,7 +120,7 @@ export function mappingToTable(mapping: IndexMapping, name?: string): MappingTab
       },
       {
         field: "meta",
-        title: "元数据",
+        title: i18n.global.t('core.mapping.meta'),
         width: 100,
         ellipsis: true,
         tooltip: true,
@@ -131,7 +132,7 @@ export function mappingToTable(mapping: IndexMapping, name?: string): MappingTab
       },
       {
         field: "copy_to",
-        title: "复制到",
+        title: i18n.global.t('core.mapping.copy_to'),
         width: 100,
         ellipsis: true,
         tooltip: true,
@@ -143,7 +144,7 @@ export function mappingToTable(mapping: IndexMapping, name?: string): MappingTab
       },
       {
         field: "similarity",
-        title: "相似度",
+        title: i18n.global.t('core.mapping.similarity'),
         width: 100,
         ellipsis: true,
         tooltip: true,
@@ -179,7 +180,7 @@ export function mappingToTable(mapping: IndexMapping, name?: string): MappingTab
       },
       {
         field: "scaling_factor",
-        title: "缩放因子",
+        title: i18n.global.t('core.mapping.scaling_factor'),
         width: 100,
         ellipsis: true,
         tooltip: true,

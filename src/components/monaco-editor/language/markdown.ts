@@ -1,4 +1,7 @@
 import * as monaco from 'monaco-editor';
+import i18n from '@/i18n';
+
+const t = (key: string) => i18n.global.t(key);
 
 const token = {
     defaultToken: "",
@@ -214,7 +217,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '# ',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '一级标题',
+            detail: t('module.monaco.markdown.h1'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -226,7 +229,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '## ',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '二级标题',
+            detail: t('module.monaco.markdown.h2'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -238,7 +241,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '### ',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '三级标题',
+            detail: t('module.monaco.markdown.h3'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -250,7 +253,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '#### ',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '四级标题',
+            detail: t('module.monaco.markdown.h4'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -262,7 +265,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '##### ',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '五级标题',
+            detail: t('module.monaco.markdown.h5'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -274,7 +277,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '###### ',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '六级标题',
+            detail: t('module.monaco.markdown.h6'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -286,7 +289,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '*$1*',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '斜体',
+            detail: t('module.monaco.markdown.italic'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -298,7 +301,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '**$0**',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '加粗',
+            detail: t('module.monaco.markdown.bold'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -310,7 +313,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '***$1***',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '斜体加粗',
+            detail: t('module.monaco.markdown.italic_bold'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -322,7 +325,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '~~$1~~',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '删除线',
+            detail: t('module.monaco.markdown.strikethrough'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -334,7 +337,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '> $1',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '引用',
+            detail: t('module.monaco.markdown.quote'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -346,7 +349,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '---',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '引用',
+            detail: t('module.monaco.markdown.quote'),
             range: {
                 startLineNumber: position.lineNumber + 1,
                 startColumn: position.column - 1,
@@ -358,7 +361,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '![$1]($2)',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '插入图片',
+            detail: t('module.monaco.markdown.image'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -370,7 +373,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '[$1]($2)',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '超链接',
+            detail: t('module.monaco.markdown.link'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -382,7 +385,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '- $1',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '列表',
+            detail: t('module.monaco.markdown.list'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -394,7 +397,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '+ $1',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '列表',
+            detail: t('module.monaco.markdown.list'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -406,7 +409,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '* $1',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '列表',
+            detail: t('module.monaco.markdown.list'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -418,7 +421,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '`$1`$2',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '单行代码',
+            detail: t('module.monaco.markdown.code_inline'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -430,7 +433,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '```$1\n$2\n```\n$3',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: '代码块',
+            detail: t('module.monaco.markdown.code_block'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,
@@ -442,7 +445,7 @@ const provider = {
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: '{% $1 $2 $3 %}',
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            detail: 'hexo专有语法',
+            detail: t('module.monaco.markdown.hexo'),
             range: {
                 startLineNumber: position.lineNumber,
                 startColumn: position.column - 1,

@@ -5,7 +5,7 @@ import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
 import {useDevToolStore} from "@/store/components/DevToolStore";
 import {listToTree} from "@/page/dev-tool/func";
 import {useUrlStore} from "@/store";
-import {devToolFileCreate, devToolFileDelete, devToolFileList, devToolFileRename} from "@/service/DevToolFileService";
+import {devToolFileCreate, devToolFileDelete, devToolFileList, devToolFileRename} from "@/api/DevToolFileService";
 
 export const useDevToolFileItemStore = defineStore("useDevToolFileItemStore", () => {
   // 全局文件

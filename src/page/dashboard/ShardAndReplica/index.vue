@@ -18,14 +18,14 @@
         <div class="shards">
           <div v-for="node in nodeKeys" class="shard-title">
             <t-typography-paragraph class="icon">
-              <t-tooltip content="主节点" v-if="node === masterNode">
+              <t-tooltip :content="$t('module.dashboard.master_node')" v-if="node === masterNode">
                 <star-filled-icon style="color: var(--td-brand-color)"/>
               </t-tooltip>
-              <t-tooltip content="未分配的节点" v-else-if="node === UNASSIGNED">
+              <t-tooltip :content="$t('module.dashboard.unassigned_node')" v-else-if="node === UNASSIGNED">
                 <info-circle-icon />
               </t-tooltip>
               <!-- 标准节点 -->
-              <t-tooltip content="工作节点" v-else>
+              <t-tooltip :content="$t('module.dashboard.work_node')" v-else>
                 <info-circle-icon />
               </t-tooltip>
             </t-typography-paragraph>
@@ -41,8 +41,8 @@
                   </template>
                 </t-button>
                 <t-dropdown-menu>
-                  <t-dropdown-item @click="showClusterNode(node)">集群节点信息</t-dropdown-item>
-                  <t-dropdown-item @click="showNode(node)">节点信息</t-dropdown-item>
+                  <t-dropdown-item @click="showClusterNode(node)">{{ $t('module.dashboard.cluster_node_info') }}</t-dropdown-item>
+                  <t-dropdown-item @click="showNode(node)">{{ $t('module.dashboard.node_info') }}</t-dropdown-item>
                 </t-dropdown-menu>
               </t-dropdown>
             </t-typography-paragraph>
@@ -79,6 +79,9 @@ import {stringifyJsonWithBigIntSupport} from "$/util";
 import MessageUtil from "@/utils/model/MessageUtil";
 import {ChevronDownIcon, InfoCircleIcon, SearchIcon, StarFilledIcon} from "tdesign-icons-vue-next";
 import {ClusterNode} from "$/elasticsearch-client";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 const UNASSIGNED = "Unassigned";
 
@@ -169,14 +172,14 @@ function handlerReplicaClass(shard: Shard | null): string {
 
 function showClusterNode(node: string) {
   const {client} = useUrlStore();
-  if (!client) return MessageUtil.error("请选择实例");
-  showJsonDialogByAsync(`集群节点信息【${node}】`, client.getJson('/_nodes').then(e => e.nodes[node]).then(stringifyJsonWithBigIntSupport),)
+  if (!client) return MessageUtil.error(t('placeholder.select_link'));
+  showJsonDialogByAsync(`${t('module.dashboard.cluster_node_info')}【${node}】`, client.getJson('/_nodes').then(e => e.nodes[node]).then(stringifyJsonWithBigIntSupport),)
 }
 
 function showNode(node: string) {
   const {client} = useUrlStore();
-  if (!client) return MessageUtil.error("请选择实例");
-  showJsonDialogByAsync(`节点信息【${node}】`, client.getJson('/_nodes/stats').then(e => e.nodes[node]).then(stringifyJsonWithBigIntSupport))
+  if (!client) return MessageUtil.error(t('placeholder.select_link'));
+  showJsonDialogByAsync(`${t('module.dashboard.node_info')}【${node}】`, client.getJson('/_nodes/stats').then(e => e.nodes[node]).then(stringifyJsonWithBigIntSupport))
 }
 
 </script>

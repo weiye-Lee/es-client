@@ -14,7 +14,7 @@ export interface IndexInfo {
   /**
    * 映射，类型 => mapping，对于v7及以上，只有一个，且为_doc
    */
-  mappings: Record<string, IndexMapping>;
+  mappings: Record<string, IndexMapping> | IndexMapping;
 
   /**
    * 设置

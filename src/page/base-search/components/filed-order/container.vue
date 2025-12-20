@@ -1,7 +1,7 @@
 <template>
   <div class="file-orders-container">
     <div v-if="orders.length === 0">
-      <t-button theme="primary" @click="add()"> 新增 </t-button>
+      <t-button theme="primary" @click="add()"> {{ $t('module.base_search.add') }} </t-button>
     </div>
     <div
       v-for="(_order, idx) in orders"

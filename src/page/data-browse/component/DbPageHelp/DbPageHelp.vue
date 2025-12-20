@@ -40,7 +40,7 @@
         <t-dropdown-item value="3" @click="limitChange(250)">250</t-dropdown-item>
         <t-dropdown-item value="4" @click="limitChange(500)">500</t-dropdown-item>
         <t-dropdown-item value="5" @click="limitChange(1000)">1,000</t-dropdown-item>
-        <t-dropdown-item value="6" @click="limitCustom">自定义</t-dropdown-item>
+        <t-dropdown-item value="6" @click="limitCustom">{{ $t('module.data_browse.custom_page_size_title') }}</t-dropdown-item>
       </t-dropdown-menu>
     </t-dropdown>
     <t-button theme="primary" variant="text" size="small" style="font-size: 12px">
@@ -80,6 +80,9 @@ import {
   ChevronRightDoubleIcon,
   ChevronRightIcon
 } from "tdesign-icons-vue-next";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 const props = defineProps({
   limit: {
@@ -131,11 +134,11 @@ function limitChange(res: number) {
 }
 
 function limitCustom() {
-  MessageBoxUtil.prompt("请输入自定义分页大小", "自定义分页", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
+  MessageBoxUtil.prompt(t('module.data_browse.custom_page_size'), t('module.data_browse.custom_page_size_title'), {
+    confirmButtonText: t('action.confirm'),
+    cancelButtonText: t('action.cancel'),
     inputPattern: /\d+/,
-    inputErrorMessage: "请输入正确的数字",
+    inputErrorMessage: t('module.data_browse.input_correct_number'),
     inputValue: props.limit + ""
   })
     .then((value) => {

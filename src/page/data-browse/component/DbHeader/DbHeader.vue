@@ -4,22 +4,22 @@
     <div class="left flex">
       <db-page :tab />
       <div class="sep"></div>
-      <db-simple-item tip="刷新" :disable="!index" @click="executeQuery">
+      <db-simple-item :tip="$t('module.data_browse.refresh')" :disable="!index" @click="executeQuery">
         <refresh-icon />
       </db-simple-item>
       <div class="sep"></div>
-      <db-simple-item v-if="type === 'index'" tip="新增" :disable="!index" @click="recordAdd">
+      <db-simple-item v-if="type === 'index'" :tip="$t('action.add')" :disable="!index" @click="recordAdd">
         <add-icon />
       </db-simple-item>
     </div>
     <!-- 右侧条件 -->
     <div class="right">
       <!-- 打印 -->
-      <db-simple-item :disable="!index" tip="打印" @click="openExportDialog">
+      <db-simple-item :disable="!index" :tip="$t('module.data_browse.print')" @click="openExportDialog">
         <print-icon />
       </db-simple-item>
       <!-- 显示查询条件 -->
-      <db-simple-item tip="显示查询条件" @click="showQuery">
+      <db-simple-item :tip="$t('module.data_browse.show_query_condition')" @click="showQuery">
         <search-icon />
       </db-simple-item>
       <!-- 筛选 -->
@@ -44,7 +44,7 @@
           </template>
         </t-button>
         <t-dropdown-menu>
-          <t-dropdown-item @click="openHelp()">更多</t-dropdown-item>
+          <t-dropdown-item @click="openHelp()">{{ $t('module.data_browse.more') }}</t-dropdown-item>
         </t-dropdown-menu>
       </t-dropdown>
     </div>
@@ -69,7 +69,9 @@ import { showDataExportDrawer } from "@/components/DataExport";
 import { showJson } from "@/utils/model/DialogUtil";
 import { stringifyJsonWithBigIntSupport } from "$/util";
 import { openDbOperatorDoc } from "@/page/data-browse/component/DbCondition/DbOperatorDoc";
-import { decodeIndexType } from "$/elasticsearch-client/utils";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 const props = defineProps({
   tab: {
@@ -92,25 +94,24 @@ function recordAdd() {
   }
   execAdd(props.tab)
     .then((data) => add(data))
-    .catch((e) => MessageUtil.error("打开新增失败", e));
+    .catch((e) => MessageUtil.error(t('module.data_browse.open_add_error'), e));
 }
 
 function openExportDialog() {
   // 选择了索引
   if (!index) {
-    MessageUtil.error("请选择索引");
+    MessageUtil.error(t('module.base_search.please_select_index'));
     return;
   }
   // 有记录
   if (total.value === 0) {
-    MessageUtil.warning("数据为空");
+    MessageUtil.warning(t('module.base_search.data_is_empty'));
     return;
   }
-  const { index: idx } = decodeIndexType(index);
   // 显示导出对话框
   showDataExportDrawer({
-    name: `${idx} - 数据浏览导出`,
-    index: idx,
+    name: `${index}|数据浏览导出`,
+    index: index,
     search: buildSearch() as any,
   });
 }

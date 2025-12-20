@@ -2,7 +2,7 @@
   <div class="dashboard-info">
     <t-row style="width: 100%">
       <t-col :span="24" :xs="24" :lg="24" :xl="24" :xxl="12">
-        <dashboard-card title="节点信息" :loading="infoLoad" @render="getInfoData()">
+        <dashboard-card :title="$t('module.dashboard.node_info')" :loading="infoLoad" @render="getInfoData()">
           <t-descriptions
             v-if="info !== null"
             :column="1"
@@ -42,12 +42,12 @@
               {{ info.version.minimum_index_compatibility_version }}
             </t-descriptions-item>
           </t-descriptions>
-          <t-empty v-else description="请选择链接" style="padding-top: 150px"/>
+          <t-empty v-else :description="$t('placeholder.select_link')" style="padding-top: 150px"/>
         </dashboard-card>
       </t-col>
 
       <t-col :span="24" :xs="24" :lg="24" :xl="24" :xxl="12">
-        <dashboard-card title="集群健康" :loading="clusterHealthLoad" @render="getClusterHealth()">
+        <dashboard-card :title="$t('module.dashboard.cluster_health')" :loading="clusterHealthLoad" @render="getClusterHealth()">
           <t-descriptions
             v-if="clusterHealth !== null"
             :column="1"
@@ -100,7 +100,7 @@
               {{ clusterHealth.active_shards_percent_as_number }}
             </t-descriptions-item>
           </t-descriptions>
-          <t-empty v-else description="请选择链接" style="padding-top: 150px"/>
+          <t-empty v-else :description="$t('placeholder.select_link')" style="padding-top: 150px"/>
         </dashboard-card>
       </t-col>
     </t-row>
@@ -111,6 +111,9 @@ import MessageUtil from "@/utils/model/MessageUtil";
 import {useUrlStore} from "@/store";
 import {ClusterHealth, Overview} from "$/elasticsearch-client";
 import DashboardCard from "@/page/dashboard/components/DashboardCard.vue";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 const empty = computed(() => useUrlStore().empty);
 
@@ -125,10 +128,10 @@ function getInfoData() {
   }
   infoLoad.value = true;
   const {client} = useUrlStore();
-  if (!client) return MessageUtil.error("请选择链接");
+  if (!client) return MessageUtil.error(t('placeholder.select_link'));
   client.info()
     .then((rsp) => (info.value = rsp))
-    .catch((e) => MessageUtil.error("节点信息获取失败", e))
+    .catch((e) => MessageUtil.error(t('module.dashboard.node_info_fetch_error'), e))
     .finally(() => (infoLoad.value = false));
 }
 
@@ -140,10 +143,10 @@ function getClusterHealth() {
   }
   clusterHealthLoad.value = true;
   const {client} = useUrlStore();
-  if (!client) return MessageUtil.error("请选择链接");
+  if (!client) return MessageUtil.error(t('placeholder.select_link'));
   client.clusterHealth()
     .then((rsp) => (clusterHealth.value = rsp))
-    .catch((e) => MessageUtil.error("集群健康值获取失败", e))
+    .catch((e) => MessageUtil.error(t('module.dashboard.cluster_health_fetch_error'), e))
     .finally(() => (clusterHealthLoad.value = false));
 }
 

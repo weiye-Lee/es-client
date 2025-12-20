@@ -8,6 +8,9 @@ import {useDataBrowserViewStore} from "@/store/components/DataBrowserViewStore";
 import {useDataBrowserQueryStore} from "@/store/components/DataBrowserQueryStore";
 import MessageUtil from "@/utils/model/MessageUtil";
 import {useUrlStore} from "@/store";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 export function openContextmenu(node: TreeNodeModel, e: PointerEvent) {
   e.preventDefault();
@@ -22,14 +25,14 @@ export function openContextmenu(node: TreeNodeModel, e: PointerEvent) {
       switch (id) {
         case "view":
           items.push({
-            label: '新建视图',
+            label: t('module.data_browse.add_view'),
             icon: () => <AddIcon/>,
             onClick: () => useDataBrowserViewStore().add()
           });
           break;
         case "query":
           items.push({
-            label: '新建查询',
+            label: t('module.data_browse.add_query'),
             icon: () => <AddIcon/>,
             onClick: () => useDataBrowserQueryStore().add()
           });
@@ -38,23 +41,23 @@ export function openContextmenu(node: TreeNodeModel, e: PointerEvent) {
     case "view":
     case "query":
       items.push({
-        label: "重命名",
+        label: t('module.data_browse.rename'),
         icon: () => <HighlightIcon/>,
         onClick: () => {
           if (type === 'view') {
-            MessageUtil.error("暂不支持重命名视图");
+            MessageUtil.error(t('module.data_browse.rename_view_error'));
           } else {
-            useDataBrowserQueryStore().rename(id, node.label!).catch(e => MessageUtil.error("重命名失败", e));
+            useDataBrowserQueryStore().rename(id, node.label!).catch(e => MessageUtil.error(t('module.data_browse.rename_failed'), e));
           }
         }
       }, {
-        label: '删除',
+        label: t('module.data_browse.delete'),
         icon: () => <DeleteIcon/>,
         onClick: () => {
           if (type === 'view') {
-            useDataBrowserViewStore().remove(id, node.label!).catch(e => MessageUtil.error("删除失败", e));
+            useDataBrowserViewStore().remove(id, node.label!).catch(e => MessageUtil.error(t('module.data_browse.delete_failed'), e));
           } else {
-            useDataBrowserQueryStore().remove(id, node.label!).catch(e => MessageUtil.error("删除失败", e));
+            useDataBrowserQueryStore().remove(id, node.label!).catch(e => MessageUtil.error(t('module.data_browse.delete_failed'), e));
           }
         }
       });
@@ -62,7 +65,7 @@ export function openContextmenu(node: TreeNodeModel, e: PointerEvent) {
     case "alias":
       if (type === "index" || type === "alias") {
         items.unshift({
-          label: '复制名称',
+          label: t('module.data_browse.copy_name'),
           icon: () => <CopyIcon/>,
           onClick: () => {
             node.label && copyText(node.label)
@@ -70,7 +73,7 @@ export function openContextmenu(node: TreeNodeModel, e: PointerEvent) {
         });
       }
       items.unshift({
-        label: "打开",
+        label: t('module.data_browse.open'),
         icon: () => <HighlightIcon/>,
         onClick: () => {
           useDataBrowseStore().openTab(`${node.value}`, node.label || `${Date.now()}`);

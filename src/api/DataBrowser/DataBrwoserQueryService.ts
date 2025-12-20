@@ -11,33 +11,45 @@ import {
   saveListByAsync,
   saveOneByAsync
 } from "@/utils/utools/DbStorageUtil";
+import {useSnowflake} from "$/util";
 
-export async function listDataBrowserQuery(urlId: number) {
+export async function listDataBrowserQuery(urlId: string) {
   const {list} = await listByAsync<DataBrowserQueryItem>(DATA_BROWSER_QUERY_KEY(urlId));
   return list;
 }
 
 export async function getDataBrowserQuery(id: string) {
   return await getFromOneByAsync<DataBrowserQueryBody>(DATA_BROWSER_QUERY_ITEM_KEY(id), {
+    id,
+    url_id: '',
     content: '',
     records: [],
     mode: 'SQL'
   });
 }
 
-export async function addDataBrowserQuery(urlId: number, view: DataBrowserQueryItem) {
+export async function addDataBrowserQuery(urlId: string, res: Pick<DataBrowserQueryItem, "name">) {
   const {list} = await listByAsync<DataBrowserQueryItem>(DATA_BROWSER_QUERY_KEY(urlId));
+  const view = {
+    id: useSnowflake().nextId(),
+    url_id: urlId,
+    created_at: Date.now(),
+    updated_at: Date.now(),
+    name: res.name
+  };
   list.push(view);
   await saveListByAsync<DataBrowserQueryItem>(DATA_BROWSER_QUERY_KEY(urlId), list);
   // 保存本地存储项
   await saveOneByAsync<DataBrowserQueryBody>(DATA_BROWSER_QUERY_ITEM_KEY(view.id), {
+    id: view.id,
+    url_id: '',
     content: '',
     records: [],
     mode: 'SQL'
   });
 }
 
-export async function renameDataBrowserQuery(urlId: number, viewId: string, newName: string) {
+export async function renameDataBrowserQuery(urlId: string, viewId: string, newName: string) {
   // 先查询到记录
   const {list} = await listByAsync<DataBrowserQueryItem>(DATA_BROWSER_QUERY_KEY(urlId));
   const index = list.findIndex(e => e.id === viewId);
@@ -53,7 +65,7 @@ export async function saveDataBrowserQueryContent(viewId: string, body: DataBrow
   await saveOneByAsync<DataBrowserQueryBody>(DATA_BROWSER_QUERY_ITEM_KEY(viewId), body);
 }
 
-export async function deleteDataBrowserQuery(urlId: number, viewId: string) {
+export async function deleteDataBrowserQuery(urlId: string, viewId: string) {
   const {list} = await listByAsync<DataBrowserQueryItem>(DATA_BROWSER_QUERY_KEY(urlId));
   const index = list.findIndex(e => e.id === viewId);
   if (index === -1) {
@@ -66,10 +78,10 @@ export async function deleteDataBrowserQuery(urlId: number, viewId: string) {
   await removeOneByAsync(DATA_BROWSER_QUERY_ITEM_KEY(viewId));
 }
 
-export async function clearDataBrowserQuery(urlId: number) {
-  const query = await listDataBrowserQuery(urlId);
+export async function clearDataBrowserQuery(urlId: string | number) {
+  const query = await listDataBrowserQuery(`${urlId}`);
   for (let item of query) {
     await removeOneByAsync(DATA_BROWSER_QUERY_ITEM_KEY(item.id));
   }
-  await removeOneByAsync(DATA_BROWSER_QUERY_KEY(urlId));
+  await removeOneByAsync(DATA_BROWSER_QUERY_KEY(`${urlId}`));
 }

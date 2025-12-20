@@ -5,11 +5,11 @@
     :height="height"
     :column-config="columnConfig"
     :row-config="rowConfig"
-    empty-text="什么也没有"
+    :empty-text="$t('module.table_viewer.empty')"
   >
 
     <vxe-column field="_id" title="_id" fixed="left" :width="200" show-overflow="tooltip" />
-    <vxe-column type="expand" width="80" title="详细" fixed="left">
+    <vxe-column type="expand" width="80" :title="$t('module.table_viewer.detail')" fixed="left">
       <template #content="{ row }">
         <div class="expand-wrapper h-300px">
           <MonacoView :value="row['_source']"/>

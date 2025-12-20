@@ -24,6 +24,7 @@ const instance = axios.create({
 })
 
 export async function useRequest(config: RequestConfig = {}): Promise<string> {
+  console.debug("请求：", config)
   const response = await instance.request<string>({
     ...config,
     responseType: 'text'

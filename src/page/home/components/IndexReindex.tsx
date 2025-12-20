@@ -6,6 +6,7 @@ import {useSeniorSearchStore} from "@/store/components/SeniorSearchStore";
 import AppLink from "@/components/AppLink/AppLink.vue";
 import {IndexItem} from "$/elasticsearch-client";
 import {useLoading} from "@/hooks/UseLoading";
+import i18n from "@/i18n";
 
 interface Config {
   index: string;
@@ -26,39 +27,38 @@ export function indexReindex(index: string) {
 
   let modalReturn = DialogPlugin({
     // TODO: 此处bete
-    header: `索引【${index}】迁移（beta）`,
+    header: i18n.global.t('home.index_reindex.title', {index}),
     default: () => <>
-      <Alert title={"想可视化 Reindex？"}>
-        <span>🔜 </span>
+      <Alert title={i18n.global.t('home.index_reindex.visualize')}>
+        <span>{i18n.global.t('home.index_reindex.coming_soon_pre')}</span>
         <AppLink event="Reindex"/>
-        <span>将在</span>
-        <strong>下一版本</strong>
-        <span>上线可视化 Reindex，支持一键重建索引！立即体验抢先版 →</span>
+        <span>{i18n.global.t('home.index_reindex.coming_soon_mid')}</span>
+        <strong>{i18n.global.t('home.index_reindex.coming_soon_bold')}</strong>
+        <span>{i18n.global.t('home.index_reindex.coming_soon_post')}</span>
       </Alert>
       <div style="margin: 8px 0;">
-        如果 Mapping 中字段已经定义就不能修改其字段的类型等属性了，同时也不能改变分片的数量，
-        可以使用 Reindex API 来解决这个问题。
+        {i18n.global.t('home.index_reindex.desc')}
       </div>
       <Form data={config.value} layout="vertical">
-        <FormItem label="目标索引">
+        <FormItem label={i18n.global.t('home.index_reindex.target_index')}>
           <Select v-model={config.value.index} filterable clearable>
             {indices.map(item =>
               <Option key={item.name} value={item.name} label={item.name}
                       disabled={item.name === index}>{item.name}</Option>)}
           </Select>
         </FormItem>
-        <FormItem label="是否异步">
+        <FormItem label={i18n.global.t('home.index_reindex.async')}>
           {{
             default: () => <Switch v-model={config.value.async} />,
-            help: () => <span>如果索引数据量较大，建议开启异步，以免造成请求超时。</span>
+            help: () => <span>{i18n.global.t('home.index_reindex.async_help')}</span>
           }}
         </FormItem>
       </Form>
     </>,
     footer: () => <>
-      <Button variant="text" theme={"primary"} onClick={() => jumpTo(index, config, modalReturn)}>跳转到高级查询</Button>
-      <Button onClick={() => modalReturn.destroy()}>取消</Button>
-      <Button theme="primary" onClick={() => onOk(index, config, modalReturn)}>执行</Button>
+      <Button variant="text" theme={"primary"} onClick={() => jumpTo(index, config, modalReturn)}>{i18n.global.t('home.index_reindex.jump_to_senior_search')}</Button>
+      <Button onClick={() => modalReturn.destroy()}>{i18n.global.t('home.index_reindex.cancel')}</Button>
+      <Button theme="primary" onClick={() => onOk(index, config, modalReturn)}>{i18n.global.t('home.index_reindex.execute')}</Button>
     </>,
     draggable: true,
   });
@@ -78,10 +78,10 @@ function jumpTo(index: string, config: Ref<Config>, modalReturn: DialogInstance)
 
 function onOk(index: string, config: Ref<Config>, modalReturn: DialogInstance) {
   if (config.value.index == '') {
-    MessageUtil.warning("请选择目标索引");
+    MessageUtil.warning(i18n.global.t('home.index_reindex.select_target_index'));
     return;
   }
-  const loading = useLoading("开始进行索引迁移");
+  const loading = useLoading(i18n.global.t('home.index_reindex.starting'));
   useEsRequest({
     url: '_reindex' + (config.value.async ? '?wait_for_completion=false' : ''),
     method: 'POST',
@@ -90,7 +90,7 @@ function onOk(index: string, config: Ref<Config>, modalReturn: DialogInstance) {
       dest: {index: config.value.index}
     },
   }).then(res => MessageUtil.success(res))
-    .catch(e => MessageUtil.error("迁移失败", e))
+    .catch(e => MessageUtil.error(i18n.global.t('home.index_reindex.failed'), e))
     .finally(() => {
       loading.close();
       modalReturn.destroy();

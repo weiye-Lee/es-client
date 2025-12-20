@@ -1,5 +1,4 @@
 import { BaseSearchProp } from "$/elasticsearch-client";
-import { decodeTypeField } from "$/elasticsearch-client/utils";
 
 export function buildBaseSearchQuery(props: Pick<BaseSearchProp, "query">) {
   const { query } = props;
@@ -19,7 +18,7 @@ export function buildBaseSearchQuery(props: Pick<BaseSearchProp, "query">) {
     .forEach((item) => {
       let queryClause: any = {};
 
-      const { field } = decodeTypeField(item.field);
+      const { field } = item;
 
       switch (item.condition) {
         case "match":
@@ -83,7 +82,7 @@ export function buildBaseSearchOrder(props: Pick<BaseSearchProp, "order">) {
   order
     .filter((item) => item.isEnable)
     .forEach((item) => {
-      const { field } = decodeTypeField(item.field);
+      const { field } = item;
       sort.push({ [field]: { order: item.type } });
     });
 

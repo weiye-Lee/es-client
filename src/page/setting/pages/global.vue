@@ -3,70 +3,64 @@
     <div style="overflow: auto;height: calc(100vh - 64px);" id="setting-global-scroller">
       <t-form :model="instance" style="padding: 8px">
 
-        <t-divider id="new">新建索引</t-divider>
-        <t-form-item label-align="top" label="默认分片数" id="defaultShard">
+        <t-divider id="new">{{ t('setting.new_index') }}</t-divider>
+        <t-form-item label-align="top" :label="t('setting.default_shard')" id="defaultShard">
           <t-input-number v-model="instance.defaultShard"></t-input-number>
         </t-form-item>
-        <t-form-item label-align="top" label="默认副本数" id="defaultReplica">
+        <t-form-item label-align="top" :label="t('setting.default_replica')" id="defaultReplica">
           <t-input-number v-model="instance.defaultReplica"></t-input-number>
         </t-form-item>
 
 
         <t-divider id="global-search">
-          全局索引查询条件（修改后请
-          <span class="like-red">刷新</span>
-          索引）
+          {{ t('setting.global_search_condition') }}
         </t-divider>
-        <t-form-item label-align="top" label="状态" id="homeSearchState">
+        <t-form-item label-align="top" :label="t('setting.status')" id="homeSearchState">
           <t-radio-group v-model="instance.homeSearchState">
-            <t-radio :value="0">不设置</t-radio>
-            <t-radio :value="1">打开</t-radio>
-            <t-radio :value="2">关闭</t-radio>
+            <t-radio :value="0">{{ t('setting.not_set') }}</t-radio>
+            <t-radio :value="1">{{ t('setting.open') }}</t-radio>
+            <t-radio :value="2">{{ t('setting.close') }}</t-radio>
           </t-radio-group>
         </t-form-item>
-        <t-form-item label-align="top" id="homeExcludeIndices" class="w-full" help="回车新增">
+        <t-form-item label-align="top" id="homeExcludeIndices" class="w-full" :help="t('setting.enter_to_add')">
           <template #label>
-            <span>排除指定索引</span>
-            <t-tooltip content="支持正则表达式" placement="top" effect="light">
+            <span>{{ t('setting.exclude_index') }}</span>
+            <t-tooltip :content="t('setting.regex_support')" placement="top" effect="light">
               <help-circle-icon style="margin-left: 5px;"/>
             </t-tooltip>
           </template>
           <t-tag-input v-model="instance.homeExcludeIndices" allow-clear/>
         </t-form-item>
-        <t-form-item label-align="top" id="homeIncludeIndices" class="w-full" help="回车新增">
+        <t-form-item label-align="top" id="homeIncludeIndices" class="w-full" :help="t('setting.enter_to_add')">
           <template #label>
-            <span>显示指定索引</span>
-            <t-tooltip content="支持正则表达式" placement="top" effect="light">
+            <span>{{ t('setting.include_index') }}</span>
+            <t-tooltip :content="t('setting.regex_support')" placement="top" effect="light">
               <help-circle-icon style="margin-left: 5px;"/>
             </t-tooltip>
           </template>
           <t-tag-input v-model="instance.homeIncludeIndices" allow-clear style=""/>
         </t-form-item>
-        <t-divider id="time">track_total_hits设置</t-divider>
-        <t-alert theme="info" title="track_total_hits介绍">
-          <p>
-            track_total_hits 是
-            Elasticsearch（ES）中用于控制搜索请求是否<b>精确计算并返回匹配文档总数</b>的参数。它在 ES
-            7.0 版本中引入，主要背景是 Lucene 8 的优化更新（如 WAND 算法），旨在提升查询性能。
-          </p>
+        <t-divider id="time">track_total_hits</t-divider>
+        <t-alert theme="info" :title="t('setting.track_total_hits_intro')">
+          <p v-html="t('setting.track_total_hits_desc')"></p>
           <ul>
-            <li>true: 精确计算所有匹配文档的总数，性能开销大</li>
-            <li>false: 不计算总数，性能最佳</li>
-            <li>自定义: 整数（如 100000） 精确计算到该数量为止，超过则返回近似值</li>
+            <li>{{ t('setting.track_total_hits_true') }}</li>
+            <li>{{ t('setting.track_total_hits_false') }}</li>
+            <li>{{ t('setting.track_total_hits_custom') }}</li>
           </ul>
         </t-alert>
-        <t-form-item label-align="top" label="track_total_hits模式" name="trackTotalHitsMode"
-                     help="默认为true，当版本低于v7则不会生效">
+        <t-form-item label-align="top" :label="t('setting.track_total_hits_mode')" name="trackTotalHitsMode"
+                     :help="t('setting.track_total_hits_help')">
           <t-radio-group v-model="instance.trackTotalHitsMode" default-value="true">
             <t-radio :value="'true'">true</t-radio>
             <t-radio :value="'false'">false</t-radio>
-            <t-radio :value="'custom'">自定义</t-radio>
+            <t-radio :value="'custom'">{{ t('setting.custom') }}</t-radio>
           </t-radio-group>
         </t-form-item>
         <t-form-item
           v-if="instance.trackTotalHitsMode === 'custom'"
           label-align="top"
-          label="track_total_hits值"
+          :label="t('setting.track_total_hits_value')"
           name="trackTotalHitsValue"
         >
           <t-input-number
@@ -78,72 +72,72 @@
         </t-form-item>
 
 
-        <t-divider id="time">时间相关设置</t-divider>
-        <t-form-item label-align="top" label="超时时间" id="timeout">
+        <t-divider id="time">{{ t('setting.time_settings') }}</t-divider>
+        <t-form-item label-align="top" :label="t('setting.timeout')" id="timeout">
           <t-input-number v-model="instance.timeout" :min="0" :step="1000"
-                          placeholder="超时时间" style="width: 180px">
+                          :placeholder="t('setting.timeout')" style="width: 180px">
             <template #suffix>ms</template>
           </t-input-number>
         </t-form-item>
-        <t-form-item label-align="top" label="通知关闭时间" id="notificationTime">
+        <t-form-item label-align="top" :label="t('setting.notification_time')" id="notificationTime">
           <t-input-number v-model="instance.notificationTime" :min="0" :step="1000"
-                          placeholder="单位（ms）" style="width: 180px">
+                          :placeholder="t('setting.unit_ms')" style="width: 180px">
             <template #suffix>ms</template>
           </t-input-number>
         </t-form-item>
 
 
-        <t-divider id="display">显示设置</t-divider>
-        <t-form-item label-align="top" label="默认分页大小" id="pageSize">
+        <t-divider id="display">{{ t('setting.display_settings') }}</t-divider>
+        <t-form-item label-align="top" :label="t('setting.default_page_size')" id="pageSize">
           <t-input-number v-model="instance.pageSize"></t-input-number>
         </t-form-item>
-        <t-form-item label-align="top" label="数据浏览 - 是否显示元数据">
+        <t-form-item label-align="top" :label="t('setting.data_browse_show_meta')">
           <t-switch v-model="instance.dataBrowserShowMeta">
-            <template #label="checked">{{ checked.value ? '显示' : '不显示' }}</template>
+            <template #label="checked">{{ checked.value ? t('setting.show') : t('setting.hide') }}</template>
           </t-switch>
         </t-form-item>
-        <t-form-item label-align="top" label="基础查询 - 默认视图" id="baseDefaultViewer">
+        <t-form-item label-align="top" :label="t('setting.base_search_default_view')" id="baseDefaultViewer">
           <t-radio-group v-model="instance.baseDefaultViewer">
-            <t-radio label="表格视图" :value="ViewTypeEnum.TABLE">表格视图</t-radio>
-            <t-radio label="编辑器视图" :value="ViewTypeEnum.EDITOR">编辑器视图</t-radio>
+            <t-radio :label="t('setting.table_view')" :value="ViewTypeEnum.TABLE">{{ t('setting.table_view') }}</t-radio>
+            <t-radio :label="t('setting.editor_view')" :value="ViewTypeEnum.EDITOR">{{ t('setting.editor_view') }}</t-radio>
           </t-radio-group>
         </t-form-item>
         <t-form-item v-if="instance.baseDefaultViewer === ViewTypeEnum.TABLE" label-align="top"
-                     label="基础查询 - 是否显示元数据">
+                     :label="t('setting.base_search_show_meta')">
           <t-switch v-model="instance.baseSearchShowMeta">
-            <template #label="checked">{{ checked.value ? '显示' : '不显示' }}</template>
+            <template #label="checked">{{ checked.value ? t('setting.show') : t('setting.hide') }}</template>
           </t-switch>
         </t-form-item>
-        <t-form-item label-align="top" label="开发者工具 - 默认视图" id="devToolViewer">
+        <t-form-item label-align="top" :label="t('setting.dev_tool_default_view')" id="devToolViewer">
           <t-radio-group v-model="instance.devToolViewer">
-            <t-radio label="表格视图" :value="ViewTypeEnum.TABLE">表格视图</t-radio>
-            <t-radio label="编辑器视图" :value="ViewTypeEnum.EDITOR">编辑器视图</t-radio>
+            <t-radio :label="t('setting.table_view')" :value="ViewTypeEnum.TABLE">{{ t('setting.table_view') }}</t-radio>
+            <t-radio :label="t('setting.editor_view')" :value="ViewTypeEnum.EDITOR">{{ t('setting.editor_view') }}</t-radio>
           </t-radio-group>
         </t-form-item>
         <t-form-item v-if="instance.devToolViewer === ViewTypeEnum.TABLE" label-align="top"
-                     label="开发者工具 - 是否显示元数据">
+                     :label="t('setting.dev_tool_show_meta')">
           <t-switch v-model="instance.devToolShowMeta">
-            <template #label="checked">{{ checked.value ? '显示' : '不显示' }}</template>
+            <template #label="checked">{{ checked.value ? t('setting.show') : t('setting.hide') }}</template>
           </t-switch>
         </t-form-item>
-        <t-form-item label-align="top" label="高级查询 - 默认视图" id="seniorDefaultViewer" help="即将移除">
+        <t-form-item label-align="top" :label="t('setting.senior_search_default_view')" id="seniorDefaultViewer" :help="t('setting.will_remove')">
           <t-radio-group v-model="instance.seniorDefaultViewer">
-            <t-radio label="表格视图" :value="ViewTypeEnum.TABLE">表格视图</t-radio>
-            <t-radio label="编辑器视图" :value="ViewTypeEnum.EDITOR">编辑器视图</t-radio>
+            <t-radio :label="t('setting.table_view')" :value="ViewTypeEnum.TABLE">{{ t('setting.table_view') }}</t-radio>
+            <t-radio :label="t('setting.editor_view')" :value="ViewTypeEnum.EDITOR">{{ t('setting.editor_view') }}</t-radio>
           </t-radio-group>
         </t-form-item>
 
 
-        <t-divider id="other">其他设置</t-divider>
+        <t-divider id="other">{{ t('setting.other_settings') }}</t-divider>
         <t-form-item label-align="top" id="lastUrl">
           <template #label>
-            <span>保存上次选择的连接</span>
-            <t-tooltip content="保存后，下一次打开es-client自动选中该链接" placement="top" effect="light">
+            <span>{{ t('setting.save_last_url') }}</span>
+            <t-tooltip :content="t('setting.save_last_url_help')" placement="top" effect="light">
               <help-circle-icon style="margin-left: 5px;"/>
             </t-tooltip>
           </template>
           <t-switch v-model="instance.lastUrl">
-            <template #label="checked">{{ checked.value ? '保存' : '忽略' }}</template>
+            <template #label="checked">{{ checked.value ? t('setting.save') : t('setting.ignore') }}</template>
           </t-switch>
         </t-form-item>
 
@@ -160,7 +154,9 @@ import {useGlobalSettingStore} from "@/store";
 import ViewTypeEnum from "@/enumeration/ViewTypeEnum";
 import {storeToRefs} from "pinia";
 import {HelpCircleIcon} from "tdesign-icons-vue-next";
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const {globalSetting: instance} = storeToRefs(useGlobalSettingStore());
 
 </script>

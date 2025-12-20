@@ -11,10 +11,6 @@ export interface Field extends SelectOption {
    * 字段类型
    */
   type: string;
-  /**
-   * 索引类型
-   */
-  indexType: string;
 }
 
 export interface AllocationID {

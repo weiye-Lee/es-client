@@ -1,6 +1,5 @@
 import { Field } from "../types";
 import { IndexMapping, IndexMappingFieldMapping } from "$/shared/elasticsearch";
-import { encodeTypeField } from "$/elasticsearch-client/utils";
 
 /**
  * 索引字段映射
@@ -24,17 +23,8 @@ export function IndexFieldBuild(
       const prefix = "";
       if (properties) {
         for (const key in properties) {
-          buildField(key, properties[key], fields, prefix, type, types.length > 1);
+          buildField(key, properties[key], fields, prefix);
         }
-      }
-    }
-  } else if (version >= 8) {
-    // 如果es版本大于等于8，则一定没有类型
-    const properties = (mappings as IndexMapping).properties;
-    const prefix = "";
-    if (properties) {
-      for (const key in properties) {
-        buildField(key, properties[key], fields, prefix, "_doc", false);
       }
     }
   } else {
@@ -45,14 +35,14 @@ export function IndexFieldBuild(
       const prefix = "";
       if (properties) {
         for (const key in properties) {
-          buildField(key, properties[key], fields, prefix, "_doc", false);
+          buildField(key, properties[key], fields, prefix);
         }
       }
     }
     // 情况 2: 顶层是 type 名（如 _doc）→ 有 type（v6 / v7 兼容模式）
     else {
       const topLevelKeys = Object.keys(mappings);
-      // 找第一个值包含 properties 的 value（v7 只有一个 type）
+      // 找第一个值包含 properties 的 key（v7 只有一个 type）
       for (const type of topLevelKeys) {
         const typeMapping = (mappings as Record<string, IndexMapping>)[type];
         if (typeMapping && typeMapping.properties && typeof typeMapping.properties === "object") {
@@ -60,7 +50,7 @@ export function IndexFieldBuild(
           const prefix = "";
           if (properties) {
             for (const key in properties) {
-              buildField(key, properties[key], fields, prefix, type, topLevelKeys.length > 1);
+              buildField(key, properties[key], fields, prefix);
             }
           }
         }
@@ -77,16 +67,12 @@ export function IndexFieldBuild(
  * @param field 字段映射
  * @param fields 全部字段
  * @param prefix 前缀
- * @param type 类型
- * @param showType 是否显示类型
  */
 function buildField(
   name: string,
   field: IndexMappingFieldMapping,
   fields: Array<Field>,
-  prefix: string,
-  type: string,
-  showType: boolean
+  prefix: string
 ): void {
   // 实际的字段名
   let realName = name;
@@ -97,23 +83,22 @@ function buildField(
   if ((!field.type || field.type === "object" || field.type === "nested") && field.properties) {
     // 如果是对象类型，构造下一代
     for (const key in field.properties) {
-      buildField(key, field.properties[key], fields, realName, type, showType);
+      buildField(key, field.properties[key], fields, realName);
     }
     return;
   }
   fields.push({
     // 值
-    value: encodeTypeField(type, realName),
+    value: realName,
     // 显示标签
-    label: showType ? type + "." + realName : realName,
-    type: field.type,
-    indexType: type
+    label: realName,
+    type: field.type
   });
 
   if (field.fields) {
     // 如果存在`fields`字段，则处理子字段
     for (const key in field.fields) {
-      buildField(key, field.fields[key], fields, realName, type, showType);
+      buildField(key, field.fields[key], fields, realName);
     }
   }
 }

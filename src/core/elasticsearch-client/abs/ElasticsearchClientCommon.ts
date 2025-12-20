@@ -14,7 +14,12 @@ import {IndexFieldBuild} from "../components/IndexFieldBuild";
 import {parseJsonWithBigIntSupport} from "$/util";
 import {indexTypeBuild} from "$/elasticsearch-client/components/IndexTypeBuild";
 import {IndexAliasAtomOptions} from "$/shared/elasticsearch";
-import {BulkAction, BulkRequestOptions, BulkResult, serializeBulkBody} from "$/elasticsearch-client/types/BulkAction";
+import {
+  BulkAction,
+  BulkRequestOptions,
+  BulkResult,
+  serializeBulkBody
+} from "$/elasticsearch-client/types/BulkAction";
 
 export abstract class ElasticsearchClientCommon extends ElasticsearchClientHttp {
   protected constructor(props: ElasticsearchClientProp, versionFirst: number) {
@@ -131,7 +136,7 @@ export abstract class ElasticsearchClientCommon extends ElasticsearchClientHttp 
     });
   }
 
-  async getJson<T extends Record<string, any> = Record<string, any>>(url: string): Promise<T> {
+  async getJson(url: string): Promise<Record<string, any>> {
     const resp = await this.request({
       url,
       method: "GET"

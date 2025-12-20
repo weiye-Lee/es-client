@@ -2,18 +2,18 @@
   <div class="flex gap-8px items-center">
     <!-- 是否启用 -->
     <t-switch v-model="order.isEnable">
-      <template #label="slotProps">{{ slotProps.value ? "启用" : "禁用" }}</template>
+      <template #label="slotProps">{{ slotProps.value ? $t('module.base_search.enable') : $t('module.base_search.disable') }}</template>
     </t-switch>
     <t-select
       v-model="order.field"
       filterable
       creatable
       clearable
-      placeholder="请选择排序字段"
+      :placeholder="$t('module.base_search.sort_field_placeholder')"
       style="width: 250px"
       :options="fieldOptions"
     />
-    <t-select v-model="order.type" filterable placeholder="请选择排序条件" style="width: 80px">
+    <t-select v-model="order.type" filterable :placeholder="$t('module.base_search.sort_type_placeholder')" style="width: 80px">
       <t-option label="asc" value="asc"></t-option>
       <t-option label="desc" value="desc"></t-option>
     </t-select>

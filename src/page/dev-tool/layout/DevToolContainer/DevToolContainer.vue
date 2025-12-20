@@ -3,7 +3,7 @@
     <!-- 空状态 -->
     <empty-result
       v-if="activeIds.length === 0"
-      :title="isConnected ? '请选择开发者工具文件' : '请选择链接'"
+      :title="isConnected ? $t('dev_tool.select_dev_tool_file') : $t('dev_tool.select_link')"
     >
       <t-space v-if="isConnected" direction="vertical" size="large">
         <div class="empty-actions">
@@ -11,7 +11,7 @@
             <template #icon>
               <add-icon/>
             </template>
-            新建开发者工具
+            {{ $t('dev_tool.new_dev_tool') }}
           </t-button>
         </div>
       </t-space>
@@ -39,7 +39,7 @@
             <template #icon>
               <close-icon/>
             </template>
-            关闭全部
+            {{ $t('dev_tool.close_all') }}
           </t-button>
         </template>
         <t-tab-panel
@@ -72,7 +72,9 @@ import EmptyResult from "@/components/Result/ErrorResult.vue";
 import MessageUtil from "@/utils/model/MessageUtil";
 import {TabsProps, TdTabPanelProps} from "tdesign-vue-next";
 import {AddIcon, CloseIcon, FileCodeIcon} from "tdesign-icons-vue-next";
+import {useI18n} from "vue-i18n";
 
+const {t} = useI18n();
 const searchStore = useDevToolStore();
 const fileItemStore = useDevToolFileItemStore();
 
@@ -118,10 +120,10 @@ const handleCreate = async () => {
   creating.value = true;
   try {
     await fileItemStore.create("0", false);
-    MessageUtil.success("新增成功");
+    MessageUtil.success(t('dev_tool.create_success'));
   } catch (error) {
     if (error !== "cancel") {
-      MessageUtil.error("新增失败", error);
+      MessageUtil.error(t('dev_tool.create_failed'), error);
     }
   } finally {
     creating.value = false;

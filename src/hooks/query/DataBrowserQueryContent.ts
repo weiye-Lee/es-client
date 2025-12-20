@@ -1,5 +1,5 @@
 import type {Ref} from "vue";
-import {getDataBrowserQuery, saveDataBrowserQueryContent} from "@/service/DataBrowser/DataBrwoserQueryService";
+import {getDataBrowserQuery, saveDataBrowserQueryContent} from "@/api/DataBrowser/DataBrwoserQueryService";
 import MessageUtil from "@/utils/model/MessageUtil";
 import {DataBrowserQueryBodyMode} from "@/entity/DataBrowser/DataBrowserQuery";
 import {cloneDeep} from "es-toolkit";

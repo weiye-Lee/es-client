@@ -5,26 +5,22 @@
   </a>
 </template>
 <script lang="ts" setup>
-import {onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, ref, computed} from "vue";
 import {Constant} from "@/global/Constant";
 import {useUmami} from "@/plugins/umami";
+import { useI18n } from "vue-i18n";
 
-const lines = [
-  "导出超过 1000 行就卡顿？桌面版支持无限制导出",
-  "需要可视化聚合？试试桌面版",
-  "DSL 写复杂了？桌面版支持语法高亮",
-  "想保存常用查询？桌面版有开发者工具脚本管理功能",
-  "导出还要手动拼 JSON？桌面版一键生成 CSV/Excel",
-  "浏览器内存爆了？桌面版独立运行更稳定",
-  "3 万开发者在用插件，数百人已升级桌面版"
-];
+const { t, tm } = useI18n();
 
-const currentLine = ref(lines[0]);
+const lines = computed(() => tm('module.app_extend.link.lines') as string[]);
+
+const currentLine = ref('');
 let intervalId: number | null = null;
 
 const getRandomLine = () => {
-  const randomIndex = Math.floor(Math.random() * lines.length);
-  return lines[randomIndex];
+  const allLines = lines.value;
+  const randomIndex = Math.floor(Math.random() * allLines.length);
+  return allLines[randomIndex];
 };
 
 const updateLine = () => {
@@ -38,6 +34,7 @@ const onClick = () => {
 };
 
 onMounted(() => {
+  currentLine.value = getRandomLine();
   // 初始延迟1秒后开始切换，避免一加载就变化
   setTimeout(() => {
     intervalId = window.setInterval(updateLine, 5000); // 每5秒更换一次文案

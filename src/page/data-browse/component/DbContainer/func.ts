@@ -1,121 +1,67 @@
-import { VxeTableEvents, VxeTableInstance } from "vxe-table";
-import type { Ref } from "vue";
-import MessageUtil from "@/utils/model/MessageUtil";
-import { execUpdate } from "@/page/data-browse/component/DbHeader/DbContextmenu";
-import { UseDataBrowserInstance } from "@/hooks";
-import {
-  addCondition,
-  addOrder,
-  removeCondition,
-  removeOrder
-} from "@/utils/convert/data-browser-condition";
-import { useUmami } from "@/plugins/umami";
-import { formatJsonString } from '$/util'
-import {copyText} from "@/utils/BrowserUtil";
-import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
+import { IndexMapping } from "$/shared/elasticsearch";
+import {formatJsonString, stringifyJsonWithBigIntSupport} from "$/util";
+import i18n from "@/i18n";
 
-export function buildContextMenuClickEvent(
-  instance: Ref<VxeTableInstance | null>,
-  tab: UseDataBrowserInstance
-): VxeTableEvents.MenuClick {
-  return ({ menu, row, column }) => {
-    const $table = instance.value;
-    const field = column.field;
-    useUmami.track("func_data_browser", "使用右键菜单");
-    const { index, must, should, mustNot, order, update, remove, run } = tab;
-    switch (menu.code) {
-      case "copy":
-        // 示例
-        if (row && column) {
-          copyText(row[column.field]);
-          MessageUtil.info("已复制到剪贴板！");
-        }
-        break;
-      case "copy-row":
-        if (row) {
-          copyText(row._source);
-          MessageUtil.info("已复制到剪贴板！");
-        }
-        break;
-      case "operation-edit":
-        execUpdate(index, row["_id"], formatJsonString(row["_source"])).then(({ id, data }) =>
-          update(id, data, row["_source"])
-        );
-        break;
-      case "operation-delete":
-        MessageBoxUtil.alert("确定要删除吗？", "删除", {
-          confirmButtonText: "确定",
-        }).then(() => {
-          remove(row["_id"], row["_source"]);
-        })
-        break;
-      case "expand":
-        if ($table) {
-          $table.toggleRowExpand(row).then(() => console.log("切换行展收状态成功"));
-        }
-        break;
-      case "must-clear": {
-        must.value = removeCondition(must.value, field);
-        run();
-        break;
+const t = (key: string, params?: any) => i18n.global.t(key, params);
+
+export function dataBuild(mapping: IndexMapping): string {
+  const buildDefaultValue = (prop: any): any => {
+    if (!prop || typeof prop !== "object") return null;
+
+    const type: string | undefined = prop.type;
+    const children = prop.properties;
+
+    // 处理对象/嵌套类型（递归）
+    if (children && typeof children === "object") {
+      const childObj: Record<string, any> = {};
+      for (const key in children) {
+        childObj[key] = buildDefaultValue(children[key]);
       }
-      case "should-clear": {
-        should.value = removeCondition(should.value, field);
-        run();
-        break;
+      // nested 默认是对象数组
+      if (type === "nested") {
+        return [childObj];
       }
-      case "must_not-clear": {
-        mustNot.value = removeCondition(mustNot.value, field);
-        run();
-        break;
+      return childObj; // object 或未显式声明 type 的对象
+    }
+
+    // 标量类型默认值
+    switch (type) {
+      case "text":
+      case "keyword":
+        return "";
+      case "long":
+      case "integer":
+      case "short":
+      case "byte":
+        return 0;
+      case "double":
+      case "float":
+        return 0.0;
+      case "boolean":
+        return false;
+      case "date": {
+        // 使用 ISO 时间，兼容 strict_date_optional_time
+        return new Date().toISOString();
       }
-      case "sort-clear": {
-        order.value = removeOrder(order.value, field);
-        run();
-        break;
-      }
-      case "must-term": {
-        must.value = addCondition(must.value, field, "term", row[field]);
-        run();
-        break;
-      }
-      case "must-match": {
-        must.value = addCondition(must.value, field, "match", row[field]);
-        run();
-        break;
-      }
-      case "should-term": {
-        should.value = addCondition(should.value, field, "term", row[field]);
-        run();
-        break;
-      }
-      case "should-match": {
-        should.value = addCondition(should.value, field, "match", row[field]);
-        run();
-        break;
-      }
-      case "must_not-term": {
-        mustNot.value = addCondition(mustNot.value, field, "term", row[field]);
-        run();
-        break;
-      }
-      case "must_not-match": {
-        mustNot.value = addCondition(mustNot.value, field, "match", row[field]);
-        run();
-        break;
-      }
-      case "sort-asc": {
-        order.value = addOrder(order.value, field, "asc");
-        run();
-        break;
-      }
-      case "sort-desc": {
-        order.value = addOrder(order.value, field, "desc");
-        run();
-        break;
-      }
+      case "ip":
+        return "127.0.0.1";
+      case "geo_point":
+        return { lat: 0, lon: 0 };
+      case "flattened":
+        return {}; // 扁平对象，给空对象
       default:
-        MessageUtil.info(`点击了 ${menu.name} 选项`);
+        // 未识别类型，给 null 以提示用户填充
+        return null;
     }
   };
+
+  const doc: Record<string, any> = {};
+  const props = mapping?.properties;
+  if (props && typeof props === "object") {
+    for (const field in props) {
+      doc[field] = buildDefaultValue(props[field]);
+    }
+  }
+  return stringifyJsonWithBigIntSupport(doc);
 }
+

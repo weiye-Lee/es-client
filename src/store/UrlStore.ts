@@ -7,8 +7,8 @@ import {statistics} from "@/global/BeanFactory";
 import {buildEsRequestConfig, RequestConfig, useRequest, useRequestJson} from "@/plugins/native/axios";
 import {Overview} from "@/domain/es/Overview";
 import {createElasticsearchClient, ElasticsearchClient} from "$/elasticsearch-client";
-import {clearDataBrowserQuery} from "@/service/DataBrowser/DataBrwoserQueryService";
-import {clearDataBrowserViews} from "@/service/DataBrowser/DataBrowserViewService";
+import {clearDataBrowserQuery} from "@/api/DataBrowser/DataBrwoserQueryService";
+import {clearDataBrowserViews} from "@/api/DataBrowser/DataBrowserViewService";
 
 const title = useTitle();
 

@@ -1,10 +1,10 @@
 <template>
   <div class="setting-url">
     <div class="setting-url-toolbar">
-      <t-input v-model="keyword" style="width: 40vw;" placeholder="链接名称" clearable/>
+      <t-input v-model="keyword" style="width: 40vw;" :placeholder="t('setting.link_name')" clearable/>
       <t-space size="small">
         <t-button theme="primary" @click="openAddLink">
-          新增
+          {{ t('setting.add') }}
         </t-button>
         <t-dropdown trigger="click">
           <t-button theme="primary" shape="square">
@@ -17,13 +17,13 @@
               <template #prefix-icon>
                 <file-export-icon/>
               </template>
-              数据导出
+              {{ t('setting.data_export') }}
             </t-dropdown-item>
             <t-dropdown-item @click="importUrlByJson()">
               <template #prefix-icon>
                 <file-import-icon/>
               </template>
-              数据导入
+              {{ t('setting.data_import') }}
             </t-dropdown-item>
           </t-dropdown-menu>
         </t-dropdown>
@@ -45,7 +45,9 @@ import {openAddLink} from "@/page/setting/pages/link/components/EditLink";
 import {parseJsonWithBigIntSupport, stringifyJsonWithBigIntSupport} from "$/util";
 import {FileExportIcon, FileImportIcon, MoreIcon} from "tdesign-icons-vue-next";
 import {linkTableColumn} from "@/page/setting/pages/link/components/LinkTableColumn";
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const size = useWindowSize();
 
 const keyword = ref('');
@@ -67,19 +69,19 @@ const virtualListProps = computed(() => ({
   height: size.height.value - 144
 }))
 
-// -------------------------------------- 方法 --------------------------------------
+// -------------------------------------- Methods --------------------------------------
 
 function onDragSort({newData}: { newData: Array<any> }) {
   useUrlStore().save(newData.map(item => toRaw(item)));
 }
 
-// 导入导出
+// Import/Export
 
 function exportUrlToJson() {
   download(stringifyJsonWithBigIntSupport({
     version: Constant.version,
     records: useUrlStore().urls
-  }), "链接导出.json", "application/json");
+  }), t('setting.link_export_filename'), "application/json");
 }
 
 const importFile = useFileSystemAccess({
@@ -88,7 +90,7 @@ const importFile = useFileSystemAccess({
     accept: {
       'application/json': ['.json']
     },
-    description: "JSON文件"
+    description: t('setting.json_file')
   }]
 });
 
@@ -97,33 +99,33 @@ function importUrlByJson() {
   rsp.then(() => {
     const value = importFile.data.value;
     if (!value) {
-      MessageUtil.error("没有解析到数据，请确认上传文件是否正确")
+      MessageUtil.error(t('setting.parse_error'))
     }
     handlerJson(value)
-      .then(() => MessageUtil.success("导入成功"))
-      .catch(e => MessageUtil.error("导入失败", e));
+      .then(() => MessageUtil.success(t('setting.import_success')))
+      .catch(e => MessageUtil.error(t('setting.import_failed'), e));
   })
 }
 
 async function handlerJson(json?: string) {
   if (!json) {
-    return Promise.reject("没有解析到数据，请确认上传文件是否正确");
+    return Promise.reject(t('setting.parse_error'));
   }
   let value;
   try {
     value = parseJsonWithBigIntSupport(json);
   } catch (e) {
-    return Promise.reject("JSON文件解析失败");
+    return Promise.reject(t('setting.json_parse_error'));
   }
   if (!value) {
-    return Promise.reject("JSON未解析到数据");
+    return Promise.reject(t('setting.json_no_data'));
   }
   let records = value.records;
   if (!records) {
-    return Promise.reject("链接记录不存在");
+    return Promise.reject(t('setting.link_record_not_exist'));
   }
   if (!(records instanceof Array)) {
-    return Promise.reject("数据格式错误，无法导入");
+    return Promise.reject(t('setting.data_format_error'));
   }
   await useUrlStore().addByBatch(records.map(e => getDefaultUrl(e)))
 }

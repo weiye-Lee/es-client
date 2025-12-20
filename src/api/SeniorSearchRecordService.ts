@@ -1,6 +1,6 @@
 import {SeniorSearchRecord} from "@/entity/record/SeniorSearchRecord";
 import TableNameEnum from "@/enumeration/TableNameEnum";
-import BaseService from "@/service/BaseService";
+import BaseService from "@/api/BaseService";
 import PageResult from "@/domain/PageResult";
 
 export class SeniorSearchRecordService {

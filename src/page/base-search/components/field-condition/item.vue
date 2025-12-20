@@ -77,7 +77,6 @@
 import { AddIcon, MinusIcon, SearchIcon } from "tdesign-icons-vue-next";
 import { useIndexStore } from "@/store";
 import { BaseSearchInstanceResult } from "@/hooks";
-import { decodeIndexType } from "$/elasticsearch-client/utils";
 import { BaseQueryItem, getDefaultBaseQueryItem } from "$/elasticsearch-client";
 
 const props = defineProps({
@@ -114,10 +113,7 @@ watch(
 
 const fieldOptions = computed(() => {
   const { fieldOptionMap } = useIndexStore();
-  const fields = fieldOptionMap[props.tab.index.value] || [];
-  const { type } = decodeIndexType(props.tab.index.value);
-  if (!type) return fields;
-  return fields.filter((field) => field.indexType === type);
+  return fieldOptionMap[props.tab.index.value] || [];
 });
 
 const add = () => emits("add");

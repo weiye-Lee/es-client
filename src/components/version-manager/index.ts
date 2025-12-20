@@ -5,6 +5,9 @@ import MessageUtil from "@/utils/model/MessageUtil";
 import {updateTo3ByWeb} from "@/components/version-manager/updateTo3";
 import {statistics} from "@/global/BeanFactory";
 import {useLoading} from "@/hooks/UseLoading";
+import i18n from "@/i18n";
+
+const t = (key: string, named?: Record<string, unknown>) => i18n.global.t(key, named || {});
 
 export enum VersionStatus {
   // 新用户
@@ -25,14 +28,14 @@ export function versionManager(): VersionStatus {
   }
   if (version === '') {
     setItem(LocalNameEnum.KEY_VERSION, Constant.version);
-    MessageUtil.success("欢迎您使用es-client");
+    MessageUtil.success(t('module.version_manager.welcome'));
     updateTo();
     statistics.access("update", `新用户使用`);
     statistics.register();
     return VersionStatus.NEW;
   } else if (version != Constant.version) {
     setItem(LocalNameEnum.KEY_VERSION, Constant.version);
-    MessageUtil.success("欢迎您更新到" + Constant.version);
+    MessageUtil.success(t('module.version_manager.welcome_update', { version: Constant.version }));
     updateTo();
     statistics.access("update", `从${version}更新到${Constant.version}`);
     statistics.login();
@@ -52,9 +55,9 @@ function updateTo() {
 }
 
 export function updateTo3() {
-  const loading = useLoading("链接迁移")
-  updateTo3ByWeb().then(() => MessageUtil.success("迁移完成"))
-    .catch(e => MessageUtil.error("迁移失败", e))
+  const loading = useLoading(t('module.version_manager.migration'))
+  updateTo3ByWeb().then(() => MessageUtil.success(t('module.version_manager.migration_success')))
+    .catch(e => MessageUtil.error(t('module.version_manager.migration_failed'), e))
     .finally(() => loading.close());
 }
 

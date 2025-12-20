@@ -56,7 +56,7 @@ export default {
      */
     isTrue(express: boolean, message?: string | (() => void)) {
         if (!express) {
-            showMessage("断言表达式为真", message);
+            showMessage(i18n.global.t('utils.assert.true'), message);
         }
     },
 
@@ -67,7 +67,7 @@ export default {
      */
     isFalse(express: boolean, message?: string | (() => void)) {
         if (express) {
-            showMessage("断言表达式为假", message);
+            showMessage(i18n.global.t('utils.assert.false'), message);
         }
     },
 

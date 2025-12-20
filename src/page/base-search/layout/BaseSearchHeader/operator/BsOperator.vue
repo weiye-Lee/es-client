@@ -1,6 +1,6 @@
 <template>
   <div class="flex gap-8px items-center">
-    <t-tooltip content="显示查询条件" position="bottom">
+    <t-tooltip :content="$t('module.base_search.show_query_condition')" position="bottom">
       <t-button theme="default" shape="square" @click="showBody()">
         <template #icon>
           <search-icon/>
@@ -15,7 +15,9 @@ import {showJson} from "@/utils/model/DialogUtil";
 import {SearchIcon} from "tdesign-icons-vue-next";
 import {useUmami} from "@/plugins/umami";
 import {BaseSearchInstanceResult} from "@/hooks";
+import i18n from "@/i18n";
 
+const t = (key: string) => i18n.global.t(key);
 
 const props = defineProps({
   tab: {
@@ -31,7 +33,7 @@ function showBody() {
   try {
     showJson("查询条件", buildData());
   } catch (e) {
-    MessageUtil.error("条件构造错误", e);
+    MessageUtil.error(t('module.base_search.condition_construct_error'), e);
   }
 }
 </script>

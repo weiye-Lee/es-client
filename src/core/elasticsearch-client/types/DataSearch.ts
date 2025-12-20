@@ -19,6 +19,7 @@ export interface DataSearchQueryItem {
    */
   valueType: "string" | "number" | "boolean";
 }
+
 export interface DataSearchOrderItem {
   /**
    * 字段
@@ -36,6 +37,12 @@ export interface DataSearchOrderItem {
 export interface DataSearchColumnConfig extends TableColumn {}
 
 export interface DataSourceRecord extends TableRecord {
+  _id: string;
+  // 元数据
+  _type?: string;
+  _store: string;
+  _index: string;
+  // 原始数据
   _source: string;
 }
 
@@ -58,10 +65,6 @@ export interface DataSearchProp {
   index: string;
   pageNum: number;
   pageSize: number;
-  /**
-   * 索引类型，v6之前必须
-   */
-  type?: string;
 
   /*--------------------------------- track_total_hits设置 ---------------------------------*/
 

@@ -18,35 +18,38 @@ import MessageUtil from "@/utils/model/MessageUtil";
 import {cloneDeep} from "es-toolkit";
 import NotificationUtil from "@/utils/model/NotificationUtil";
 import {buildEsRequestConfig, useRequestJson} from "@/plugins/native/axios";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 export function openAddLink() {
   const link = ref(getDefaultUrl());
 
   function submit() {
     if (!link.value.name) {
-      MessageUtil.error("请填写名称");
+      MessageUtil.error(t('setting.name_required'));
       return;
     }
     if (!link.value.value) {
-      MessageUtil.error("请填写链接");
+      MessageUtil.error(t('setting.link_required'));
       return;
     }
     if (!link.value.version) {
-      MessageUtil.error("请先进行测试");
+      MessageUtil.error(t('setting.test_first'));
       return;
     }
 
     useUrlStore()
       .add(cloneDeep(link.value))
       .then(() => {
-        MessageUtil.success("新增成功");
+        MessageUtil.success(t('setting.add_success'));
         modalReturn.destroy();
       })
-      .catch((e) => MessageUtil.error("新增失败", e));
+      .catch((e) => MessageUtil.error(t('setting.add_failed'), e));
   }
 
   const modalReturn = DialogPlugin({
-    header: "新增链接",
+    header: t('setting.add_link'),
     placement: "center",
     draggable: true,
     default: () => buildForm(link),
@@ -61,14 +64,14 @@ export function openUpdateLink(record: Url) {
     useUrlStore()
       .update(record.id, cloneDeep(link.value))
       .then(() => {
-        MessageUtil.success("修改成功");
+        MessageUtil.success(t('setting.update_success'));
         modalReturn.destroy();
       })
-      .catch((e) => MessageUtil.error("修改失败", e));
+      .catch((e) => MessageUtil.error(t('setting.update_failed'), e));
   }
 
   const modalReturn = DialogPlugin({
-    header: "新增链接",
+    header: t('setting.add_link'),
     placement: "center",
     draggable: true,
     default: () => buildForm(link),
@@ -79,40 +82,40 @@ export function openUpdateLink(record: Url) {
 function buildForm(link: Ref<Url>) {
   const authUser = computed(() => {
     if (link.value.authType === 1) {
-      return "用户名";
+      return t('setting.username');
     } else if (link.value.authType === 2) {
-      return "请求头键";
+      return t('setting.header_key');
     } else {
       return "";
     }
   });
   const authPassword = computed(() => {
     if (link.value.authType === 2) {
-      return "请求头值";
+      return t('setting.header_value');
     } else if (link.value.authType === 3) {
-      return "Cookie值";
+      return t('setting.cookie_value');
     } else {
-      return "密码";
+      return t('setting.password');
     }
   });
 
   return (
     <Form data={link.value} layout={"vertical"}>
-      <FormItem label={"名称"} labelAlign={"top"}>
+      <FormItem label={t('setting.name')} labelAlign={"top"}>
         <Input v-model={link.value.name} clearable/>
       </FormItem>
-      <FormItem label={"链接"} labelAlign={"top"}>
+      <FormItem label={t('setting.link')} labelAlign={"top"}>
         {{
           default: () => <Input v-model={link.value.value} clearable/>,
           help: () =>
             link.value.value.endsWith("/") && (
               <span style={{color: "rgb(var(--danger-6))"}}>
-                检测到链接以/结尾，可能造成报错，建议删除结尾的/
+                {t('setting.slash_warning')}
               </span>
             )
         }}
       </FormItem>
-      <FormItem label={"平台"} labelAlign={"top"}>
+      <FormItem label={t('setting.platform')} labelAlign={"top"}>
         <RadioGroup variant="primary-filled" v-model={link.value.platform} defaultValue={"elasticsearch"}>
           <RadioButton value={"elasticsearch"}>elasticsearch</RadioButton>
           <RadioButton value={"opensearch"} disabled>
@@ -123,19 +126,19 @@ function buildForm(link: Ref<Url>) {
           </RadioButton>
         </RadioGroup>
       </FormItem>
-      <FormItem label={"版本"} labelAlign={"top"}>
+      <FormItem label={t('setting.version')} labelAlign={"top"}>
         <Input v-model={link.value.version} readonly/>
       </FormItem>
-      <FormItem label={"是否认证"} labelAlign={"top"}>
+      <FormItem label={t('setting.is_auth')} labelAlign={"top"}>
         <Switch v-model={link.value.isAuth}/>
       </FormItem>
       {link.value.isAuth && (
         <>
-          <FormItem label={"认证方式"} labelAlign={"top"}>
+          <FormItem label={t('setting.auth_type')} labelAlign={"top"}>
             <RadioGroup v-model={link.value.authType}>
-              <Radio value={1}>基础认证</Radio>
-              <Radio value={2}>请求头认证</Radio>
-              <Radio value={3}>Cookie认证</Radio>
+              <Radio value={1}>{t('setting.basic_auth')}</Radio>
+              <Radio value={2}>{t('setting.header_auth')}</Radio>
+              <Radio value={3}>{t('setting.cookie_auth')}</Radio>
             </RadioGroup>
           </FormItem>
           {link.value.authType !== 3 && (
@@ -158,23 +161,23 @@ function buildFooter(link: Ref<Url>, id: number, submit: () => void) {
   function test() {
     if (loading.value) return;
     loading.value = true;
-    const lp = LoadingPlugin({content: "正在加载中"});
+    const lp = LoadingPlugin({content: t('setting.loading')});
     useRequestJson("/", buildEsRequestConfig({}, cloneDeep(link.value)))
       .then((response) => {
         link.value.version = `${response.version.number}`;
         NotificationUtil.success(
           () => (
             <div>
-              <div>名称：{response.name.name}</div>
-              <div>版本：{response.version.number}</div>
-              <div>Lucene版本：{response.version.lucene_version}</div>
+              <div>{t('setting.name')}：{response.name.name}</div>
+              <div>{t('setting.version')}：{response.version.number}</div>
+              <div>Lucene {t('setting.version')}：{response.version.lucene_version}</div>
             </div>
           ),
-          "测试成功"
+          t('setting.test_success')
         );
       })
       .catch((e) => {
-        NotificationUtil.error(`链接不可用: ${e}`, "测试失败");
+        NotificationUtil.error(`${t('setting.link_unavailable')}: ${e}`, t('setting.test_failed'));
       })
       .finally(() => {
         loading.value = false;
@@ -185,10 +188,10 @@ function buildFooter(link: Ref<Url>, id: number, submit: () => void) {
   return (
     <Space>
       <Button variant={"outline"} onClick={test}>
-        测试
+        {t('setting.test')}
       </Button>
       <Button theme={"primary"} onClick={submit}>
-        {id === 0 ? "新增" : "修改"}
+        {id === 0 ? t('setting.add') : t('setting.update')}
       </Button>
     </Space>
   );

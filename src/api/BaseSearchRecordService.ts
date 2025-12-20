@@ -1,6 +1,6 @@
 import {BaseSearchRecord} from "@/entity/record/BaseSearchRecord";
 import TableNameEnum from "@/enumeration/TableNameEnum";
-import BaseService from "@/service/BaseService";
+import BaseService from "@/api/BaseService";
 import PageResult from "@/domain/PageResult";
 
 export class BaseSearchRecordService {

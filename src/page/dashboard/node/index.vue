@@ -1,8 +1,8 @@
 <template>
   <div class="dashboard-node">
-    <t-card title="统计">
+    <t-card :title="$t('module.dashboard.node_statistics')">
       <template #title>
-        <span>节点</span>
+        <span>{{ $t('module.dashboard.node') }}</span>
         <t-button
           variant="text"
           theme="primary"
@@ -18,21 +18,21 @@
       </template>
       <template #actions>
         <refresh-icon v-if="nodeStateLoad"/>
-        <span v-if="nodeStateLoad" style="margin-left: 7px">加载中</span>
+        <span v-if="nodeStateLoad" style="margin-left: 7px">{{ $t('common.loading') }}</span>
       </template>
       <t-row>
         <t-col :span="4">
-          <t-statistic title="总数" :value="total"/>
+          <t-statistic :title="$t('module.dashboard.total')" :value="total"/>
         </t-col>
         <t-col :span="4">
-          <t-statistic title="成功" :value="successful"/>
+          <t-statistic :title="$t('module.dashboard.success')" :value="successful"/>
         </t-col>
         <t-col :span="4">
-          <t-statistic title="失败" :value="failed"/>
+          <t-statistic :title="$t('module.dashboard.failed')" :value="failed"/>
         </t-col>
       </t-row>
     </t-card>
-    <t-alert style="margin-top: 7px">节点</t-alert>
+    <t-alert style="margin-top: 7px">{{ $t('module.dashboard.node') }}</t-alert>
     <!-- 每一个节点 -->
     <t-card v-for="item in nodeItems" :key="item.name" style="margin-top: 7px">
       <template #title>
@@ -43,18 +43,18 @@
       </template>
       <!-- 基础信息 -->
       <t-descriptions :column="1">
-        <t-descriptions-item label="时间戳">{{
+        <t-descriptions-item :label="$t('module.dashboard.timestamp')">{{
             dateFormat(item.node.timestamp)
           }}
         </t-descriptions-item>
-        <t-descriptions-item label="IP地址">{{ item.node.host }}</t-descriptions-item>
-        <t-descriptions-item label="角色">
+        <t-descriptions-item :label="$t('module.dashboard.ip_address')">{{ item.node.host }}</t-descriptions-item>
+        <t-descriptions-item :label="$t('module.dashboard.role')">
           <t-space>
             <t-tag v-for="role in item.node.roles" :key="role" theme="primary">{{ role }}</t-tag>
           </t-space>
         </t-descriptions-item>
-        <t-divider>系统信息</t-divider>
-        <t-descriptions-item v-if="item.node.os.cpu.load_average" label="负载">
+        <t-divider>{{ $t('module.dashboard.system_info') }}</t-divider>
+        <t-descriptions-item v-if="item.node.os.cpu.load_average" :label="$t('module.dashboard.load')">
           <t-space>
             <span>{{ item.node.os.cpu.load_average["1m"] }}</span>
             <span>{{ item.node.os.cpu.load_average["5m"] }}</span>
@@ -64,13 +64,13 @@
             </template>
           </t-space>
         </t-descriptions-item>
-        <t-descriptions-item label="CPU">
+        <t-descriptions-item :label="$t('module.dashboard.cpu')">
           <t-progress
             :percent="item.node.os.cpu.percent / 100"
             :status="calcStatus(item.node.os.cpu.percent)"
           />
         </t-descriptions-item>
-        <t-descriptions-item label="内存">
+        <t-descriptions-item :label="$t('module.dashboard.memory')">
           <div>
             <span>{{ prettyDataUnit(item.node.os.mem.used_in_bytes) }}</span>
             <span> / </span>
@@ -81,7 +81,7 @@
             :status="calcStatus(item.node.os.mem.used_percent)"
           />
         </t-descriptions-item>
-        <t-descriptions-item label="交换区">
+        <t-descriptions-item :label="$t('module.dashboard.swap')">
           <div>
             <span>{{ prettyDataUnit(item.node.os.swap.used_in_bytes) }}</span>
             <span> / </span>
@@ -107,6 +107,9 @@ import {useUrlStore} from "@/store";
 import {prettyDataUnit} from "@/utils/BrowserUtil";
 import {toDateString} from "xe-utils";
 import {RefreshIcon} from "tdesign-icons-vue-next";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 interface NodeItem {
   name: string;
@@ -141,10 +144,10 @@ function getNodeState() {
   }
   nodeStateLoad.value = true;
   const {client} = useUrlStore();
-  if (!client) return MessageUtil.error("请选择链接");
+  if (!client) return MessageUtil.error(t('placeholder.select_link'));
   client.getJson<IndexNodeState>("/_nodes/stats")
     .then((rsp) => (nodeState.value = rsp))
-    .catch((e) => MessageUtil.error("节点状态获取失败", e))
+    .catch((e) => MessageUtil.error(t('module.dashboard.node_state_fetch_error'), e))
     .finally(() => (nodeStateLoad.value = false));
 }
 

@@ -1,5 +1,5 @@
 
-import {BaseSearchRecordService} from "@/service/BaseSearchRecordService";
+import {BaseSearchRecordService} from "@/api/BaseSearchRecordService";
 
 import EventBusEnum from "@/enumeration/EventBusEnum";
 
@@ -11,7 +11,7 @@ import VersionStrategyContext from "@/strategy/VersionStrategy/VersionStrategyCo
 import V6VersionStrategyImpl from "@/strategy/VersionStrategy/impl/V6VersionStrategyImpl";
 import V7VersionStrategyImpl from "@/strategy/VersionStrategy/impl/V7VersionStrategyImpl";
 import V8VersionStrategyImpl from "@/strategy/VersionStrategy/impl/V8VersionStrategyImpl";
-import {SeniorSearchRecordService} from "@/service/SeniorSearchRecordService";
+import {SeniorSearchRecordService} from "@/api/SeniorSearchRecordService";
 // 插件
 import {Statistics} from "@/plugins/Statistics";
 

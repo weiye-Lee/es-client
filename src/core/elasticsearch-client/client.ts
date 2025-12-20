@@ -52,7 +52,7 @@ export interface ElasticsearchClient {
    * 获取状态信息，用于展示
    * @param url 链接
    */
-  getJson: <T extends Record<string, any> = Record<string, any>> (url: string) => Promise<T>;
+  getJson: (url: string) => Promise<Record<string, any>>;
 
   /**
    * 集群健康状态

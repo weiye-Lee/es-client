@@ -1,4 +1,5 @@
 import { DialogPlugin, Input, Paragraph } from "tdesign-vue-next";
+import i18n from "@/i18n";
 
 export default {
   confirm(
@@ -45,7 +46,7 @@ export default {
       cancelButtonText?: string;
     }
   ) {
-    const { confirmButtonText = "确认", cancelButtonText = "取消" } = config || {};
+    const { confirmButtonText = i18n.global.t('utils.dialog.confirm'), cancelButtonText = i18n.global.t('utils.dialog.cancel') } = config || {};
     return new Promise<void>((resolve) => {
       const res = DialogPlugin({
         default: () => <Paragraph>{content}</Paragraph>,
@@ -87,15 +88,15 @@ export default {
   ): Promise<string> {
     const {
       inputValue = "",
-      confirmButtonText = "确认",
-      cancelButtonText = "取消",
+      confirmButtonText = i18n.global.t('utils.dialog.confirm'),
+      cancelButtonText = i18n.global.t('utils.dialog.cancel'),
       onClose
     } = config || {};
     return new Promise<string>((resolve, reject) => {
       const value = ref(inputValue);
 
-      function onKeydown(value: string | number) {
-        resolve(`${value}`);
+      function onKeydown(val: string | number) {
+        resolve(`${val}`);
         res.destroy();
       }
 

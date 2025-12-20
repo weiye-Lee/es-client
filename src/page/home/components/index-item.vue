@@ -5,7 +5,7 @@
       <t-link :theme="closed ? 'default' : 'primary'" size="large" @click="indexInfo()" class="!font-bold"
               :title="index.name">{{ index.name }}
       </t-link>
-      <t-button shape="round" variant="dashed" size="small" @click="execCopy()" class="ml-8px">复制</t-button>
+      <t-button shape="round" variant="dashed" size="small" @click="execCopy()" class="ml-8px">{{ $t('home.index_item.copy') }}</t-button>
     </div>
     <!-- 别名 -->
     <div class="alias">
@@ -13,12 +13,12 @@
              v-for="(item, idx) in index.alias" :key="idx" style="margin-right: 8px">
         {{ item }}
       </t-tag>
-      <t-button theme="primary" size="small" :disabled="closed" @click="newAlias()">新增
+      <t-button theme="primary" size="small" :disabled="closed" @click="newAlias()">{{ $t('home.index_item.add') }}
       </t-button>
     </div>
     <!-- 操作 -->
     <div class="option">
-      <t-tooltip :effect="theme" content="迁移索引" placement="bottom">
+      <t-tooltip :effect="theme" :content="$t('home.index_item.migrate')" placement="bottom">
         <t-button variant="text" theme="primary" shape="square" :disabled="closed" @click="indexReindex(index.name)">
           <template #icon>
             <folder-move-icon/>
@@ -26,7 +26,7 @@
         </t-button>
       </t-tooltip>
       <t-tooltip :effect="theme" :content="indexStateTooltip" placement="bottom">
-        <t-popconfirm :content="`确认${indexStateTooltip}索引？`" @confirm="indexOperation"
+        <t-popconfirm :content="$t('home.index_item.confirm_status', {status: indexStateTooltip})" @confirm="indexOperation"
                       :confirm-btn="indexStateTooltip">
           <t-button variant="text" shape="square" :theme="indexStateBtn">
             <template #icon>
@@ -36,7 +36,7 @@
           </t-button>
         </t-popconfirm>
       </t-tooltip>
-      <t-tooltip :effect="theme" content="删除索引" placement="bottom">
+      <t-tooltip :effect="theme" :content="$t('home.index_item.delete')" placement="bottom">
         <t-button variant="text" theme="primary" :disabled="closed" shape="square" @click="removeIndex()">
           <template #icon>
             <delete-icon/>
@@ -48,7 +48,7 @@
     <div class="expand-btn">
       <!-- 查询跳转 -->
       <div class="flex">
-        <t-tooltip :effect="theme" content="跳转到数据浏览" placement="bottom">
+        <t-tooltip :effect="theme" :content="$t('home.index_item.jump_to_data_browser')" placement="bottom">
           <t-button theme="success" variant="text" :disabled="closed" shape="square" @click="jumpToDataBrowser()"
                     style="border: none">
             <template #icon>
@@ -83,6 +83,7 @@ import {
   Table2Icon
 } from "tdesign-icons-vue-next";
 import {IndexItem} from "$/elasticsearch-client";
+import i18n from "@/i18n";
 
 export default defineComponent({
   name: 'index-item',
@@ -120,11 +121,11 @@ export default defineComponent({
 
     indexStateTooltip(): string {
       if (this.index.state === 'open') {
-        return '关闭';
+        return this.$t('home.index_item.close');
       } else if (this.index.state === 'close') {
-        return '打开';
+        return this.$t('home.index_item.open');
       } else {
-        return '未知状态'
+        return this.$t('home.index_item.unknown_status')
       }
     },
     theme() {
@@ -138,7 +139,7 @@ export default defineComponent({
     },
     newAlias() {
       const {client} = useUrlStore();
-      if (!client) return MessageUtil.error("请选择链接");
+      if (!client) return MessageUtil.error(this.$t('home.index_item.select_link'));
       indexAliasAdd().then((value) => {
           client.indexAlias([{
             add: {
@@ -150,16 +151,16 @@ export default defineComponent({
             // 刷新指定索引
             useIndexStore().refreshIndex(this.index.name);
           })
-            .catch(e => MessageUtil.error('新建别名错误', e))
+            .catch(e => MessageUtil.error(this.$t('home.index_item.new_alias_error'), e))
         }
       );
     },
     removeAlias(alias: string) {
       const {client} = useUrlStore();
-      if (!client) return MessageUtil.error("请选择链接");
-      MessageBoxUtil.confirm("此操作将永久删除该别名, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      if (!client) return MessageUtil.error(this.$t('home.index_item.select_link'));
+      MessageBoxUtil.confirm(this.$t('home.index_item.confirm_delete_alias'), this.$t('home.index_item.prompt'), {
+        confirmButtonText: this.$t('home.index_item.confirm'),
+        cancelButtonText: this.$t('home.index_item.cancel'),
       })
         .then(() => {
           client.indexAlias([{
@@ -172,23 +173,23 @@ export default defineComponent({
               MessageUtil.success(res);
               useIndexStore().refreshIndex(this.index.name);
             })
-            .catch(e => MessageUtil.error('删除别名错误', e))
+            .catch(e => MessageUtil.error(this.$t('home.index_item.delete_alias_error'), e))
         })
         .catch(() => console.log('取消删除'));
     },
     removeIndex() {
       const {client} = useUrlStore();
-      if (!client) return MessageUtil.error("请选择链接");
-      MessageBoxUtil.confirm("此操作将永久删除该索引, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消"
+      if (!client) return MessageUtil.error(this.$t('home.index_item.select_link'));
+      MessageBoxUtil.confirm(this.$t('home.index_item.confirm_delete_index'), this.$t('home.index_item.prompt'), {
+        confirmButtonText: this.$t('home.index_item.confirm'),
+        cancelButtonText: this.$t('home.index_item.cancel')
       }).then(() => {
         client.deleteBatchIndex([this.index.name])
           .then(() => {
-            MessageUtil.success("删除成功");
+            MessageUtil.success(this.$t('home.index_item.delete_success'));
             useIndexStore().refreshIndex(this.index.name, true);
           })
-          .catch(e => MessageUtil.error('索引删除错误', e))
+          .catch(e => MessageUtil.error(this.$t('home.index_item.delete_index_error'), e))
       });
     },
     indexOperation() {
@@ -197,32 +198,32 @@ export default defineComponent({
       } else if (this.index.state === 'close') {
         this.openIndex();
       } else {
-        MessageUtil.warning(`未知索引状态【${this.index.state}】，无法完成操作`);
+        MessageUtil.warning(this.$t('home.index_item.unknown_status_error'));
       }
     },
     openIndex() {
       const {client} = useUrlStore();
-      if (!client) return MessageUtil.error("请选择链接");
+      if (!client) return MessageUtil.error(this.$t('home.index_item.select_link'));
       client.indexOpen(this.index.name)
         .then(res => {
           MessageUtil.success(res);
           useIndexStore().refreshIndex(this.index.name);
         })
-        .catch(e => MessageUtil.error('打开索引失败', e));
+        .catch(e => MessageUtil.error(this.$t('home.index_item.open_error'), e));
     },
     closeIndex() {
       const {client} = useUrlStore();
-      if (!client) return MessageUtil.error("请选择链接");
+      if (!client) return MessageUtil.error(this.$t('home.index_item.select_link'));
       client.indexClose(this.index.name)
         .then((res) => {
           MessageUtil.success(res);
           useIndexStore().refreshIndex(this.index.name);
         })
-        .catch(e => MessageUtil.error('关闭索引失败', e));
+        .catch(e => MessageUtil.error(this.$t('home.index_item.close_error'), e));
     },
     execCopy() {
       copyText(this.index.name);
-      MessageUtil.success("已成功复制到剪切板");
+      MessageUtil.success(this.$t('home.index_item.copy_success'));
     },
     jumpToDataBrowser() {
       if (this.index) {

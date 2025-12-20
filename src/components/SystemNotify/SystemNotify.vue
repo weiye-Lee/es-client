@@ -9,7 +9,7 @@
 
   <t-drawer
     v-model:visible="drawerVisible"
-    header="系统通知"
+    :header="$t('module.system_notify.title')"
     size="500px"
     placement="right"
     :footer="false"
@@ -22,11 +22,11 @@
           />
           <div class="notification-item-footer">
             <span class="publish-date">{{ formatDate(a.published_at) }}</span>
-            <t-tag v-if="isUnread(a.id)" theme="danger" size="small">NEW</t-tag>
+            <t-tag v-if="isUnread(a.id)" theme="danger" size="small">{{ $t('module.system_notify.new') }}</t-tag>
           </div>
           <div class="notification-actions">
-            <t-button v-if="isUnread(a.id)" size="small" @click.stop="markAsRead(a.id)">标记已读</t-button>
-            <t-button v-if="a.link" theme="primary" size="small" @click.stop="openLink(a)">打开链接</t-button>
+            <t-button v-if="isUnread(a.id)" size="small" @click.stop="markAsRead(a.id)">{{ $t('module.system_notify.mark_read') }}</t-button>
+            <t-button v-if="a.link" theme="primary" size="small" @click.stop="openLink(a)">{{ $t('module.system_notify.open_link') }}</t-button>
           </div>
         </t-list-item>
       </t-list>
@@ -49,6 +49,9 @@ import {AnnouncementResponse, getAnnouncements} from './AnnouncementApi';
 import {Announcement} from './AnnouncementTypes';
 import {openUrl} from "@/utils/BrowserUtil";
 import {NotificationIcon} from "tdesign-icons-vue-next";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 const drawerVisible = ref(false);
 const currentPage = ref(1);
@@ -138,13 +141,13 @@ const maybeNotifyOnce = () => {
         <div>
           <div style="margin-bottom:8px;">{latest.description ?? latest.title}</div>
           <div>
-            <Button size="small" onClick={() => { markAsRead(latest.id); notif?.close?.(); }}>关闭</Button>
+            <Button size="small" onClick={() => { markAsRead(latest.id); notif?.close?.(); }}>{t('module.system_notify.close')}</Button>
             {latest.link && (
               <Button theme="primary" size="small" style="margin-left:8px" onClick={() => {
                 markAsRead(latest.id);
                 window.open(latest.link as string, '_blank');
                 notif?.close?.();
-              }}>查看</Button>
+              }}>{t('module.system_notify.view')}</Button>
             )}
           </div>
         </div>
@@ -185,7 +188,7 @@ const scanForUnreadAcrossPages = async () => {
   }
 };
 
-const renderTitle = (a: Announcement) => isUnread(a.id) ? `【未读】${a.title}` : a.title;
+const renderTitle = (a: Announcement) => isUnread(a.id) ? `${t('module.system_notify.unread_prefix')}${a.title}` : a.title;
 
 onMounted(() => {
   fetchPage();

@@ -12,7 +12,7 @@
             <history-icon/>
           </template>
         </t-button>
-        <div style="border-left: 2px solid var(--td-border-level-2-color);padding-left: 8px">解析器：</div>
+        <div style="border-left: 2px solid var(--td-border-level-2-color);padding-left: 8px">{{ $t('module.data_browse.parser') }}：</div>
         <t-select v-model="mode" size="small" auto-width>
           <t-option value="SQL" label="SQL"></t-option>
           <t-option value="ES|QL" label="ES|QL"></t-option>

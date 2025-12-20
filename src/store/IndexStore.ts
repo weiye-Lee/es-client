@@ -75,7 +75,7 @@ export const useIndexStore = defineStore("index", () => {
       idx = idx.filter((index) => !his.some((e) => e.test(index.name)));
     }
 
-    const {indexOrderBy} = useGlobalSettingStore();
+    const { indexOrderBy } = useGlobalSettingStore();
     return idx.sort((a, b) => {
       if (indexOrderBy === "desc") {
         return b.name.localeCompare(a.name, "zh");
@@ -96,7 +96,7 @@ export const useIndexStore = defineStore("index", () => {
       return Array.from(items);
     }
     for (const index of indices.value) {
-      const {alias, name} = index;
+      const { alias, name } = index;
       buildItem(items, names, alias, name);
     }
     return Array.from(items).sort((e1, e2) => e1.value.localeCompare(e2.value, "zh"));
@@ -109,14 +109,13 @@ export const useIndexStore = defineStore("index", () => {
   const fieldOptionMap = computed<Record<string, Array<Field>>>(() => {
     const result: Record<string, Array<Field>> = {};
     for (const index of indices.value) {
-      const {name, alias, fields} = index;
+      const { name, alias, fields } = index;
       for (const item of [name, ...alias]) {
         result[item] = [
           {
-            label: '_id',
+            label: "_id",
             value: "_id",
-            type: "text",
-            indexType: item
+            type: "text"
           },
           ...fields
         ];
@@ -133,9 +132,9 @@ export const useIndexStore = defineStore("index", () => {
   const mappingMap = computed<Map<string, IndexMapping>>(() => {
     const target = new Map<string, IndexMapping>();
     for (const index of indices.value) {
-      const {name, alias, indexInfo, types} = index;
+      const { name, alias, indexInfo, types } = index;
       for (const item of [name, ...alias]) {
-        target.set(item, indexInfo.mappings[types[0]]);
+        target.set(item, (indexInfo.mappings as Record<string, IndexMapping>)[types[0]]);
       }
     }
     return target;

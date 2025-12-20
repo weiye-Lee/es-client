@@ -8,7 +8,6 @@ import {
   buildBaseSearchOrder,
   buildBaseSearchQuery
 } from "$/elasticsearch-client/components/BaseSearchQuery";
-import {decodeIndexType} from "$/elasticsearch-client/utils";
 import {BaseQueryItem, BaseQueryOrder} from "$/elasticsearch-client";
 
 export interface BaseSearchInstanceResult {
@@ -50,12 +49,10 @@ export const useBaseSearchInstance = (): BaseSearchInstanceResult => {
     const {client} = useUrlStore();
     if (!client) return MessageUtil.warning("请选择链接");
     if (loading.value) return;
-    const {index: idx, type} = decodeIndexType(index.value);
     const {trackTotalHitsMode, trackTotalHitsValue} = useGlobalSettingStore();
     client.baseSearch(
       cloneDeep({
-        index: idx,
-        type: type,
+        index: index.value,
         query: query.value,
         order: orders.value,
         pageNum: pageNum.value,
@@ -77,14 +74,12 @@ export const useBaseSearchInstance = (): BaseSearchInstanceResult => {
   const buildSort = () => buildBaseSearchOrder({order: orders.value});
 
   const buildData = () => {
-    const {index: idx, type} = decodeIndexType(index.value);
     const {trackTotalHitsMode, trackTotalHitsValue} = useGlobalSettingStore();
     const {versionFirst} = useUrlStore();
     return stringifyJsonWithBigIntSupport(
       buildBaseSearchData(
         {
-          index: idx,
-          type: type,
+          index: index.value,
           query: query.value,
           order: orders.value,
           pageNum: pageNum.value,

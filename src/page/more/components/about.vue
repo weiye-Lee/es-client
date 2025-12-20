@@ -1,28 +1,28 @@
 <template>
   <div class="about">
     <div class="header-section">
-      <h1 class="main-title">Hi，感谢使用 es-client ！</h1>
+      <h1 class="main-title">{{ $t('more.about.title') }}</h1>
       <div class="version-info">
-        <t-tag theme="primary">版本：{{ data.version }}</t-tag>
-        <t-tag theme="success" class="build-tag">构建于 {{ data.build }}</t-tag>
+        <t-tag theme="primary">{{ $t('more.about.version', { version: data.version }) }}</t-tag>
+        <t-tag theme="success" class="build-tag">{{ $t('more.about.build', { build: data.build }) }}</t-tag>
       </div>
     </div>
 
     <!-- 专业版推广卡片 -->
     <div class="feature-card professional-card">
       <div class="card-content">
-        <h2 class="card-title">🚀 桌面专业版</h2>
+        <h2 class="card-title">{{ $t('more.about.pro_title') }}</h2>
         <p class="card-description">
-          开发者自用工具，效率翻倍
+          {{ $t('more.about.pro_desc') }}
         </p>
         <ul class="feature-list">
-          <li>📊 高级可视化图表分析</li>
-          <li>💾 全量数据导出功能</li>
-          <li>📥 批量数据导入支持</li>
-          <li>⚡ 更多高级特性</li>
+          <li>{{ $t('more.about.pro_feature_1') }}</li>
+          <li>{{ $t('more.about.pro_feature_2') }}</li>
+          <li>{{ $t('more.about.pro_feature_3') }}</li>
+          <li>{{ $t('more.about.pro_feature_4') }}</li>
         </ul>
         <t-button theme="primary" @click="open(data.url.price)" class="download-btn">
-          立即体验专业版
+          {{ $t('more.about.pro_btn') }}
         </t-button>
       </div>
     </div>
@@ -31,28 +31,28 @@
     <div class="info-cards">
       <div class="feature-card">
         <div class="card-content">
-          <h2 class="card-title">📚 使用帮助</h2>
+          <h2 class="card-title">{{ $t('more.about.help_title') }}</h2>
           <p class="card-description">
-            使用中遇到任何问题，你可以先访问用户手册，在里面可以查看功能说明及常见问题解答。
+            {{ $t('more.about.help_desc') }}
           </p>
           <t-button @click="open(data.doc.index)" variant="outline" theme="primary" class="action-btn">
-            查看用户手册
+            {{ $t('more.about.help_btn') }}
           </t-button>
         </div>
       </div>
 
       <div class="feature-card">
         <div class="card-content">
-          <h2 class="card-title">💬 建议反馈</h2>
+          <h2 class="card-title">{{ $t('more.about.feedback_title') }}</h2>
           <p class="card-description">
-            如果用户手册没有解决你的问题，或者对项目有什么建议，欢迎随时反馈。
+            {{ $t('more.about.feedback_desc') }}
           </p>
           <div class="feedback-actions">
             <t-button @click="open(data.url.feedback)" variant="outline" theme="primary" class="action-btn">
-              问题反馈
+              {{ $t('more.about.feedback_btn') }}
             </t-button>
             <t-button @click="open('mailto:' + data.email)" variant="outline" theme="primary" class="action-btn">
-              联系邮箱
+              {{ $t('more.about.email_btn') }}
             </t-button>
           </div>
         </div>
@@ -62,9 +62,9 @@
     <!-- 社区互动 -->
     <div class="feature-card community-card">
       <div class="card-content">
-        <h2 class="card-title">❤️ 开源社区</h2>
+        <h2 class="card-title">{{ $t('more.about.community_title') }}</h2>
         <p class="card-description">
-          如果这个项目对你有所帮助，欢迎 Star 关注、点赞支持，这对我们是极大的鼓励！
+          {{ $t('more.about.community_desc') }}
         </p>
         <div class="community-links">
           <template v-for="(repository, index) in data.repositories" :key="index">
@@ -73,14 +73,14 @@
           </template>
         </div>
         <t-button @click="licenseDialog = true" variant="outline" theme="primary" class="license-btn">
-          查看开源许可证
+          {{ $t('more.about.license_btn') }}
         </t-button>
       </div>
     </div>
 
     <!-- 相关资源 -->
     <div class="resources-section">
-      <h2 class="section-title">🔗 相关资源</h2>
+      <h2 class="section-title">{{ $t('more.about.resources_title') }}</h2>
       <div class="resource-list">
         <div class="community-links">
           <template v-for="(url, name, index) in data.distributes" :key="name">
@@ -91,8 +91,8 @@
       </div>
     </div>
 
-    <t-dialog header="Apache 2.0 开源许可证" v-model:visible="licenseDialog" placement="center"
-              :close-on-overlay-click=false width="800px" :footer="false">
+    <t-dialog :header="$t('more.about.license_dialog_title')" v-model:visible="licenseDialog" placement="center"
+              :close-on-overlay-click="false" width="800px" :footer="false">
       <div class="license-content">
         <license-apache2_0/>
       </div>
@@ -104,6 +104,7 @@
 import {Constant} from "@/global/Constant";
 import LicenseApache2_0 from "@/components/License/Apache2_0.vue";
 import {openUrl} from "@/utils/BrowserUtil";
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: "setting-about",

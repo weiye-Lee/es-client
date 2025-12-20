@@ -6,16 +6,19 @@ import {useDevToolFileItemStore} from "@/store/db/DevToolFileItemStore";
 import {useDevToolStore} from "@/store/components/DevToolStore";
 import MessageUtil from "@/utils/model/MessageUtil";
 import {useGlobalStore, useUrlStore} from "@/store";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 export function handleFileRename(node: TreeNodeModel) {
   const p = node.data._source as DevToolFileItem;
   useDevToolFileItemStore()
     .rename(p)
     .then(() => {
-      MessageUtil.success("重命名成功");
+      MessageUtil.success(t('dev_tool.rename_success'));
     })
     .catch((e) => {
-      if (e !== "cancel") MessageUtil.error("重命名失败", e);
+      if (e !== "cancel") MessageUtil.error(t('dev_tool.rename_failed'), e);
     });
 }
 
@@ -24,10 +27,10 @@ export function handleFileDelete(node: TreeNodeModel) {
   useDevToolFileItemStore()
     .remove(p)
     .then(() => {
-      MessageUtil.success("删除成功");
+      MessageUtil.success(t('dev_tool.delete_success'));
     })
     .catch((e) => {
-      if (e !== "cancel") MessageUtil.error("删除失败", e);
+      if (e !== "cancel") MessageUtil.error(t('dev_tool.delete_failed'), e);
     });
 }
 
@@ -50,25 +53,25 @@ export const openFileContextmenu = async (e: MouseEvent, node?: TreeNodeModel) =
     const parentId = root ? '0' : p.id;
 
     items.push({
-      label: "新建文件",
+      label: t('dev_tool.new_file'),
       icon: () => <FileAddIcon/>,
       onClick: () => {
         useDevToolFileItemStore()
           .create(parentId, false)
           .then(() => {
-            MessageUtil.success("新增成功");
+            MessageUtil.success(t('dev_tool.create_success'));
           });
       }
     });
 
     items.push({
-      label: "新建文件夹",
+      label: t('dev_tool.new_folder'),
       icon: () => <FolderAddIcon/>,
       onClick: () => {
         useDevToolFileItemStore()
           .create(parentId, true)
           .then(() => {
-            MessageUtil.success("新增成功");
+            MessageUtil.success(t('dev_tool.create_success'));
           });
       }
     });
@@ -77,7 +80,7 @@ export const openFileContextmenu = async (e: MouseEvent, node?: TreeNodeModel) =
   // 为文件节点添加打开选项
   if (!root && !folder) {
     items.push({
-      label: "打开",
+      label: t('dev_tool.open'),
       icon: () => <ComponentRadioIcon/>,
       onClick: () => {
         useDevToolStore().onFileItemClick(p);
@@ -89,23 +92,23 @@ export const openFileContextmenu = async (e: MouseEvent, node?: TreeNodeModel) =
   if (!root) {
     items.push(
       {
-        label: "重命名",
+        label: t('dev_tool.rename'),
         icon: () => <EditIcon/>,
         onClick: () => {
           handleFileRename(node);
         }
       },
       {
-        label: "删除",
+        label: t('dev_tool.delete'),
         icon: () => <DeleteIcon/>,
         onClick: () => {
           useDevToolFileItemStore()
             .remove(p)
             .then(() => {
-              MessageUtil.success("删除成功");
+              MessageUtil.success(t('dev_tool.delete_success'));
             })
             .catch((e) => {
-              if (e !== "cancel") MessageUtil.error("删除失败", e);
+              if (e !== "cancel") MessageUtil.error(t('dev_tool.delete_failed'), e);
             });
         }
       }

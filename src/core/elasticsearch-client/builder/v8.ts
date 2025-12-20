@@ -217,7 +217,7 @@ export class ElasticsearchClientV8 extends ElasticsearchClientCommon {
       const result = parseJsonWithBigIntSupport(response);
 
       return {
-        total: result.hits.total.value || result.hits.total,
+        total: result.hits.total.value,
         data: response
       };
     } catch (error) {
@@ -395,9 +395,9 @@ export class ElasticsearchClientV8 extends ElasticsearchClientCommon {
       url: "/_index_template"
     });
     parseJsonWithBigIntSupport(indexTemplateStr)
-      .index_templates.map((e: any) => e.name)
+      .index_templates.map((e) => e.name)
       .sort()
-      .forEach((e: any) => {
+      .forEach((e) => {
         items.push({
           name: e,
           type: "composable"

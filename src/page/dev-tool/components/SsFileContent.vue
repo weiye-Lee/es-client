@@ -1,6 +1,6 @@
 <template>
   <div class="ss-file-content">
-    <t-loading :loading="!init" class="w-full h-full relative" tip="初始化中">
+    <t-loading :loading="!init" class="w-full h-full relative" :tip="$t('dev_tool.initializing')">
       <SplitPanel v-model="size">
         <template #left>
           <RestEditor

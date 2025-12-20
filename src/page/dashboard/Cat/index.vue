@@ -1,6 +1,6 @@
 <template>
   <t-card class="dashboard-cat" size="small">
-    <t-loading dot tip="数据加载中..." :loading="loading">
+    <t-loading dot :tip="$t('module.dashboard.data_loading')" :loading="loading">
       <div class="header">
         <t-space>
           <t-select v-model="activeKey" allow-search>
@@ -13,7 +13,7 @@
           </t-select>
         </t-space>
         <div>
-          <t-tooltip content="跳转到开发者工具" position="br">
+          <t-tooltip :content="$t('module.dashboard.jump_to_dev_tool')" position="br">
             <t-button variant="text" theme="primary" shape="square" @click="jumpTo()">
               <template #icon>
                 <filter-icon />
@@ -45,6 +45,9 @@ import { useIndexStore, useUrlStore } from "@/store";
 import PageNameEnum from "@/enumeration/PageNameEnum";
 import { FilterIcon, RefreshIcon } from "tdesign-icons-vue-next";
 import {useSeniorSearchStore} from "@/store/components/SeniorSearchStore";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 const size = useWindowSize();
 const router = useRouter();
@@ -96,7 +99,7 @@ function handler(url: string) {
       columns.value = data.columns;
       records.value = data.records;
     })
-    .catch((e) => MessageUtil.error("获取数据失败！", e))
+    .catch((e) => MessageUtil.error(t('module.dashboard.fetch_data_error'), e))
     .finally(() => (loading.value = false));
 }
 

@@ -1,8 +1,8 @@
 <template>
   <div class="abs-07">
     <t-tabs v-model="activeKey" hide-content>
-      <t-tab-panel :value="ActiveKey.FIELD_TYPE" label="字段类型" />
-      <t-tab-panel :value="ActiveKey.ANALYZER" label="分析器" disabled />
+      <t-tab-panel :value="ActiveKey.FIELD_TYPE" :label="$t('module.dashboard.field_type')" />
+      <t-tab-panel :value="ActiveKey.ANALYZER" :label="$t('module.dashboard.analyzer')" disabled />
       <template #action>
         <t-button variant="text" theme="primary" @click="action()">
           <template #icon>

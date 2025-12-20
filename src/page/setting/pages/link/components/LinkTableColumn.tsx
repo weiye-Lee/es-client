@@ -2,22 +2,25 @@ import {Button, Link, Popconfirm, Space, Tag, TdPrimaryTableProps} from "tdesign
 import { openUpdateLink } from "@/page/setting/pages/link/components/EditLink";
 import MessageUtil from "@/utils/model/MessageUtil";
 import {copyText} from "@/utils/BrowserUtil";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 export const linkTableColumn: TdPrimaryTableProps["columns"] = [
   {
-    title: "名称",
+    title: t('setting.name'),
     colKey: "name",
     width: 120,
     fixed: "left"
   },
   {
-    title: "链接",
+    title: t('setting.link'),
     colKey: "value",
     cell: (_h, { row }) => (
       <Link theme={"primary"}
         onClick={() => {
           copyText(row.value);
-          MessageUtil.success("已复制到剪切板");
+          MessageUtil.success(t('setting.copied'));
         }}
       >
         {row.value}
@@ -25,24 +28,24 @@ export const linkTableColumn: TdPrimaryTableProps["columns"] = [
     )
   },
   {
-    title: "平台",
+    title: t('setting.platform'),
     colKey: "platform",
     cell: (_h, { row }) => (
       <Tag theme={"primary"}>{row.platform || 'elasticsearch'}</Tag>
     )
   },
   {
-    title: "版本",
+    title: t('setting.version'),
     colKey: "version"
   },
   {
-    title: "认证",
+    title: t('setting.auth'),
     colKey: "isAuth",
     width: 100,
-    cell: (_h, { row }) => <div>{row.isAuth ? "是" : "否"}</div>
+    cell: (_h, { row }) => <div>{row.isAuth ? t('setting.yes') : t('setting.no')}</div>
   },
   {
-    title: "操作",
+    title: t('setting.operation'),
     colKey: "action",
     width: 170,
     fixed: "right",
@@ -50,10 +53,10 @@ export const linkTableColumn: TdPrimaryTableProps["columns"] = [
     cell: (_h, { row }) => (
       <Space>
         <Button theme={"primary"} size={"small"} onClick={() => openUpdateLink(row as any)}>
-          修改
+          {t('setting.edit')}
         </Button>
-        <Popconfirm confirmBtn={"删除"} content={"是否删除链接，删除后将无法恢复"}>
-          <Button theme={"danger"} size={"small"}>删除</Button>
+        <Popconfirm confirmBtn={t('setting.delete')} content={t('setting.delete_confirm')}>
+          <Button theme={"danger"} size={"small"}>{t('setting.delete')}</Button>
         </Popconfirm>
       </Space>
     )

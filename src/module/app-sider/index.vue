@@ -6,79 +6,79 @@
         <template #icon>
           <home-icon/>
         </template>
-        概览
+        {{ $t('menu.home') }}
       </t-menu-item>
       <t-menu-item :value="PageNameEnum.DATA_BROWSE">
         <template #icon>
           <table2-icon/>
         </template>
-        数据浏览
+        {{ $t('menu.data_browser') }}
       </t-menu-item>
       <t-menu-item :value="PageNameEnum.BASE_SEARCH">
         <template #icon>
           <search-icon/>
         </template>
-        基础搜索
+        {{ $t('menu.base_search') }}
       </t-menu-item>
       <t-menu-item :value="PageNameEnum.DEV_TOOL">
         <template #icon>
           <code-icon />
         </template>
-        开发者工具
+        {{ $t('menu.dev_tools') }}
       </t-menu-item>
       <t-submenu :value="PageNameEnum.DASHBOARD">
         <template #icon>
           <dashboard-icon/>
         </template>
-        <template #title>仪表盘</template>
+        <template #title>{{ $t('menu.dashboard') }}</template>
         <t-menu-item :value="PageNameEnum.DASHBOARD_INFO">
-          信息
+          {{ $t('menu.dashboard_info') }}
         </t-menu-item>
         <t-menu-item :value="PageNameEnum.DASHBOARD_NODE">
-          节点
+          {{ $t('menu.dashboard_node') }}
         </t-menu-item>
         <t-menu-item :value="PageNameEnum.DASHBOARD_SHARD_AND_REPLICA">
-          副本与分片
+          {{ $t('menu.dashboard_shards') }}
         </t-menu-item>
         <t-menu-item :value="PageNameEnum.DASHBOARD_CAT">
-          _cat
+          {{ $t('menu.dashboard_cat') }}
         </t-menu-item>
         <t-menu-item :value="PageNameEnum.DASHBOARD_ANALYSIS">
-          分析
+          {{ $t('menu.dashboard_analysis') }}
         </t-menu-item>
       </t-submenu>
       <t-submenu :value="PageNameEnum.SETTING">
         <template #icon>
           <setting-icon/>
         </template>
-        <template #title>设置</template>
+        <template #title>{{ $t('menu.setting') }}</template>
         <t-menu-item :value="PageNameEnum.SETTING_GLOBAL">
-          全局设置
+          {{ $t('menu.setting_global') }}
         </t-menu-item>
         <t-menu-item :value="PageNameEnum.SETTING_LINK">
-          链接管理
+          {{ $t('menu.setting_link') }}
         </t-menu-item>
       </t-submenu>
       <t-submenu :value="PageNameEnum.MORE">
         <template #icon>
           <ellipsis-icon/>
         </template>
-        <template #title>更多</template>
+        <template #title>{{ $t('menu.more') }}</template>
         <t-menu-item :value="PageNameEnum.MORE_UPDATE">
-          更新日志
+          {{ $t('menu.more_changelog') }}
         </t-menu-item>
         <t-menu-item :value="PageNameEnum.MORE_PRIVACY">
-          隐私协议
+          {{ $t('menu.more_privacy') }}
         </t-menu-item>
         <t-menu-item :value="PageNameEnum.MORE_ABOUT">
-          关于
+          {{ $t('menu.more_about') }}
         </t-menu-item>
       </t-submenu>
       <t-menu-item :value="PageNameEnum.SENIOR_SEARCH">
         <template #icon>
           <filter-icon/>
         </template>
-        高级搜索
+        {{ $t('menu.senior_search') }}
       </t-menu-item>
       <template #operations>
         <t-button variant="text" shape="square" @click="changeCollapsed()">

@@ -1,3 +1,5 @@
+import i18n from "@/i18n";
+
 export function contains<T>(arr: T[], keyword: T): boolean {
   try {
     for (const item of arr) {
@@ -60,7 +62,7 @@ export function map<T extends Record<string, any>, K extends T[A], A extends key
       if (merge) {
         result.set(key, merge(old, item));
       } else {
-        throw new Error("未设置合并方法，无法合并相同key");
+        throw new Error(i18n.global.t('core.array.merge_method_not_set'));
       }
     } else {
       result.set(key, item);

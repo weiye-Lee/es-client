@@ -21,6 +21,7 @@ import MonacoEditor from "@/components/monaco-editor/index.vue";
 import {formatJsonString, parseJsonWithBigIntSupport, stringifyJsonWithBigIntSupport} from "$/util";
 import {copyText} from "@/utils/BrowserUtil";
 import AlertExtend from "@/components/AppExtend/AlertExtend.vue";
+import i18n from "@/i18n";
 
 /**
  * 索引创建
@@ -61,7 +62,6 @@ export function indexAdd(): void {
     if (/^[_\-+]+/.test(value)) {
       nameError.value = 3;
       return;
-
     }
     nameError.value = 0;
   });
@@ -71,7 +71,7 @@ export function indexAdd(): void {
     if (fromIndex.value) {
       const sourceIndex = useIndexStore().indicesMap.get(fromIndex.value);
       if (!sourceIndex) {
-        MessageUtil.warning("找不到源索引");
+        MessageUtil.warning(i18n.global.t('home.index_add.source_index_not_found'));
         return;
       }
       index.value = {
@@ -83,26 +83,26 @@ export function indexAdd(): void {
   }
 
   let modalReturn = DialogPlugin({
-    header: "新建索引",
+    header: i18n.global.t('home.index_add.title'),
     width: "850px",
     draggable: true,
     dialogClassName: "home-index-add",
     placement: "center",
     default: () => <>
       <Form data={index.value}>
-        <AlertExtend title={"手动建索引太麻烦？"} content={"提供可视化创建索引向导，轻松搞定复杂配置！"}
-                     event={"新建索引"}/>
-        <FormItem label="名称" labelAlign={"top"}>
+        <AlertExtend title={i18n.global.t('home.index_add.manual_trouble')} content={i18n.global.t('home.index_add.wizard_desc')}
+                     event={"create-index"}/>
+        <FormItem label={i18n.global.t('home.index_add.name')} labelAlign={"top"}>
           {{
             default: () => <Input v-model={index.value.name} style="width: 300px;" maxlength={255}
                                   clearable/>,
             help: () => {
               if (nameError.value === 1) {
-                return <span>不能是大写。</span>
+                return <span>{i18n.global.t('home.index_add.name_cannot_be_uppercase')}</span>
               } else if (nameError.value === 2) {
-                return <span>不能包含 \，/，*，?，"，&lt;，&gt;，|，(空格)，,，#等字符。</span>
+                return <span>{i18n.global.t('home.index_add.name_invalid_chars')}</span>
               } else if (nameError.value === 3) {
-                return <span>不能以 -，_，+ 开头。</span>
+                return <span>{i18n.global.t('home.index_add.name_start_invalid')}</span>
               }
             }
           }}
@@ -111,17 +111,17 @@ export function indexAdd(): void {
       <Tabs v-model={activeKey.value}>
         {{
           default: () => <>
-            <TabPanel label="设置" value="1">
+            <TabPanel label={i18n.global.t('home.index_add.settings')} value="1">
               <Form data={index.value.settings} layout="vertical" class={"mt-8px"}>
-                <FormItem label="分片数">
+                <FormItem label={i18n.global.t('home.index_add.shards')}>
                   <InputNumber v-model={index.value.settings.number_of_shards}/>
                 </FormItem>
-                <FormItem label="副本数">
+                <FormItem label={i18n.global.t('home.index_add.replicas')}>
                   <InputNumber v-model={index.value.settings.number_of_replicas}/>
                 </FormItem>
               </Form>
             </TabPanel>
-            <TabPanel label="映射设置" value="2">
+            <TabPanel label={i18n.global.t('home.index_add.mapping_settings')} value="2">
               <MonacoEditor v-model={index.value.mappings} language="json"
                             height={'calc(80vh - 336px)'} class={"mt-8px"}/>
             </TabPanel>
@@ -131,17 +131,17 @@ export function indexAdd(): void {
               {indices.value.map(idx =>
                 <Option value={idx.name}>{idx.name}</Option>)}
             </Select>
-            <Button variant="text" theme={"primary"} disabled={disabled.value} onClick={copy}>拷贝mapper</Button>
+            <Button variant="text" theme={"primary"} disabled={disabled.value} onClick={copy}>{i18n.global.t('home.index_add.copy_mapper')}</Button>
           </>
         }}
       </Tabs>
     </>,
     footer: () => <>
       <Button variant="text" theme={"primary"}
-              onClick={() => jumpToSeniorSearch(index, modalReturn)}>跳转到高级查询</Button>
-      <Button variant="text" theme={"primary"} onClick={() => copyIndex(index, modalReturn)}>复制到剪切板</Button>
-      <Button theme="default" onClick={() => modalReturn.destroy()}>取消</Button>
-      <Button theme="primary" onClick={() => addIndex(index, modalReturn)}>新增</Button>
+              onClick={() => jumpToSeniorSearch(index, modalReturn)}>{i18n.global.t('home.index_add.jump_to_senior_search')}</Button>
+      <Button variant="text" theme={"primary"} onClick={() => copyIndex(index, modalReturn)}>{i18n.global.t('home.index_add.copy_to_clipboard')}</Button>
+      <Button theme="default" onClick={() => modalReturn.destroy()}>{i18n.global.t('home.index_add.cancel')}</Button>
+      <Button theme="primary" onClick={() => addIndex(index, modalReturn)}>{i18n.global.t('home.index_add.create')}</Button>
     </>,
   });
 }
@@ -160,21 +160,21 @@ function jumpToSeniorSearch(index: Ref<IndexInstance>, modalReturn: DialogInstan
 function copyIndex(index: Ref<IndexInstance>, modalReturn: DialogInstance) {
   // 执行拷贝
   copyText(stringifyJsonWithBigIntSupport(getIndexCreate(index)));
-  MessageUtil.success("已成功复制到剪切板");
+  MessageUtil.success(i18n.global.t('home.index_add.copy_success'));
   modalReturn.destroy();
 }
 
 function addIndex(index: Ref<IndexInstance>, modalReturn: DialogInstance) {
   const {client} = useUrlStore();
-  if (!client) return MessageUtil.error("请选择链接");
-  const instance = LoadingPlugin({text: "正在新增索引"});
+  if (!client) return MessageUtil.error(i18n.global.t('home.index_add.select_link'));
+  const instance = LoadingPlugin({text: i18n.global.t('home.index_add.creating')});
   // 新增
   client.createIndex(index.value.name, stringifyJsonWithBigIntSupport(getIndexCreate(index)))
     .then(res => {
       MessageUtil.success(res);
-      useIndexStore().refreshIndex(index.value.name).catch(e => MessageUtil.error('索引刷新错误，请手动刷新', e));
+      useIndexStore().refreshIndex(index.value.name).catch(e => MessageUtil.error(i18n.global.t('home.index_add.refresh_error'), e));
     })
-    .catch(e => MessageUtil.error('索引创建错误', e))
+    .catch(e => MessageUtil.error(i18n.global.t('home.index_add.create_error'), e))
     .finally(() => instance.hide());
   modalReturn.destroy()
 }

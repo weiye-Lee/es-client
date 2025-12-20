@@ -13,7 +13,7 @@
     >
       <div class="tab-title" :title="item.label ?? item.value">{{ item.label ?? item.value }}</div>
       <div class="close-icon pl-2px" @click.stop="onRemove(item)">
-        <CloseIcon aria-label="关闭标签" />
+        <CloseIcon :aria-label="$t('action.close')" />
       </div>
     </div>
   </div>

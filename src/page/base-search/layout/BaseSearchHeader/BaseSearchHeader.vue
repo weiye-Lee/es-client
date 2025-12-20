@@ -9,10 +9,10 @@
         filterable
         creatable
         :options="indexOptions"
-        placeholder="请选择索引"
+        :placeholder="$t('module.base_search.index_placeholder')"
       />
       <!-- 搜索 -->
-      <t-button theme="success" shape="square" :disabled="index === ''" title="搜索" @click="run()">
+      <t-button theme="success" shape="square" :disabled="index === ''" :title="$t('module.base_search.search')" @click="run()">
         <template #icon>
           <search-icon/>
         </template>
@@ -22,7 +22,7 @@
         theme="primary"
         shape="square"
         :disabled="!hasIndexManage"
-        title="索引信息"
+        :title="$t('module.base_search.index_info')"
         @click="openIndex()"
       >
         <template #icon>
@@ -34,7 +34,7 @@
         variant="outline"
         shape="square"
         :disabled="index === ''"
-        title="打印"
+        :title="$t('module.base_search.print')"
         @click="printHandler()"
       >
         <template #icon>
@@ -52,10 +52,12 @@ import {InfoCircleIcon, PrintIcon, SearchIcon} from "tdesign-icons-vue-next";
 import {useUmami} from "@/plugins/umami";
 import {BaseSearchInstanceResult} from "@/hooks";
 import MessageUtil from "@/utils/model/MessageUtil";
-import {decodeIndexType} from "$/elasticsearch-client/utils";
 import {useIndexManageEvent} from "@/global/BeanFactory";
 import {showDataExportDrawer} from "@/components/DataExport";
 import {parseJsonWithBigIntSupport} from "$/util";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 const props = defineProps({
   tab: {
@@ -76,19 +78,18 @@ function printHandler() {
   useUmami.track("func_base_search", "打印");
   // 选择了索引
   if (!index.value) {
-    MessageUtil.error("请选择索引");
+    MessageUtil.error(t('module.base_search.please_select_index'));
     return;
   }
   // 有记录
   if (total.value === 0) {
-    MessageUtil.warning("数据为空");
+    MessageUtil.warning(t('module.base_search.data_is_empty'));
     return;
   }
-  const {index: idx} = decodeIndexType(index.value);
   // 显示导出对话框
   showDataExportDrawer({
-    index: idx,
-    name: idx,
+    index: index.value,
+    name: index.value,
     search: parseJsonWithBigIntSupport(buildData()),
   });
 }
@@ -96,8 +97,7 @@ function printHandler() {
 function openIndex() {
   useUmami.track("func_base_search", "索引管理");
   if (useIndexStore().mappingMap.has(index.value)) {
-    const {index: idx} = decodeIndexType(index.value);
-    useIndexManageEvent.emit(idx);
+    useIndexManageEvent.emit(index.value);
   }
 }
 </script>

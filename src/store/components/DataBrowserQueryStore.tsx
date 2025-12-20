@@ -1,18 +1,17 @@
-import {defineStore} from "pinia";
-import {DataBrowserQueryItem,} from "@/entity/DataBrowser/DataBrowserQuery";
+import { defineStore } from "pinia";
+import { DataBrowserQueryItem } from "@/entity";
 import MessageUtil from "@/utils/model/MessageUtil";
-import {DialogPlugin, FormItem, Input,} from "tdesign-vue-next";
+import { DialogPlugin, FormItem, Input } from "tdesign-vue-next";
 import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
 import {
   addDataBrowserQuery,
   deleteDataBrowserQuery,
   listDataBrowserQuery,
-  renameDataBrowserQuery,
-} from "@/service/DataBrowser/DataBrwoserQueryService";
-import {useSnowflake} from "$/util";
+  renameDataBrowserQuery
+} from "@/api";
 
 export const useDataBrowserQueryStore = defineStore("dataBrowserQuery", () => {
-  const urlId = ref<number>();
+  const urlId = ref<string>();
   const query = ref<Array<DataBrowserQueryItem>>([]);
 
   async function fetchData() {
@@ -24,7 +23,7 @@ export const useDataBrowserQueryStore = defineStore("dataBrowserQuery", () => {
     query.value = items.sort((a, b) => a.name.localeCompare(b.name, "zh"));
   }
 
-  const init = async (id?: number) => {
+  const init = async (id?: string) => {
     if (id === urlId.value) return;
     urlId.value = id;
     await fetchData();
@@ -36,7 +35,7 @@ export const useDataBrowserQueryStore = defineStore("dataBrowserQuery", () => {
       default: () => (
         <div>
           <FormItem label={"文件名"}>
-            <Input type="text" v-model={name.value} autofocus/>
+            <Input type="text" v-model={name.value} autofocus />
           </FormItem>
         </div>
       ),
@@ -46,10 +45,7 @@ export const useDataBrowserQueryStore = defineStore("dataBrowserQuery", () => {
       onConfirm: () => {
         dialog.setConfirmLoading(true);
         addDataBrowserQuery(urlId.value!, {
-          name: name.value,
-          id: useSnowflake().nextId(),
-          createTime: Date.now(),
-          updateTime: Date.now(),
+          name: name.value
         })
           .then(() => {
             MessageUtil.success("新增成功");
@@ -62,7 +58,7 @@ export const useDataBrowserQueryStore = defineStore("dataBrowserQuery", () => {
           .finally(() => {
             dialog.setConfirmLoading(false);
           });
-      },
+      }
     });
   };
 
@@ -82,7 +78,7 @@ export const useDataBrowserQueryStore = defineStore("dataBrowserQuery", () => {
   const rename = async (id: string, name: string) => {
     MessageBoxUtil.prompt(`请输入新的查询名称`, "重命名查询", {
       inputValue: name,
-      confirmButtonText: "重命名",
+      confirmButtonText: "重命名"
     }).then((newName) => {
       if (!newName) return MessageUtil.error("请输入新的查询名称");
       renameDataBrowserQuery(urlId.value!, id, newName)
@@ -101,6 +97,6 @@ export const useDataBrowserQueryStore = defineStore("dataBrowserQuery", () => {
     init,
     add,
     rename,
-    remove,
+    remove
   };
 });

@@ -7,13 +7,13 @@
           <template #icon>
             <add-icon/>
           </template>
-          新建
+          {{ $t('dev_tool.new') }}
         </t-button>
         <t-button variant="text" size="small" :loading="refreshing" @click="handleRefresh">
           <template #icon>
             <refresh-icon/>
           </template>
-          刷新
+          {{ $t('dev_tool.refresh') }}
         </t-button>
       </t-space>
     </div>
@@ -58,7 +58,7 @@
                     <template #prefix-icon>
                       <file-add-icon/>
                     </template>
-                    新增文件
+                    {{ $t('dev_tool.new_file') }}
                   </t-dropdown-item>
                   <t-dropdown-item
                     v-if="node.data.icon !== 'file'"
@@ -73,7 +73,7 @@
                     <template #prefix-icon>
                       <folder-add-icon/>
                     </template>
-                    新增文件夹
+                    {{ $t('dev_tool.new_folder') }}
                   </t-dropdown-item>
                   <t-dropdown-item
                     v-if="node.data.icon !== 'global' && node.data.icon !== 'connection'"
@@ -82,7 +82,7 @@
                     <template #prefix-icon>
                       <edit-icon/>
                     </template>
-                    重命名
+                    {{ $t('dev_tool.rename') }}
                   </t-dropdown-item>
                   <t-dropdown-item
                     v-if="node.data.icon !== 'global' && node.data.icon !== 'connection'"
@@ -92,7 +92,7 @@
                     <template #prefix-icon>
                       <delete-icon/>
                     </template>
-                    删除
+                    {{ $t('dev_tool.delete') }}
                   </t-dropdown-item>
                 </t-dropdown-menu>
               </t-dropdown>
@@ -127,7 +127,9 @@ import MessageUtil from "@/utils/model/MessageUtil";
 import LocalNameEnum from "@/enumeration/LocalNameEnum";
 import {createDevTool} from "@/page/dev-tool/layout/DevToolFile/func/CreateDevTool";
 import {toggleArray} from "$/util";
+import {useI18n} from "vue-i18n";
 
+const {t} = useI18n();
 const fileItemStore = useDevToolFileItemStore();
 const searchStore = useDevToolStore();
 
@@ -154,9 +156,9 @@ const handleRefresh = async () => {
   refreshing.value = true;
   try {
     fileItemStore.refresh();
-    MessageUtil.success("刷新成功");
+    MessageUtil.success(t('dev_tool.refresh_success'));
   } catch (error) {
-    MessageUtil.error("刷新失败", error);
+    MessageUtil.error(t('dev_tool.refresh_failed'), error);
   } finally {
     refreshing.value = false;
   }

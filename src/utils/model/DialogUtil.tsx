@@ -3,6 +3,7 @@ import {BrowserWindowType, createDataBrowserWindow} from "@/plugins/native/brows
 import {Constant} from "@/global/Constant";
 import {formatJsonString, stringifyJsonWithBigIntSupport} from "$/util";
 import {DialogInstance, DialogPlugin, TNode} from "tdesign-vue-next";
+import i18n from "@/i18n";
 import MonacoView from "@/components/view/MonacoView/index.vue";
 import {useUrlStore} from "@/store";
 import highlight from "highlight.js";
@@ -26,10 +27,10 @@ export function showJsonDialogByAsync(
   data: Promise<string>,
   options?: DialogOption
 ) {
-  const loading = useLoading("开始获取数据，请稍后");
+  const loading = useLoading(i18n.global.t('utils.message.loading_data'));
   data
     .then((json) => showJson(title, json, options))
-    .catch((e) => MessageUtil.error("数据获取失败", e))
+    .catch((e) => MessageUtil.error(i18n.global.t('utils.message.data_fetch_failed'), e))
     .finally(() => loading.close());
 }
 
@@ -40,15 +41,15 @@ export function showJsonDialogByAsync(
  * @param options 操作人
  */
 export function showInstanceInfoDialog(title: string, url: string, options?: DialogOption) {
-  const loading = useLoading("开始获取数据，请稍后");
+  const loading = useLoading(i18n.global.t('utils.message.loading_data'));
   const {client} = useUrlStore();
   if (!client) {
-    MessageUtil.error("请选择链接");
+    MessageUtil.error(i18n.global.t('utils.message.select_link'));
     return;
   }
   client.getText(url)
     .then((json) => showJson(title, json, options))
-    .catch((e) => MessageUtil.error("数据获取失败", e))
+    .catch((e) => MessageUtil.error(i18n.global.t('utils.message.data_fetch_failed'), e))
     .finally(() => loading.close());
 }
 
@@ -96,7 +97,7 @@ export function jsonToHtml(json: string | any): { html: string, original: string
       try {
         value = formatJsonString(json)
       } catch (e) {
-        MessageUtil.error("格式化JSON失败", e);
+        MessageUtil.error(i18n.global.t('utils.message.json_format_failed'), e);
         value = json as string;
         needPretty = false;
       }

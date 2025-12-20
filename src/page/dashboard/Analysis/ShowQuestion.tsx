@@ -1,11 +1,14 @@
 import { DialogPlugin, Paragraph } from "tdesign-vue-next";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 export function showFieldType() {
   DialogPlugin({
-    header: "字段类型分析",
+    header: t('module.dashboard.field_type_analysis'),
     placement: "center",
     default: () => (
-      <Paragraph>此功能可以帮助您对文本进行分析，展示文本分析器会对文本产生什么结果。</Paragraph>
+      <Paragraph>{t('module.dashboard.analysis_help')}</Paragraph>
     ),
     draggable: true,
     footer: false
@@ -14,10 +17,10 @@ export function showFieldType() {
 
 export function showAnalyzer() {
   DialogPlugin({
-    header: "分析器分析",
+    header: t('module.dashboard.analyzer_analysis'),
     placement: "center",
     default: () => (
-      <Paragraph>此功能可以帮助您对文本进行分析，展示文本分析器会对文本产生什么结果。</Paragraph>
+      <Paragraph>{t('module.dashboard.analysis_help')}</Paragraph>
     ),
     draggable: true,
     footer: false

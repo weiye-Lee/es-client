@@ -1,7 +1,7 @@
 <template>
   <div class="field-condition-container">
     <div v-if="query.length === 0">
-      <t-button theme="primary" @click="add()">新增</t-button>
+      <t-button theme="primary" @click="add()">{{ $t('module.base_search.add') }}</t-button>
     </div>
     <div v-for="(_item, idx) in query" :key="_item.id" style="margin-bottom: 10px">
       <field-condition-item
@@ -15,7 +15,7 @@
     </div>
     <t-dialog
       v-model:visible="condition.dialog"
-      header="请输入terms条件"
+      :header="$t('module.base_search.terms_condition_input')"
       placement="center"
       :footer="false"
     >

@@ -4,9 +4,10 @@ import MessageUtil from "@/utils/model/MessageUtil";
 import { listToTree } from "@/page/dev-tool/func";
 import { cloneDeep } from "es-toolkit";
 import {DevToolFileCreateProp} from "@/entity";
-import {devToolFileList} from "@/service/DevToolFileService";
+import {devToolFileList} from "@/api/DevToolFileService";
+import i18n from "@/i18n";
 
-
+const t = (key: string) => i18n.global.t(key);
 
 export async function createDevTool(props?: Partial<DevToolFileCreateProp>) {
   const { id } = useUrlStore();
@@ -24,10 +25,10 @@ export async function createDevTool(props?: Partial<DevToolFileCreateProp>) {
   devToolFileList(id).then(res => data.value = listToTree(res)).finally(() => folderLoading.value = false)
 
   const dp = DialogPlugin({
-    header: "新增文件" + (devTool.value.folder ? "夹" : ""),
+    header: devTool.value.folder ? t('dev_tool.new_folder') : t('dev_tool.new_file'),
     placement: "center",
-    confirmBtn: "新增",
-    cancelBtn: "取消",
+    confirmBtn: t('dev_tool.create'),
+    cancelBtn: t('dev_tool.cancel'),
     onConfirm: async () => {
       dp.update({
         confirmLoading: true
@@ -36,15 +37,15 @@ export async function createDevTool(props?: Partial<DevToolFileCreateProp>) {
         .add(cloneDeep(devTool.value))
         .then(() => {
           dp.destroy();
-          MessageUtil.success("新增成功");
+          MessageUtil.success(t('dev_tool.create_success'));
         });
     },
     default: () => (
       <Form data={devTool.value}>
-        <FormItem label={"文件" + (devTool.value.folder ? "夹" : "") + "名称"}>
+        <FormItem label={devTool.value.folder ? t('dev_tool.folder_name') : t('dev_tool.file_name')}>
           <Input v-model={devTool.value.name} clearable autofocus={true} />
         </FormItem>
-        <FormItem label={"父级文件夹"}>
+        <FormItem label={t('dev_tool.parent_folder')}>
           <TreeSelect
             v-model={devTool.value.parentId}
             data={data.value}

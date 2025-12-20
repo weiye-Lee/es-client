@@ -5,19 +5,20 @@
         {{ name || 'ES-client' }}
       </div>
       <!-- 索引服务器选择 -->
-      <t-select v-model="urlId" placeholder="请选择链接" filterable clearable @change="selectUrl"
+      <t-select v-model="urlId" :placeholder="$t('placeholder.select_link')" filterable clearable @change="selectUrl"
                 class="url-select" :style="{width: width + 'px'}">
         <t-option v-for="url in urls" :key="url.id" :label="url.name" :value="url.id"/>
         <template #panel-bottom-content>
           <div class="select-panel-footer">
             <t-button theme="primary" variant="text" block @click="openAddLink()">
-              新增链接
+              {{ $t('action.add_link') }}
             </t-button>
           </div>
         </template>
       </t-select>
       <!-- 刷新按钮 -->
-      <t-button theme="primary" class="refresh" @click="refresh()" :disabled="!urlId || urlId === ''">刷新
+      <t-button theme="primary" class="refresh" @click="refresh()" :disabled="!urlId || urlId === ''">
+        {{ $t('action.refresh') }}
       </t-button>
       <t-progress v-if="total_shards > 0" :percentage="Math.round(active_shards / total_shards * 100)"
                   :status="status" class="mt-9px w-220px ml-14px">
@@ -27,11 +28,26 @@
       </t-progress>
     </div>
     <div class="right">
-      <LinkExtend style="margin-right: 8px;"/>
+<!--      <LinkExtend style="margin-right: 8px;"/>-->
       <!-- 系统通知 -->
       <SystemNotify/>
       <!-- 各种信息弹框 -->
       <app-info class-name="menu-item" />
+      <!-- 语言切换 -->
+      <t-dropdown trigger="click">
+        <t-button shape="square" variant="text" theme="primary">
+          <template #icon>
+            <translate-icon />
+          </template>
+        </t-button>
+        <t-dropdown-menu>
+          <t-dropdown-item @click="setLang('zh-CN')">简体中文</t-dropdown-item>
+          <t-dropdown-item @click="setLang('zh-TW')">繁体中文</t-dropdown-item>
+          <t-dropdown-item @click="setLang('en')">English</t-dropdown-item>
+          <t-dropdown-item @click="setLang('ja')">日本語</t-dropdown-item>
+          <t-dropdown-item @click="setLang('de')">Deutsch</t-dropdown-item>
+        </t-dropdown-menu>
+      </t-dropdown>
       <!-- 主题切换 -->
       <t-dropdown trigger="click">
         <t-button shape="square" variant="text" theme="primary">
@@ -46,19 +62,19 @@
             <template #prefix-icon>
               <sunny-icon/>
             </template>
-            日间
+            {{ $t('theme.light') }}
           </t-dropdown-item>
           <t-dropdown-item @click="setMode('dark')">
             <template #prefix-icon>
               <moon-icon/>
             </template>
-            黑夜
+            {{ $t('theme.dark') }}
           </t-dropdown-item>
           <t-dropdown-item @click="setMode('auto')">
             <template #prefix-icon>
               <fill-color-icon/>
             </template>
-            跟随系统
+            {{ $t('theme.auto') }}
           </t-dropdown-item>
         </t-dropdown-menu>
       </t-dropdown>
@@ -72,25 +88,25 @@
             <template #prefix-icon>
               <chat-message-icon/>
             </template>
-            问题反馈
+            {{ $t('action.feedback') }}
           </t-dropdown-item>
           <t-dropdown-item @click="versionCommand('log')">
             <template #prefix-icon>
               <chat-bubble-history-icon/>
             </template>
-            更新日志
+            {{ $t('action.changelog') }}
           </t-dropdown-item>
           <t-dropdown-item @click="versionCommand('repository')">
             <template #prefix-icon>
               <logo-github-icon/>
             </template>
-            代码仓库
+            {{ $t('action.repository') }}
           </t-dropdown-item>
           <t-dropdown-item @click="versionCommand('about')">
             <template #prefix-icon>
               <InfoCircleIcon/>
             </template>
-            关于
+            {{ $t('action.about') }}
           </t-dropdown-item>
         </t-dropdown-menu>
       </t-dropdown>
@@ -117,8 +133,10 @@ import {
   InfoCircleIcon,
   LogoGithubIcon,
   MoonIcon,
-  SunnyIcon
+  SunnyIcon,
+  TranslateIcon
 } from "tdesign-icons-vue-next";
+import { useI18n } from 'vue-i18n';
 
 const router = useRouter();
 const size = useWindowSize();
@@ -144,6 +162,12 @@ const active_shards = computed(() => useIndexStore().active_shards);
 const total_shards = computed(() => useIndexStore().total_shards);
 const width = computed(() => size.width.value / 5);
 
+const { locale, t } = useI18n();
+function setLang(lang: string) {
+  locale.value = lang;
+  localStorage.setItem('locale', lang);
+}
+
 watch(() => urlId.value, value => setItem(LocalNameEnum.KEY_LAST_URL, value));
 watch(() => useUrlStore().id, value => {
   if (value !== urlId.value) {
@@ -168,7 +192,7 @@ async function selectUrl(value: any) {
     return
   }
   // 选择链接
-  Assert.isTrue(useUrlStore().choose(value as number), "链接未找到");
+  Assert.isTrue(useUrlStore().choose(value as number), t('error.link_not_found'));
   // 索引刷新
   await useIndexStore().reset();
 }
@@ -185,7 +209,7 @@ function versionCommand(command: string) {
       openUrl(Constant.repositories[1].url)
       break;
     case 'update':
-      alert('检查更新')
+      alert(t('action.check_update'))
       break;
     case 'feedback':
       openUrl(Constant.url.feedback);

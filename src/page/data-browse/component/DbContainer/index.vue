@@ -13,7 +13,7 @@
       @menu-click="contextMenuClickEvent"
     >
       <vxe-column field="_id" title="_id" fixed="left" :width="200" show-overflow="tooltip" />
-      <vxe-column type="expand" width="80" title="详细" fixed="left">
+      <vxe-column type="expand" width="80" :title="$t('module.table_viewer.detail')" fixed="left">
         <template #content="{ row }">
           <div class="expand-wrapper h-300px">
             <MonacoView :value="row['_source']" />
@@ -37,8 +37,11 @@ import { VxeTableInstance, VxeTablePropTypes } from "vxe-table";
 import { useUrlStore } from "@/store";
 import { UseDataBrowserInstance } from "@/hooks";
 import MonacoView from "@/components/view/MonacoView/index.vue";
-import { buildContextMenuClickEvent } from "@/page/data-browse/component/DbContainer/func";
+import { buildContextMenuClickEvent } from "@/page/data-browse/component/DbContainer/args";
 import { columnConfig, menuConfig, rowConfig } from "@/page/data-browse/component/DbContainer/args";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 const size = useWindowSize();
 
@@ -56,9 +59,9 @@ const tableRef = ref<VxeTableInstance | null>(null);
 const height = computed(() => size.height.value - 159);
 const emptyText = computed(() => {
   if (!useUrlStore().url) {
-    return "请先选择链接";
+    return t('module.data_browse.please_select_link');
   }
-  return "什么也没有";
+  return t('module.table_viewer.empty');
 });
 
 // 菜单点击事件

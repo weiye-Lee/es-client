@@ -3,22 +3,22 @@
     <div class="active-extend-content">
       <div class="active-extend-header">
         <span class="gift-icon">🎁</span>
-        <h3 class="active-extend-title">致活跃用户</h3>
+        <h3 class="active-extend-title">{{ $t('module.app_extend.active.title') }}</h3>
       </div>
       <div class="active-extend-body">
         <p class="active-extend-description">
-          感谢您使用本插件！我们已推出功能更强的桌面客户端，
+          {{ $t('module.app_extend.active.desc') }}
         </p>
         <div class="active-extend-offer">
-          <p class="offer-main">现推出 「百年会员」永久授权</p>
+          <p class="offer-main">{{ $t('module.app_extend.active.offer_main') }}</p>
           <div class="price-container">
-            <span class="current-price">¥249</span>
-            <span class="original-price">¥278/两年</span>
+            <span class="current-price">{{ $t('module.app_extend.active.price_current') }}</span>
+            <span class="original-price">{{ $t('module.app_extend.active.price_original') }}</span>
           </div>
         </div>
         <div class="active-extend-footer">
-          <span class="deadline-warning">仅限30天，一次付费终身使用</span>
-          <button class="purchase-button" @click="openPay">立即抢购</button>
+          <span class="deadline-warning">{{ $t('module.app_extend.active.deadline') }}</span>
+          <button class="purchase-button" @click="openPay">{{ $t('module.app_extend.active.buy_now') }}</button>
         </div>
       </div>
     </div>

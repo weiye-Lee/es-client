@@ -86,6 +86,9 @@ import {decodeValue, encodeValue, useDataBrowseStore} from "@/store/components/D
 import {useDataBrowserViewStore} from "@/store/components/DataBrowserViewStore";
 import {useDataBrowserQueryStore} from "@/store/components/DataBrowserQueryStore";
 import {openContextmenu} from "@/page/data-browse/func/DbLeftContextmenu";
+import i18n from "@/i18n";
+
+const t = (key: string) => i18n.global.t(key);
 
 const dataBrowserLeftRef = useTemplateRef<HTMLDivElement>("dataBrowserLeft");
 
@@ -108,21 +111,21 @@ const view = computed(() => useDataBrowserViewStore().views);
 const query = computed(() => useDataBrowserQueryStore().query);
 const data = computed<Array<TreeOptionData>>(() => ([
   {
-    label: '索引',
+    label: t('module.data_browse.index'),
     value: encodeValue("folder", "index"),
     children: index.value.map(e => ({
       label: e,
       value: encodeValue('index', e)
     }))
   }, {
-    label: '别名',
+    label: t('module.data_browse.alias'),
     value: encodeValue("folder", "alias"),
     children: alias.value.map(e => ({
       label: e,
       value: encodeValue('alias', e)
     }))
   }, {
-    label: '视图',
+    label: t('module.data_browse.view'),
     value: encodeValue("folder", "view"),
     children: view.value.map(e => ({
       label: e.pattern,
@@ -130,7 +133,7 @@ const data = computed<Array<TreeOptionData>>(() => ([
       sourceId: e.id
     }))
   }, {
-    label: '查询',
+    label: t('module.data_browse.query'),
     value: encodeValue("folder", "query"),
     children: query.value.map(e => ({
       label: e.name,

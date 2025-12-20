@@ -1,13 +1,13 @@
 <template>
   <t-popup trigger="click" placement="top-right" show-arrow>
-    <db-simple-item :disable="index === ''" tip="自定义表头">
+    <db-simple-item :disable="index === ''" :tip="$t('module.data_browse.custom_header')">
       <check-rectangle-icon />
     </db-simple-item>
     <template #content>
       <div class="table-view-trigger">
         <t-list split style="width: 250px">
           <template #header>
-            <t-button block theme="danger" size="small"> 重置 </t-button>
+            <t-button block theme="danger" size="small"> {{ $t('module.data_browse.reset') }} </t-button>
           </template>
           <div style="height: 341px; overflow: auto; width: 250px">
             <div

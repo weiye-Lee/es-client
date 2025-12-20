@@ -58,7 +58,7 @@ export function conditionBuild(condition: string): Array<DataSearchQueryItem> {
       /^\s*(\S+)\s+(=|!=|>=|<=|>|<|eq|ne|gt|gte|lt|lte|term|match|like|in|exists|missing)(?:\s+(.+?))?\s*$/
     );
     if (!fullMatch) {
-      console.warn(`无法解析条件片段: "${part}"`);
+      console.warn(`${i18n.global.t('utils.convert.condition_parse_error')}: "${part}"`);
       continue;
     }
 
@@ -71,7 +71,7 @@ export function conditionBuild(condition: string): Array<DataSearchQueryItem> {
     }
 
     if (rawValue === "" && operator !== "exists" && operator !== "missing") {
-      console.warn(`操作符 \"${operator}\" 需要值: "${part}"`);
+      console.warn(i18n.global.t('utils.convert.operator_needs_value', {operator: operator}) + `: "${part}"`);
       continue;
     }
 

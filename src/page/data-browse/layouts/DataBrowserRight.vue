@@ -12,7 +12,7 @@
         </div>
       </div>
 
-      <empty-result v-if="tabs.length === 0" title="请双击选择索引"/>
+      <empty-result v-if="tabs.length === 0" :title="$t('module.data_browse.please_select_index_double_click')"/>
     </div>
   </div>
 </template>

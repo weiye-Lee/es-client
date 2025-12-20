@@ -1,5 +1,6 @@
 // sql-parser.ts
 import moo from 'moo';
+import i18n from "@/i18n";
 
 // ========================
 // 1. Token 定义
@@ -139,9 +140,9 @@ export class SQLParser {
 
   private consume(expectedType?: string): moo.Token {
     const token = this.tokens[this.pos++];
-    if (!token) throw new Error('Unexpected end of input');
+    if (!token) throw new Error(i18n.global.t('core.sql.unexpected_end'));
     if (expectedType && token.type !== expectedType) {
-      throw new Error(`Expected token ${expectedType}, got ${token.type} ("${token.value}")`);
+      throw new Error(i18n.global.t('core.sql.expected_token', {expected: expectedType, got: token.type + ` ("${token.value}")`}));
     }
     return token;
   }
@@ -165,7 +166,7 @@ export class SQLParser {
       this.consume('ident');
       return;
     }
-    throw new Error(`Expected keyword ${word}, got ${t.type} ("${t.value}")`);
+    throw new Error(i18n.global.t('core.sql.expected_keyword', {keyword: word, got: t.type + ` ("${t.value}")`}));
   }
 
   parse(): Query {
@@ -224,7 +225,7 @@ export class SQLParser {
       let alias = this.getDefaultAlias(expr);
       if (this.isKeyword('AS')) {
         if (expr.type === 'Star' || expr.type === 'QualifiedStar') {
-          throw new Error('不允许为 * 或 table.* 指定别名');
+          throw new Error(i18n.global.t('core.sql.alias_not_allowed'));
         }
         this.consumeKeyword('AS');
         alias = this.parseAlias();
@@ -329,7 +330,7 @@ export class SQLParser {
     if (this.peek().type === 'ident') {
       return this.consume('ident').value;
     }
-    throw new Error('Expected alias after AS');
+    throw new Error(i18n.global.t('core.sql.expected_alias'));
   }
 
   private parseFieldName(): string {
@@ -340,7 +341,7 @@ export class SQLParser {
     if (this.peek().type === 'ident') {
       return this.consume('ident').value;
     }
-    throw new Error('Expected field name');
+    throw new Error(i18n.global.t('core.sql.expected_field'));
   }
 
   private parseTableName(): string {
@@ -430,7 +431,7 @@ export class SQLParser {
       }
     }
 
-    throw new Error(`Expected operator after expression, got ${opToken.type}`);
+    throw new Error(i18n.global.t('core.sql.expected_operator', {got: opToken.type}));
   }
 }
 
@@ -483,7 +484,7 @@ export function conditionToES(cond: Condition): any {
         return { range: { [field]: { gte: value } } };
       }
       // 其他操作符可扩展
-      throw new Error(`Unsupported op: ${cond.op}`);
+      throw new Error(i18n.global.t('core.sql.unsupported_op', {op: cond.op}));
 
     case 'IsNull':
       const nullField = getIdentifierName(cond.expr);
@@ -497,13 +498,13 @@ export function conditionToES(cond: Condition): any {
       return { wildcard: { [getIdentifierName(cond.expr)]: cond.pattern.replace(/%/g, '*') } };
 
     default:
-      throw new Error('Unknown condition type');
+      throw new Error(i18n.global.t('core.sql.unknown_condition'));
   }
 }
 
 function getIdentifierName(expr: Expr): string {
   if (expr.type === 'Identifier') return expr.name;
-  throw new Error('Field must be identifier');
+  throw new Error(i18n.global.t('core.sql.field_must_be_ident'));
 }
 
 function getComparableValue(expr: Expr): string | number {
@@ -515,6 +516,6 @@ function getComparableValue(expr: Expr): string | number {
     case 'Identifier':
       return expr.name;
     default:
-      throw new Error('Right value must be literal or identifier');
+      throw new Error(i18n.global.t('core.sql.right_value_must_be_lit'));
   }
 }

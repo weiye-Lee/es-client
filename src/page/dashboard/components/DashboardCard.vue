@@ -12,7 +12,7 @@
     </template>
     <template #actions>
       <refresh-icon v-if="props.loading" spin />
-      <span v-if="props.loading" style="margin-left: 7px">加载中</span>
+      <span v-if="props.loading" style="margin-left: 7px">{{ $t('common.loading') }}</span>
     </template>
     <slot name="default" />
   </t-card>

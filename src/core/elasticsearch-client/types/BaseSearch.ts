@@ -1,4 +1,3 @@
-
 export type BaseQueryItemType = "must" | "should" | "must_not";
 
 export type BaseQueryItemCondition =
@@ -99,10 +98,6 @@ export interface BaseSearchProp {
   index: string;
   pageNum: number;
   pageSize: number;
-  /**
-   * 索引类型，v6之前必须
-   */
-  type?: string;
 
   /*--------------------------------- track_total_hits设置 ---------------------------------*/
 

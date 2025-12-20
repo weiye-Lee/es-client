@@ -9,6 +9,9 @@ import MessageUtil from "@/utils/model/MessageUtil";
 import {DocumentSearchQuery} from "@/domain/es/DocumentSearchQuery";
 import {parseJsonWithBigIntSupport, stringifyJsonWithBigIntSupport} from "$/util";
 import {useLoading, UseLoadingResult} from "@/hooks/UseLoading";
+import i18n from "@/i18n";
+
+const t = (key: string, named?: Record<string, unknown>) => i18n.global.t(key, named || {});
 
 // ------------------------------------------------ 渲染库 ------------------------------------------------
 
@@ -63,7 +66,7 @@ export async function getExportData(config: ExportConfig): Promise<Array<Documen
   const size = config.size;
   let total = 0;
   const results = new Array<DocumentSearchResult>();
-  const instance = useLoading("正在导出数据");
+  const instance = useLoading(t('module.data_export.message.exporting'));
   try {
     switch (config.scope) {
       case ExportScope.CURRENT:
@@ -80,13 +83,13 @@ export async function getExportData(config: ExportConfig): Promise<Array<Documen
             const result = await DocumentApi(config.index)._search(condition1).then(e => parseJsonWithBigIntSupport<DocumentSearchResult>(e));
             results.push(result);
             total = typeof result.hits.total === 'number' ? result.hits.total : result.hits.total.value;
-            instance.start(`正在导出${(page - 1) * size} - ${page * size}，共${total}条`);
+            instance.start(t('module.data_export.message.exporting_progress', { start: (page - 1) * size, end: page * size, total }));
           } while (page * size < total);
         } else if (config.apiType === ApiType.SCROLL) {
           // 滚动导出
           await useScrollApi(results, config, instance);
         } else {
-          throw new Error("导出异常，API类型不存在");
+          throw new Error(t('module.data_export.message.api_type_error'));
         }
         break;
       case ExportScope.CUSTOM:
@@ -97,7 +100,7 @@ export async function getExportData(config: ExportConfig): Promise<Array<Documen
           condition2.from = (page - 1) * size;
           condition2.size = size;
           const result = await DocumentApi(config.index)._search(condition2).then(e => parseJsonWithBigIntSupport<DocumentSearchResult>(e));
-          instance.start(`正在导出${(page - 1) * size} - ${page * size}，共${total}条`);
+          instance.start(t('module.data_export.message.exporting_progress', { start: (page - 1) * size, end: page * size, total }));
           results.push(result);
         } while (page <= config.customEnd);
         break;
@@ -118,7 +121,7 @@ async function useScrollApi(results: Array<DocumentSearchResult>, config: Export
   const result = await DocumentApi(config.index)._search_first(condition, config.scrollTime);
   const scrollId = result._scroll_id;
   if (!scrollId) {
-    return Promise.reject("系统异常，滚动ID不存在")
+    return Promise.reject(t('module.data_export.message.scroll_id_error'))
   }
   results.push(result);
   while (true) {
@@ -126,7 +129,7 @@ async function useScrollApi(results: Array<DocumentSearchResult>, config: Export
     if (!result.hits.hits || result.hits.hits.length === 0) {
       break;
     }
-    instance.start(`已经导出【${results.length * config.size}】条`);
+    instance.start(t('module.data_export.message.exporting_count', { count: results.length * config.size }));
     results.push(result);
   }
 
@@ -196,7 +199,7 @@ export async function exportData(config: ExportConfig): Promise<void> {
       download(content, config.name + config.type, config.type);
     } else if (config.mode === ExportMode.COPY) {
       copyText(content);
-      MessageUtil.success("已成功复制到剪切板");
+      MessageUtil.success(t('module.data_export.message.copy_success'));
     }
   }
   return Promise.resolve();

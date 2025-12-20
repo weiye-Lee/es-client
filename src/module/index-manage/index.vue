@@ -2,17 +2,17 @@
   <t-drawer :header="index" class="index-manage-drawer" v-model:visible="drawer" size="960px" destroy-on-close>
     <div class="index-manage">
       <t-tabs v-model="active" class="tab">
-        <t-tab-panel label="总览" value="1"/>
-        <t-tab-panel label="设置" value="2"/>
-        <t-tab-panel label="映射" value="3"/>
-        <t-tab-panel label="统计信息" value="4"/>
+        <t-tab-panel :label="$t('module.index_manage.tab.overview')" value="1"/>
+        <t-tab-panel :label="$t('module.index_manage.tab.setting')" value="2"/>
+        <t-tab-panel :label="$t('module.index_manage.tab.mapping')" value="3"/>
+        <t-tab-panel :label="$t('module.index_manage.tab.stats')" value="4"/>
       </t-tabs>
-      <t-loading :loading="loading" text="加载中" class="h-full">
+      <t-loading :loading="loading" :text="$t('common.loading')" class="h-full">
         <div class="content">
-          <t-alert v-if="active === '3'" title="Mapping 看得头疼？" style="margin-bottom: 8px;">
+          <t-alert v-if="active === '3'" :title="$t('module.index_manage.mapping_help_title')" style="margin-bottom: 8px;">
             <span>🌳</span>
-            <AppLink event="查看mapping"/>
-            <span>用树形表格清晰展示 Mapping 结构，一目了然！</span>
+            <AppLink :event="$t('module.index_manage.view_mapping')"/>
+            <span>{{ $t('module.index_manage.mapping_help_content') }}</span>
           </t-alert>
           <monaco-view :value="pretty" v-show="jsonViewShow" read-only
                        :height="active === '3' ? 'calc(100vh - 268px)' : 'calc(100vh - 176px)'"/>
@@ -24,21 +24,21 @@
     <template #footer>
       <t-dropdown trigger="click" @select="indexManage">
         <t-button theme="primary">
-          管理
+          {{ $t('action.manage') }}
           <template #suffix>
             <chevron-up-icon/>
           </template>
         </t-button>
         <t-dropdown-menu>
-          <t-dropdown-item value="open" v-if="state === 'close'">打开索引</t-dropdown-item>
-          <t-dropdown-item value="close" v-else-if="state === 'open'">关闭索引</t-dropdown-item>
-          <t-dropdown-item disabled value="merge">强制合并索引</t-dropdown-item>
-          <t-dropdown-item value="refresh">刷新索引</t-dropdown-item>
-          <t-dropdown-item value="clear">清除索引缓存</t-dropdown-item>
-          <t-dropdown-item value="flush">flush索引</t-dropdown-item>
-          <t-dropdown-item disabled value="freeze">冻结索引</t-dropdown-item>
-          <t-dropdown-item value="remove">删除索引</t-dropdown-item>
-          <t-dropdown-item disabled value="lifecycle">增加生命周期</t-dropdown-item>
+          <t-dropdown-item value="open" v-if="state === 'close'">{{ $t('action.open_index') }}</t-dropdown-item>
+          <t-dropdown-item value="close" v-else-if="state === 'open'">{{ $t('action.close_index') }}</t-dropdown-item>
+          <t-dropdown-item disabled value="merge">{{ $t('action.force_merge_index') }}</t-dropdown-item>
+          <t-dropdown-item value="refresh">{{ $t('action.refresh_index') }}</t-dropdown-item>
+          <t-dropdown-item value="clear">{{ $t('action.clear_index_cache') }}</t-dropdown-item>
+          <t-dropdown-item value="flush">{{ $t('action.flush_index') }}</t-dropdown-item>
+          <t-dropdown-item disabled value="freeze">{{ $t('action.freeze_index') }}</t-dropdown-item>
+          <t-dropdown-item value="remove">{{ $t('action.delete_index') }}</t-dropdown-item>
+          <t-dropdown-item disabled value="lifecycle">{{ $t('action.add_lifecycle') }}</t-dropdown-item>
         </t-dropdown-menu>
       </t-dropdown>
     </template>
@@ -57,7 +57,10 @@ import {useIndexManageEvent} from "@/global/BeanFactory";
 import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
 import MonacoEditor from "@/components/monaco-editor/index.vue";
 import {formatJsonString, stringifyJsonWithBigIntSupport} from "$/util";
-import {ChevronUpIcon} from "tdesign-icons-vue-next";
+import { ChevronUpIcon } from "tdesign-icons-vue-next";
+import i18n from '@/i18n';
+
+const t = (key: string) => i18n.global.t(key);
 
 export default defineComponent({
   name: 'index-manage',
@@ -114,36 +117,36 @@ export default defineComponent({
       }
     },
     setting() {
-      Assert.notNull(this.index, "索引名称不存在");
+      Assert.notNull(this.index, t('error.index_name_not_exist'));
       this.loading = true;
       IndexApi(this.index)._settings().then(result => {
         this.data = stringifyJsonWithBigIntSupport(result[this.index]);
       }).catch(e => {
-        MessageUtil.error('索引设置查询错误', e);
+        MessageUtil.error(t('error.query_setting_error'), e);
         this.data = '{}';
       }).finally(() => {
         this.loading = false;
       })
     },
     mapping() {
-      Assert.notNull(this.index, "索引名称不存在");
+      Assert.notNull(this.index, t('error.index_name_not_exist'));
       this.loading = true;
       IndexApi(this.index)._mappings().then(result => {
         this.data = stringifyJsonWithBigIntSupport(result[this.index!]);
       }).catch(e => {
-        MessageUtil.error('索引映射查询错误', e);
+        MessageUtil.error(t('error.query_mapping_error'), e);
         this.data = '{}';
       }).finally(() => {
         this.loading = false;
       })
     },
     stats() {
-      Assert.notNull(this.index, "索引名称不存在");
+      Assert.notNull(this.index, t('error.index_name_not_exist'));
       this.loading = true;
       IndexApi(this.index)._stats().then(result => {
         this.data = stringifyJsonWithBigIntSupport(result);
       }).catch(e => {
-        MessageUtil.error('索引状态查询错误', e);
+        MessageUtil.error(t('error.query_stats_error'), e);
         this.data = '{}';
       }).finally(() => {
         this.loading = false;
@@ -163,39 +166,39 @@ export default defineComponent({
           case 'open':
             IndexApi(this.index)._open()
               .then(res => MessageUtil.success(res, resolve))
-              .catch(e => MessageUtil.error('打开索引错误', e, () => reject(e)));
+              .catch(e => MessageUtil.error(t('error.open_index_error'), e, () => reject(e)));
             break;
           case 'close':
             IndexApi(this.index)._close()
               .then(res => MessageUtil.success(res, resolve))
-              .catch(e => MessageUtil.error('关闭索引错误', e, () => reject(e)));
+              .catch(e => MessageUtil.error(t('error.close_index_error'), e, () => reject(e)));
             break;
           case 'merge':
             break;
           case 'refresh':
             IndexApi(this.index)._refresh()
               .then(res => MessageUtil.success(res, resolve))
-              .catch(e => MessageUtil.error('刷新索引失败', e, () => reject(e)));
+              .catch(e => MessageUtil.error(t('error.refresh_index_error'), e, () => reject(e)));
             break;
           case 'clear':
             IndexApi(this.index)._cacheClear()
               .then(res => MessageUtil.success(res, resolve))
-              .catch(e => MessageUtil.error('清理缓存失败', e, () => reject(e)));
+              .catch(e => MessageUtil.error(t('error.clear_cache_error'), e, () => reject(e)));
             break;
           case 'flush':
             IndexApi(this.index)._flush()
               .then(res => MessageUtil.success(res, resolve))
-              .catch(e => MessageUtil.error('flush刷新失败', e, () => reject(e)));
+              .catch(e => MessageUtil.error(t('error.flush_error'), e, () => reject(e)));
             break;
           case 'freeze':
             break;
           case 'remove':
-            MessageBoxUtil.confirm("此操作将永久删除该索引, 是否继续?", "提示", {
-              confirmButtonText: "确定",
-              cancelButtonText: "取消"
+            MessageBoxUtil.confirm(t('message.confirm_delete_index'), t('common.tips'), {
+              confirmButtonText: t('action.confirm'),
+              cancelButtonText: t('action.cancel')
             }).then(() => IndexApi(this.index).delete()
               .then(res => MessageUtil.success(res, resolve))
-              .catch(e => MessageUtil.error('索引删除错误', e, () => reject(e))));
+              .catch(e => MessageUtil.error(t('error.delete_index_error'), e, () => reject(e))));
             break;
           case 'lifecycle':
             break;

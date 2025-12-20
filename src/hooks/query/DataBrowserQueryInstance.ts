@@ -1,6 +1,6 @@
 import {TableColumn} from "$/shared/common/TableColumn";
 import {searchResultToTable} from "@/core/elasticsearch-client/components/SearchResultToTable";
-import {stringifyJsonWithBigIntSupport} from "@/core/util";
+import {stringifyJsonWithBigIntSupport} from "$/util";
 import {conditionToES, ExprFunctionCall, parseSQL, Query} from "@/core/util/file/SqlParser";
 import {useGlobalSettingStore, useUrlStore} from "@/store";
 import type {Ref} from "vue";
