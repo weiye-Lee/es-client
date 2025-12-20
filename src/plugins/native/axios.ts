@@ -1,4 +1,5 @@
 import axios, {AxiosRequestConfig} from "axios";
+import {fetch} from '@tauri-apps/plugin-http'
 import {useUrlStore} from "@/store";
 import UrlAuthTypeEnum from "@/enumeration/UrlAuthTypeEnum";
 import {parseJsonWithBigIntSupport} from "$/util";
@@ -15,8 +16,15 @@ export interface RequestConfig extends AxiosRequestConfig {
 }
 
 
+const instance = axios.create({
+  adapter: "fetch",
+  env: import.meta.env.VITE_PLATFORM === 'tauri' ? {
+    fetch: fetch
+  } : undefined
+})
+
 export async function useRequest(config: RequestConfig = {}): Promise<string> {
-  const response = await axios.request<string>({
+  const response = await instance.request<string>({
     ...config,
     responseType: 'text'
   });
