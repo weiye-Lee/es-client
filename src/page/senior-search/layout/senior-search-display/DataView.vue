@@ -3,16 +3,16 @@
     <!-- 标签 -->
     <div class="tabs">
       <div class="tab" :class="itemActive === -1 ? 'active' : ''" @click="itemActive = -1">
-        <a-tooltip content="固定">
-          <bookmark-add-icon @click.stop="fixAdd()"/>
-        </a-tooltip>
+        <t-tooltip content="固定">
+          <bookmark-add-icon @click="fixAdd()"/>
+        </t-tooltip>
         <span class="ssd-v-title">结果</span>
       </div>
       <div class="tab fix" v-for="(item, index) in items" :class="itemActive === index ? 'active' : ''"
            @click="itemActive = index">
-        <a-tooltip content="取消后将会关闭">
-          <bookmark-minus-icon @click.stop="fixDelete(index)"/>
-        </a-tooltip>
+        <t-tooltip content="取消后将会关闭">
+          <bookmark-minus-icon @click="fixDelete(index)"/>
+        </t-tooltip>
         <span class="ssd-v-title">结果{{ item.title }}</span>
       </div>
     </div>
@@ -30,8 +30,8 @@
         <monaco-view v-else :value="data"/>
       </div>
     </div>
-    <a-button type="text" link class="json-view-copy" v-show="view !== ViewTypeEnum.TABLE" @click="execCopy()">复制
-    </a-button>
+    <t-button variant="text" theme="primary" class="json-view-copy" v-show="view !== ViewTypeEnum.TABLE" @click="execCopy()">复制
+    </t-button>
   </div>
 </template>
 <script lang="ts">
@@ -147,7 +147,7 @@ export default defineComponent({
     .tab {
       margin: 0 5px;
       cursor: pointer;
-      padding: 6px 8px;
+      padding: 3px 8px;
 
       &.active {
         background-color: var(--td-bg-color-container-active);

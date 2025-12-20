@@ -1,57 +1,52 @@
 <template>
   <div class="display-record">
     <div class="display-record-head">
-      <a-input-group>
-        <a-select v-model="urlId" style="width: 200px" placeholder="选择所属链接" allow-clear allow-search>
-          <a-option v-for="url in urls" :key="url.id" :value="url.id">{{ url.name }}</a-option>
-        </a-select>
-        <a-button type="primary" @click="search()">
+      <t-input-group>
+        <t-select v-model="urlId" style="width: 200px" placeholder="选择所属链接" allow-clear allow-search>
+          <t-option v-for="url in urls" :key="url.id" :value="url.id">{{ url.name }}</t-option>
+        </t-select>
+        <t-button theme="primary" shape="square" @click="search()">
           <template #icon>
             <search-icon/>
           </template>
-        </a-button>
-      </a-input-group>
-      <a-popconfirm content="此操作将清空全部历史记录，是否继续" ok-text="清空"
-                    :ok-button-props="{status: 'danger'}" @ok="clear()">
-        <a-button type="primary" status="danger" :loading="clearLoading">
+        </t-button>
+      </t-input-group>
+      <t-popconfirm content="此操作将清空全部历史记录，是否继续" confirm-btn="清空" @confirm="clear()">
+        <t-button theme="danger" shape="square" :loading="clearLoading">
           <template #icon>
             <delete-icon/>
           </template>
-        </a-button>
-      </a-popconfirm>
+        </t-button>
+      </t-popconfirm>
     </div>
     <div class="display-record-body">
-      <a-table :data="records" :expandable="expandable" :pagination="false" row-key="id">
-        <template #columns>
-          <a-table-column data-index="method" :width="100" title="请求方式"/>
-          <a-table-column data-index="link" :width="150" title="请求连接"/>
-          <a-table-column :width="85" title="操作" fixed="right">
-            <template #cell="{ record }">
-              <a-tooltip content="载入">
-                <a-button type="primary" @click="load(record)">
-                  <template #icon>
-                    <file-import-icon/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-popconfirm content="是否删除此记录？">
-                <a-button type="primary" status="danger">
-                  <template #icon>
-                    <delete-icon/>
-                  </template>
-                </a-button>
-              </a-popconfirm>
-            </template>
-          </a-table-column>
+      <t-table :data="records" :columns="columns" row-key="id">
+        <template #op="{ row }">
+          <t-tooltip content="载入">
+            <t-button theme="primary" @click="load(row)">
+              <template #icon>
+                <file-import-icon/>
+              </template>
+            </t-button>
+          </t-tooltip>
+          <t-popconfirm content="是否删除此记录？">
+            <t-button theme="danger">
+              <template #icon>
+                <delete-icon/>
+              </template>
+            </t-button>
+          </t-popconfirm>
         </template>
-      </a-table>
-      <a-pagination v-model:current="current" v-model:page-size="size" :total="total" style="margin-top: 7px;"/>
+        <template #expandedRow="{ row }">
+          <monaco-view :value="row.body" height="400px"/>
+        </template>
+      </t-table>
+      <t-pagination v-model:current="current" v-model:page-size="size" :total="total" style="margin-top: 7px;"/>
     </div>
   </div>
 
 </template>
 <script lang="ts" setup>
-import {TableData, TableExpandable} from "@arco-design/web-vue";
 import {useSeniorSearchStore} from "@/store/components/SeniorSearchStore";
 import {SeniorSearchRecord} from "@/entity/record/SeniorSearchRecord";
 import {seniorSearchRecordService} from "@/global/BeanFactory";
@@ -68,27 +63,16 @@ const current = ref(1);
 const size = ref(10);
 const total = ref(0);
 
+const columns = [
+  {colKey: 'method', title: '请求方式', width: 100},
+  {colKey: 'link', title: '请求连接', width: 150},
+  {colKey: 'op', title: '操作', width: 85, fixed: 'right' as const}
+];
 
 watch(() => urlId.value, value => search(value));
 watch(() => current.value, () => search());
 
 const urls = computed(() => useUrlStore().urls);
-
-const expandable = ref<TableExpandable>({
-  title: '请求体',
-  width: 80,
-  expandedRowRender: (record: TableData) => {
-    try {
-      return h(MonacoView, {
-        value: record.body,
-        height: "400px"
-      });
-    } catch (e) {
-      return h('pre', {}, record.body);
-    }
-  }
-});
-
 
 const search = (value?: number) => seniorSearchRecordService.page(current.value, size.value, value || urlId.value)
   .then(res => {
@@ -120,6 +104,9 @@ search();
 </script>
 <style lang="less">
 .display-record {
+  width: calc(100% - 16px);
+  height: calc(100% - 16px);
+  padding: 8px;
 
   .display-record-head {
     display: flex;

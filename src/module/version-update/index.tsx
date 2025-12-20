@@ -8,7 +8,7 @@ export function showVersionUpdateDialog() {
         <div class="entry">
             <div>
                 <span>恭喜你成功更新到 </span>
-                <span style="color: rgb(var(--arcoblue-6))">{Constant.version}</span>
+                <span style="color: var(--td-brand-color)">{Constant.version}</span>
             </div>
             <div>本次更新如下</div>
             <UpdateItem log={log}/>

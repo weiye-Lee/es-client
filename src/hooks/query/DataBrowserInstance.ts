@@ -10,6 +10,7 @@ import {
 } from "$/elasticsearch-client/components/DataBrowserQuery";
 import {DataSearchColumnConfig} from "$/elasticsearch-client";
 import {BaseBrowserBaseType} from "@/store/components/DataBrowseStore";
+import {metaColumn} from "@/global/Constant";
 
 export interface UseDataBrowserInstance {
   id: string;
@@ -85,7 +86,11 @@ export const useDataBrowserInstance = (index: string, type: BaseBrowserBaseType)
     })
       .then((r) => {
         if (renderColumn) {
-          columns.value = r.columns;
+          const {dataBrowserShowMeta} = useGlobalSettingStore();
+          columns.value = [
+            ...(dataBrowserShowMeta ? metaColumn() : []),
+            ...r.columns
+          ];
         }
         records.value = r.records;
         total.value = r.total;

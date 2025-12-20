@@ -1,41 +1,39 @@
 <template>
   <div class="display-history">
     <header class="header">
-      <a-input allow-clear v-model="keyword" placeholder="请输入记录名"/>
+      <t-input clearable v-model="keyword" placeholder="请输入记录名"/>
     </header>
-    <a-list :data="results" :bordered="false" :virtual-list-props="virtualListProps">
-      <template #item="{ item, index }">
-        <a-list-item :key="item.item.id">
-          <a-link @click="load(item.item.id)">{{ item.item.name }}</a-link>
-          <template #extra>
-            <a-button-group type="text">
-              <a-tooltip content="载入">
-                <a-button status="success" @click="load(item.item.id)" style="border: none;">
-                  <template #icon>
-                    <file-import-icon/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-tooltip content="重命名">
-                <a-button @click="rename(item.item.id, item.item.name)">
-                  <template #icon>
-                    <edit-icon/>
-                  </template>
-                </a-button>
-              </a-tooltip>
-              <a-popconfirm content="是否删除此条记录？" ok-text="删除" :ok-button-props="{status: 'danger'}"
-                            @ok="remove(item.item.id)">
-                <a-button status="danger">
-                  <template #icon>
-                    <delete-icon/>
-                  </template>
-                </a-button>
-              </a-popconfirm>
-            </a-button-group>
-          </template>
-        </a-list-item>
-      </template>
-    </a-list>
+    <t-list>
+      <t-list-item v-for="item in results" :key="item.item.id">
+        <t-link @click="load(item.item.id)">{{ item.item.name }}</t-link>
+        <template #action>
+          <div class="flex gap-4px">
+            <t-tooltip content="载入">
+              <t-button theme="success" shape="square" variant="text" @click="load(item.item.id)" style="border: none;">
+                <template #icon>
+                  <file-import-icon/>
+                </template>
+              </t-button>
+            </t-tooltip>
+            <t-tooltip content="重命名">
+              <t-button shape="square" theme="primary" variant="text" @click="rename(item.item.id, item.item.name)">
+                <template #icon>
+                  <edit-icon/>
+                </template>
+              </t-button>
+            </t-tooltip>
+            <t-popconfirm content="是否删除此条记录？" confirm-btn="删除"
+                          @confirm="remove(item.item.id)">
+              <t-button shape="square" theme="danger" variant="text">
+                <template #icon>
+                  <delete-icon/>
+                </template>
+              </t-button>
+            </t-popconfirm>
+          </div>
+        </template>
+      </t-list-item>
+    </t-list>
   </div>
 </template>
 <script lang="ts" setup>
@@ -46,7 +44,6 @@ import MessageBoxUtil from "@/utils/model/MessageBoxUtil";
 import MessageUtil from "@/utils/model/MessageUtil";
 import {DeleteIcon, EditIcon, FileImportIcon} from "tdesign-icons-vue-next";
 
-const size = useWindowSize();
 
 const keyword = ref('');
 const items = computed(() => useSeniorSearchHistoryStore().seniorSearchHistories);
@@ -58,9 +55,6 @@ const {results} = useFuse(keyword, items, {
     }]
   }
 });
-const virtualListProps = computed(() => ({
-  height: size.height.value - 41 - 32 - 14 - 14 - 32 - 7
-}))
 
 const load = (id: number) => useSeniorSearchStore().loadHistory(id);
 const rename = (id: number, name: string) => {
@@ -79,5 +73,10 @@ const remove = (id: number) => useSeniorSearchHistoryStore().remove(id)
 
 </script>
 <style scoped>
-
+.display-history {
+  width: calc(100% - 16px);
+  height: calc(100% - 16px);
+  padding: 8px;
+  overflow: auto;
+}
 </style>

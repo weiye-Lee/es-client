@@ -1,7 +1,6 @@
 import LocalNameEnum from "@/enumeration/LocalNameEnum";
 import { VxeUI } from "vxe-table";
 import type { Ref, ComputedRef } from "vue";
-import { setTheme } from "@tauri-apps/api/app";
 
 export type ColorModeType = "auto" | "light" | "dark";
 
@@ -44,20 +43,17 @@ export const useColorMode = (): ColorModeResult => {
         htmlElement.classList.remove("dark");
         htmlElement.classList.add("light");
         VxeUI.setTheme("light");
-        setTheme("light");
       } else if (mode === "dark") {
         htmlElement.setAttribute("theme-mode", "dark");
         htmlElement.classList.remove("light");
         htmlElement.classList.add("dark");
         VxeUI.setTheme("dark");
-        setTheme("dark")
       } else {
         const val = isDarkColors() ? "dark" : "light";
         htmlElement.setAttribute("theme-mode", val);
         htmlElement.classList.remove(val === "dark" ? "light" : "dark");
         htmlElement.classList.add(val);
         VxeUI.setTheme(val);
-        setTheme(val === "dark" ? "light" : "dark")
       }
     }
 

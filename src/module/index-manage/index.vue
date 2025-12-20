@@ -236,8 +236,5 @@ export default defineComponent({
 
   }
 
-  .arco-drawer-footer {
-    text-align: left !important;
-  }
 }
 </style>

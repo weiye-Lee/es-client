@@ -108,7 +108,7 @@ Dashboard displays at a glance:
 | ![Advanced Query](/img/4.png) | ![Settings](/img/5.png) | ![About](/img/6.png) |
 
 ## 🛠 Tech Stack
-Frontend: Vue 3 + TypeScript + Vite 5 + Arco Design
+Frontend: Vue 3 + TypeScript + Vite 5 + TDesign
 Plugin System: Chrome / Edge
 
 ## ❤️ Open Source & Support

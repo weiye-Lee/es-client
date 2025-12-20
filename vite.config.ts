@@ -3,7 +3,6 @@ import vue from '@vitejs/plugin-vue'
 import VueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite';
-import {ArcoResolver} from 'unplugin-vue-components/resolvers';
 import {TDesignResolver} from '@tdesign-vue-next/auto-import-resolver';
 import path from 'path'
 import UnoCSS from 'unocss/vite'
@@ -36,16 +35,13 @@ export default defineConfig(({mode}) => {
     plugins: [
       vue(), VueJsx(),
       AutoImport({
-        resolvers: [ArcoResolver(), TDesignResolver({
+        resolvers: [TDesignResolver({
           library: 'vue-next'
         })],
         imports: ['vue', '@vueuse/core', 'vue-router']
       }),
       Components({
         resolvers: [
-          ArcoResolver({
-            sideEffect: true
-          }),
           TDesignResolver({
             library: 'vue-next'
           })
