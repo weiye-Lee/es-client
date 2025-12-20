@@ -1,0 +1,10 @@
+{
+  "extensionName": {
+    "message": "es-client",
+    "description": "Erweiterungsname"
+  },
+  "extensionDescription": {
+    "message": "Elasticsearch-Verwaltungsclient",
+    "description": "Beschreibung der Erweiterung"
+  }
+}

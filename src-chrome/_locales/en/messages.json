@@ -1,0 +1,10 @@
+{
+  "extensionName": {
+    "message": "es-client",
+    "description": "Extension name"
+  },
+  "extensionDescription": {
+    "message": "Elasticsearch management client",
+    "description": "Extension description"
+  }
+}

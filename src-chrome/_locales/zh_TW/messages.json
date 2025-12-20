@@ -1,0 +1,10 @@
+{
+  "extensionName": {
+    "message": "es-client",
+    "description": "擴充功能名稱"
+  },
+  "extensionDescription": {
+    "message": "Elasticsearch 管理客戶端",
+    "description": "擴充功能描述"
+  }
+}

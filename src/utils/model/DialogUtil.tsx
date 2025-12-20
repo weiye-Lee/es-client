@@ -1,6 +1,4 @@
 import MessageUtil from "@/utils/model/MessageUtil";
-import {BrowserWindowType, createDataBrowserWindow} from "@/plugins/native/browser-window";
-import {Constant} from "@/global/Constant";
 import {formatJsonString, stringifyJsonWithBigIntSupport} from "$/util";
 import {DialogInstance, DialogPlugin, TNode} from "tdesign-vue-next";
 import i18n from "@/i18n";
@@ -57,13 +55,7 @@ export function showJson(title: string, json: string, options?: DialogOption) {
   // 原始值
   const value = formatJsonString(json);
   // 创建对话框
-  if (Constant.isSupportPin) {
-    showDialog(title, () => <MonacoView value={value} height={"calc(100vh - 220px)"}/>, options);
-  } else {
-    createDataBrowserWindow(BrowserWindowType.JSON, value, value, {
-      title: title
-    });
-  }
+  showDialog(title, (s) => <MonacoView value={value} height={"calc(100vh - 220px)"}/>, options);
 }
 
 /**

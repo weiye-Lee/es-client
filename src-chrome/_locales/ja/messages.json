@@ -1,0 +1,10 @@
+{
+  "extensionName": {
+    "message": "es-client",
+    "description": "拡張機能名"
+  },
+  "extensionDescription": {
+    "message": "Elasticsearch 管理クライアント",
+    "description": "拡張機能の説明"
+  }
+}

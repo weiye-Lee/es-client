@@ -195,23 +195,6 @@ export default defineComponent({
       right: 0;
       bottom: 0;
 
-      .arco-scrollbar {
-        position: absolute;
-        top: 4px;
-        left: 6px;
-        right: 6px;
-        bottom: 4px;
-
-        .scrollbar {
-          overflow: auto;
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-
-        }
-      }
     }
 
     .current-scroll {
@@ -223,25 +206,6 @@ export default defineComponent({
 
     }
 
-    .json-scroll {
-      .arco-scrollbar {
-        position: absolute;
-        top: 4px;
-        left: 6px;
-        right: 6px;
-        bottom: 4px;
-
-        .scrollbar {
-          overflow: auto;
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-
-        }
-      }
-    }
   }
 
 

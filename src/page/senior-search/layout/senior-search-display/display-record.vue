@@ -7,7 +7,7 @@
         </a-select>
         <a-button type="primary" @click="search()">
           <template #icon>
-            <search-icon />
+            <search-icon/>
           </template>
         </a-button>
       </a-input-group>
@@ -15,7 +15,7 @@
                     :ok-button-props="{status: 'danger'}" @ok="clear()">
         <a-button type="primary" status="danger" :loading="clearLoading">
           <template #icon>
-            <delete-icon />
+            <delete-icon/>
           </template>
         </a-button>
       </a-popconfirm>
@@ -30,14 +30,14 @@
               <a-tooltip content="载入">
                 <a-button type="primary" @click="load(record)">
                   <template #icon>
-                    <file-import-icon />
+                    <file-import-icon/>
                   </template>
                 </a-button>
               </a-tooltip>
               <a-popconfirm content="是否删除此记录？">
                 <a-button type="primary" status="danger">
                   <template #icon>
-                    <delete-icon />
+                    <delete-icon/>
                   </template>
                 </a-button>
               </a-popconfirm>

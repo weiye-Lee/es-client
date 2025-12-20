@@ -6,23 +6,36 @@ import ja from './locales/ja'
 import de from './locales/de'
 import LocalNameEnum from "@/enumeration/LocalNameEnum";
 
+// 映射：Chrome 语言标签 → Vue I18n 语言标签
+function mapChromeLangToVueLang(chromeLang: string): string {
+  if (chromeLang === 'zh-CN' || chromeLang === 'zh') return 'zh-CN';
+  if (chromeLang === 'zh-TW') return 'zh-TW';
+  if (chromeLang.startsWith('zh')) return 'zh-CN'; // 兜底简体
+  if (chromeLang.startsWith('en')) return 'en';
+  if (chromeLang.startsWith('ja')) return 'ja';
+  if (chromeLang.startsWith('de')) return 'de';
+  return 'en';
+}
+
 const SUPPORT_LANGUAGE = ['zh-CN', 'zh-TW', 'en', 'ja', 'de'];
 
 let initialLocale = localStorage.getItem(LocalNameEnum.KEY_LOCAL);
 
-// 没有设置语言，尝试获取 chrome 的语言
-if (window.chrome && !initialLocale) {
-  const chromeLanguage = chrome.i18n.getUILanguage();
-  if (SUPPORT_LANGUAGE.includes(chromeLanguage)) {
-    initialLocale = chromeLanguage;
+try {
+  // 没有设置语言，尝试获取 chrome 的语言
+  if (window.chrome && !initialLocale) {
+    const chromeLanguage = chrome.i18n.getUILanguage();
+    initialLocale = mapChromeLangToVueLang(chromeLanguage);
   }
+} catch (e) {
+  console.error("初始化语言失败", e);
 }
 
 
 const i18n = createI18n({
   legacy: true, // support Options API
   allowComposition: true, // support Composition API
-  locale: (initialLocale && SUPPORT_LANGUAGE.includes(initialLocale)) ? initialLocale : "zh-CN",
+  locale: (initialLocale && SUPPORT_LANGUAGE.includes(initialLocale)) ? initialLocale : "en",
   fallbackLocale: 'en',
   messages: {
     'zh-CN': zhCN,
@@ -32,8 +45,5 @@ const i18n = createI18n({
     'de': de,
   },
 });
-
-
-// chrome.i18n.getMessage("language")
 
 export default i18n

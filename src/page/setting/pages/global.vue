@@ -98,8 +98,14 @@
         </t-form-item>
         <t-form-item label-align="top" :label="t('setting.base_search_default_view')" id="baseDefaultViewer">
           <t-radio-group v-model="instance.baseDefaultViewer">
-            <t-radio :label="t('setting.table_view')" :value="ViewTypeEnum.TABLE">{{ t('setting.table_view') }}</t-radio>
-            <t-radio :label="t('setting.editor_view')" :value="ViewTypeEnum.EDITOR">{{ t('setting.editor_view') }}</t-radio>
+            <t-radio :label="t('setting.table_view')" :value="ViewTypeEnum.TABLE">{{
+                t('setting.table_view')
+              }}
+            </t-radio>
+            <t-radio :label="t('setting.editor_view')" :value="ViewTypeEnum.EDITOR">{{
+                t('setting.editor_view')
+              }}
+            </t-radio>
           </t-radio-group>
         </t-form-item>
         <t-form-item v-if="instance.baseDefaultViewer === ViewTypeEnum.TABLE" label-align="top"
@@ -110,8 +116,14 @@
         </t-form-item>
         <t-form-item label-align="top" :label="t('setting.dev_tool_default_view')" id="devToolViewer">
           <t-radio-group v-model="instance.devToolViewer">
-            <t-radio :label="t('setting.table_view')" :value="ViewTypeEnum.TABLE">{{ t('setting.table_view') }}</t-radio>
-            <t-radio :label="t('setting.editor_view')" :value="ViewTypeEnum.EDITOR">{{ t('setting.editor_view') }}</t-radio>
+            <t-radio :label="t('setting.table_view')" :value="ViewTypeEnum.TABLE">{{
+                t('setting.table_view')
+              }}
+            </t-radio>
+            <t-radio :label="t('setting.editor_view')" :value="ViewTypeEnum.EDITOR">{{
+                t('setting.editor_view')
+              }}
+            </t-radio>
           </t-radio-group>
         </t-form-item>
         <t-form-item v-if="instance.devToolViewer === ViewTypeEnum.TABLE" label-align="top"
@@ -120,10 +132,17 @@
             <template #label="checked">{{ checked.value ? t('setting.show') : t('setting.hide') }}</template>
           </t-switch>
         </t-form-item>
-        <t-form-item label-align="top" :label="t('setting.senior_search_default_view')" id="seniorDefaultViewer" :help="t('setting.will_remove')">
+        <t-form-item label-align="top" :label="t('setting.senior_search_default_view')" id="seniorDefaultViewer"
+                     :help="t('setting.will_remove')">
           <t-radio-group v-model="instance.seniorDefaultViewer">
-            <t-radio :label="t('setting.table_view')" :value="ViewTypeEnum.TABLE">{{ t('setting.table_view') }}</t-radio>
-            <t-radio :label="t('setting.editor_view')" :value="ViewTypeEnum.EDITOR">{{ t('setting.editor_view') }}</t-radio>
+            <t-radio :label="t('setting.table_view')" :value="ViewTypeEnum.TABLE">{{
+                t('setting.table_view')
+              }}
+            </t-radio>
+            <t-radio :label="t('setting.editor_view')" :value="ViewTypeEnum.EDITOR">{{
+                t('setting.editor_view')
+              }}
+            </t-radio>
           </t-radio-group>
         </t-form-item>
 
@@ -154,9 +173,9 @@ import {useGlobalSettingStore} from "@/store";
 import ViewTypeEnum from "@/enumeration/ViewTypeEnum";
 import {storeToRefs} from "pinia";
 import {HelpCircleIcon} from "tdesign-icons-vue-next";
-import { useI18n } from 'vue-i18n';
+import {useI18n} from 'vue-i18n';
 
-const { t } = useI18n();
+const {t} = useI18n();
 const {globalSetting: instance} = storeToRefs(useGlobalSettingStore());
 
 </script>
@@ -179,17 +198,6 @@ const {globalSetting: instance} = storeToRefs(useGlobalSettingStore());
 
 .setting-global {
   margin-top: 7px;
-
-  .arco-form-item-wrapper-col {
-    width: 350px;
-  }
-
-  .w-full {
-
-    .arco-form-item-wrapper-col {
-      width: 100%;
-    }
-  }
 }
 
 .extend {

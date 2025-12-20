@@ -17,11 +17,6 @@
           <fullscreen-icon v-else/>
         </template>
       </a-button>
-      <a-button type="text" style="margin-left: 0" v-if="Constant.isSupportPin" @click="pin()">
-        <template #icon>
-          <bookmark-add-icon />
-        </template>
-      </a-button>
       <div class="tab" :class="displayActive === 'result' ? 'active' : ''" @click="displayActive = 'result'">
         结果
       </div>
@@ -39,18 +34,13 @@
 </template>
 <script lang="ts" setup>
 import {useSeniorSearchStore} from "@/store/components/SeniorSearchStore";
-// 组件
 import DisplayRecord from "@/page/senior-search/layout/senior-search-display/display-record.vue";
 import SeniorSearchDataView from '@/page/senior-search/layout/senior-search-display/DataView.vue'
 import DisplayHistory from "@/page/senior-search/layout/senior-search-display/display-history.vue";
-import {statistics, useSeniorShowResultEvent} from "@/global/BeanFactory";
-import {Constant} from "@/global/Constant";
-import {jsonToHtml} from "@/utils/model/DialogUtil";
-import {BrowserWindowType, createDataBrowserWindow} from "@/plugins/native/browser-window";
-import NotificationUtil from "@/utils/model/NotificationUtil";
+import {useSeniorShowResultEvent} from "@/global/BeanFactory";
 import SsDisplayQuick from "@/page/senior-search/layout/senior-search-display/SsDisplayQuick.vue";
 import {useGlobalSettingStore} from "@/store";
-import {BookmarkAddIcon, FullscreenExitIcon, FullscreenIcon} from "tdesign-icons-vue-next";
+import {FullscreenExitIcon, FullscreenIcon} from "tdesign-icons-vue-next";
 
 const props = defineProps({
   fullscreen: Boolean
@@ -71,18 +61,6 @@ watch(() => props.fullscreen, value => fullscreen.value = value);
 useSeniorShowResultEvent.reset();
 useSeniorShowResultEvent.on(() => displayActive.value = 'result');
 
-function pin() {
-  statistics.access("func_senior_search", "钉住");
-  if (Constant.isSupportPin) {
-    const {html, original} = jsonToHtml(useSeniorSearchStore().result);
-    createDataBrowserWindow(BrowserWindowType.JSON, html, original, {
-      title: "高级搜索-查询结果",
-      alwaysOnTop: true
-    })
-  } else {
-    NotificationUtil.warning("目前只有utools支持json钉住，请使用utools版本");
-  }
-}
 
 </script>
 <style scoped lang="less">
