@@ -34,7 +34,6 @@ import IndexManage from '@/module/index-manage/index.vue';
 
 const router = useRouter();
 
-
 async function initData(): Promise<void> {
   await Promise.all([
     // 设置

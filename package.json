@@ -65,6 +65,7 @@
   "devDependencies": {
     "@tauri-apps/cli": "^2.9.6",
     "@tdesign-vue-next/auto-import-resolver": "^0.1.4",
+    "@types/chrome": "^0.1.32",
     "@types/js-yaml": "^4.0.9",
     "@types/json-bigint": "^1.0.4",
     "@types/json2csv__plainjs": "^6.1.4",

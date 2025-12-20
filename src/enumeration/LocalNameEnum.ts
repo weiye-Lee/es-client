@@ -26,6 +26,8 @@ enum LocalNameEnum {
 
   KEY_COLLAPSED = '/key/collapsed',
 
+  KEY_LOCAL = '/key/local',
+
   DB_URL = '/db/url',
 
   DB_BASE_SEARCH_HISTORY = '/db/base-search-history',

@@ -125,7 +125,6 @@ import Assert from "@/utils/Assert";
 import {setItem} from '@/utils/utools/DbStorageUtil';
 import {openAddLink} from "@/page/setting/pages/link/components/EditLink";
 import {openUrl} from "@/utils/BrowserUtil";
-import LinkExtend from "@/components/AppExtend/LinkExtend.vue";
 import {
   ChatBubbleHistoryIcon,
   ChatMessageIcon,
@@ -165,7 +164,7 @@ const width = computed(() => size.width.value / 5);
 const { locale, t } = useI18n();
 function setLang(lang: string) {
   locale.value = lang;
-  localStorage.setItem('locale', lang);
+  localStorage.setItem(LocalNameEnum.KEY_LOCAL, lang);
 }
 
 watch(() => urlId.value, value => setItem(LocalNameEnum.KEY_LAST_URL, value));
