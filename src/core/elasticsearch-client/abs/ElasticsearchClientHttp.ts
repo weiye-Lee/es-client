@@ -88,7 +88,7 @@ export abstract class ElasticsearchClientHttp implements ElasticsearchClient {
 
   abstract getText(url: string): Promise<string>;
 
-  abstract getJson(url: string): Promise<Record<string, any>>;
+  abstract getJson<T extends Record<string, any>>(url: string): Promise<T>;
 
   abstract info(): Promise<Overview>;
 

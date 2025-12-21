@@ -136,12 +136,12 @@ export abstract class ElasticsearchClientCommon extends ElasticsearchClientHttp 
     });
   }
 
-  async getJson(url: string): Promise<Record<string, any>> {
+  async getJson<T extends Record<string, any>>(url: string): Promise<T> {
     const resp = await this.request({
       url,
       method: "GET"
     });
-    return parseJsonWithBigIntSupport(resp);
+    return parseJsonWithBigIntSupport<T>(resp);
   }
 
   async info(): Promise<Overview> {

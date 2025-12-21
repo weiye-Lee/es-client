@@ -61,8 +61,12 @@ export async function renameDataBrowserQuery(urlId: string, viewId: string, newN
   await saveListByAsync<DataBrowserQueryItem>(DATA_BROWSER_QUERY_KEY(urlId), list);
 }
 
-export async function saveDataBrowserQueryContent(viewId: string, body: DataBrowserQueryBody) {
-  await saveOneByAsync<DataBrowserQueryBody>(DATA_BROWSER_QUERY_ITEM_KEY(viewId), body);
+export async function saveDataBrowserQueryContent(viewId: string, body: Pick<DataBrowserQueryBody, "content" | "mode" | "records">) {
+  await saveOneByAsync<DataBrowserQueryBody>(DATA_BROWSER_QUERY_ITEM_KEY(viewId), {
+    id: viewId,
+    url_id: '',
+    ...body
+  });
 }
 
 export async function deleteDataBrowserQuery(urlId: string, viewId: string) {

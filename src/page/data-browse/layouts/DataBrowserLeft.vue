@@ -144,8 +144,8 @@ const data = computed<Array<TreeOptionData>>(() => ([
 const urlId = computed(() => useUrlStore().id);
 
 watch(() => useUrlStore().id, value => {
-  useDataBrowserViewStore().init(value);
-  useDataBrowserQueryStore().init(value);
+  useDataBrowserViewStore().init(`${value}`);
+  useDataBrowserQueryStore().init(`${value}`);
 }, {immediate: true});
 
 function onClick(node: TreeNodeModel) {

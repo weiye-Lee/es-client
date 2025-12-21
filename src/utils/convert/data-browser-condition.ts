@@ -1,4 +1,5 @@
 import { DataSearchOrderItem, DataSearchQueryItem } from "$/elasticsearch-client";
+import i18n from "@/i18n";
 
 interface ValueTypeResult {
   value: string;

@@ -396,7 +396,7 @@ export class ElasticsearchClientV7 extends ElasticsearchClientCommon {
         method: "GET",
         url: "/_index_template"
       });
-      parseJsonWithBigIntSupport(indexTemplateStr)
+      parseJsonWithBigIntSupport<{index_templates: Array<any>}>(indexTemplateStr)
         .index_templates.map((e) => e.name)
         .sort()
         .forEach((e) => {

@@ -1,5 +1,6 @@
 import Optional from "@/utils/Optional";
 import MessageUtil from "@/utils/model/MessageUtil";
+import i18n from "@/i18n";
 
 function showMessage(error: string, message?: string | (() => void), callback?: () => void) {
     if (callback) {
