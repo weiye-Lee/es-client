@@ -8,35 +8,36 @@ on:
 
 jobs:
   publish-tauri:
+    # 添加输出定义
     outputs:
       appVersion: ${{ steps.set_output.outputs.appVersion }}
 
     permissions:
       contents: write
     strategy:
-      fail-fast: false          # 关键：矩阵里任何单个子失败都不阻断
-    matrix:
-      include:
-        - platform: 'macos-latest'
-          args: '--target aarch64-apple-darwin'
-        - platform: 'macos-latest'
-          args: '--target x86_64-apple-darwin'
-        - platform: 'ubuntu-24.04'
-          args: ''
-        - platform: 'windows-latest'
-          args: ''
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'macos-latest'
+            args: '--target aarch64-apple-darwin'
+          - platform: 'macos-latest'
+            args: '--target x86_64-apple-darwin'
+          - platform: 'ubuntu-24.04'
+            args: ''
+          - platform: 'windows-latest'
+            args: ''
 
     runs-on: ${{ matrix.platform }}
-    # ==========  仅 Windows 允许失败  ==========
-    continue-on-error: ${{ matrix.platform == 'windows-latest' }}
-
     steps:
       - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v4
         with:
           version: 9
           run_install: true
-      - uses: actions/setup-node@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: 'pnpm'
@@ -46,7 +47,9 @@ jobs:
         with:
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      # —— Windows 容错：先装 VC++ 运行库 ——
+      # ----------------------------------------------------------
+      #  修复 WiX light.exe 找不到 VC++ 运行库的问题（仅 Windows）
+      # ----------------------------------------------------------
       - name: Install VC++ redist (Windows only)
         if: matrix.platform == 'windows-latest'
         run: |
@@ -65,9 +68,8 @@ jobs:
       - name: install frontend dependencies
         run: pnpm install
 
-      # ======  打包 & 上传  ======
       - uses: tauri-apps/tauri-action@v0
-        id: tauri-action
+        id: tauri-action  # 添加 id 以便后续引用
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
@@ -76,13 +78,11 @@ jobs:
           tagName: tauri-demo-v__VERSION__
           releaseName: 'tauri-demo v__VERSION__'
           releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: false
-          prerelease: false
+          releaseDraft: false # 不创建草稿版本
+          prerelease: false # 不作为预发布版本
           args: ${{ matrix.args }}
-          # 注意：tauri-action 会自动把打出的包挂到同一个 releaseId；
-          # Windows 失败时不会上传，release 里自然就没有 .msi
 
-      # —— 版本号采集（只在 ubuntu 跑一次） ——
+      # 保留原有「获取版本号」逻辑
       - name: Generate release tag
         id: save_tag
         if: matrix.platform == 'ubuntu-24.04'
@@ -93,11 +93,11 @@ jobs:
       - name: Set job output
         id: set_output
         if: matrix.platform == 'ubuntu-24.04'
-        run: echo "appVersion=${{ steps.save_tag.outputs.appVersion }}" >> $GITHUB_OUTPUT
-
+        run: |
+          echo "appVersion=${{ steps.save_tag.outputs.appVersion }}" >> $GITHUB_OUTPUT
 
   upgradeLink-upload:
-    needs: publish-tauri   # 等整个矩阵完成（Windows 失败也会被忽略）
+    needs: publish-tauri
     permissions:
       contents: write
     runs-on: ubuntu-latest
