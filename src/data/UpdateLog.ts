@@ -2,6 +2,21 @@ import {Log, LogItemEnum} from "@/view/Data";
 
 export default [
   {
+    version: "3.2.2",
+    sign: 322,
+    time: "2025-12-21",
+    items: [{
+      label: LogItemEnum.UPDATE,
+      content: "全新的数据浏览，全新的体验"
+    }, {
+      label: LogItemEnum.UPDATE,
+      content: "支持 SQL 查询"
+    }, {
+      label: LogItemEnum.UPDATE,
+      content: "切换 UI 框架从 Arco-Design 到 TDesign"
+    }]
+  },
+  {
     version: "3.2.1",
     sign: 321,
     time: "2025-12-04",

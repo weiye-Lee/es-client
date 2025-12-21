@@ -1,4 +1,4 @@
-name: upgrade.yml
+name: upgrade
 
 on:
   workflow_dispatch:
@@ -47,11 +47,23 @@ jobs:
         with:
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
+      # ----------------------------------------------------------
+      #  修复 WiX light.exe 找不到 VC++ 运行库的问题（仅 Windows）
+      # ----------------------------------------------------------
+      - name: Install VC++ redist (Windows only)
+        if: matrix.platform == 'windows-latest'
+        run: |
+          Invoke-WebRequest -Uri https://aka.ms/vs/17/release/vc_redist.x64.exe -OutFile vc_redist.x64.exe
+          Start-Process -Wait -FilePath .\vc_redist.x64.exe -ArgumentList "/quiet", "/norestart"
+
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-24.04'
         run: |
           sudo apt-get update
-          sudo apt-get install pkg-config libclang-dev libxcb1-dev libxrandr-dev libdbus-1-dev libpipewire-0.3-dev libwayland-dev libegl-dev libglib2.0-dev libgtk-3-dev libwebkit2gtk-4.1-dev libgbm-dev libappindicator3-dev librsvg2-dev patchelf
+          sudo apt-get install -y pkg-config libclang-dev libxcb1-dev libxrandr-dev \
+                                  libdbus-1-dev libpipewire-0.3-dev libwayland-dev libegl-dev \
+                                  libglib2.0-dev libgtk-3-dev libwebkit2gtk-4.1-dev libgbm-dev \
+                                  libappindicator3-dev librsvg2-dev patchelf
 
       - name: install frontend dependencies
         run: pnpm install
@@ -70,26 +82,22 @@ jobs:
           prerelease: false # 不作为预发布版本
           args: ${{ matrix.args }}
 
-      # 增加获取版本号
+      # 保留原有「获取版本号」逻辑
       - name: Generate release tag
         id: save_tag
         if: matrix.platform == 'ubuntu-24.04'
         run: |
-          # 调试输出
           echo ${{ steps.tauri-action.outputs.appVersion }}
-          # 输出到步骤级
           echo "appVersion=${{ steps.tauri-action.outputs.appVersion }}" >> $GITHUB_OUTPUT
 
-      # 设置作业级输出
       - name: Set job output
         id: set_output
         if: matrix.platform == 'ubuntu-24.04'
         run: |
-          # 注意：这里引用的是 save_tag 步骤的 tag_name 输出
           echo "appVersion=${{ steps.save_tag.outputs.appVersion }}" >> $GITHUB_OUTPUT
 
   upgradeLink-upload:
-    needs:  publish-tauri  # 依赖于 publish-tauri作业完成
+    needs: publish-tauri
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -98,6 +106,6 @@ jobs:
         uses: toolsetlink/upgradelink-action@v5
         with:
           source-url: 'https://github.com/toolsetlink/tauri-demo/releases/download/tauri-demo-v${{ needs.publish-tauri.outputs.appVersion }}/latest.json'
-          access-key: ${{ secrets.UPGRADE_LINK_ACCESS_KEY }}  # ACCESS_KEY  密钥key
-          tauri-key: ${{ secrets.UPGRADE_LINK_TAURI_KEY }}    # TAURI_KEY tauri 应用唯一标识
+          access-key: ${{ secrets.UPGRADE_LINK_ACCESS_KEY }}
+          tauri-key: ${{ secrets.UPGRADE_LINK_TAURI_KEY }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
