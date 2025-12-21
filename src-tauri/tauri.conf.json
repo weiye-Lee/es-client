@@ -34,6 +34,19 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "createUpdaterArtifacts": true,
+    "publisher": "落雨不悔"
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEU2REQ1MzFDMjg1RTEwMEYKUldRUEVGNG9IRlBkNW1BUHQyR2ZMemlLNmpSRGd2eFA3eWJ0OHhjMFFidzhlYjBpSytzaGJwS1cK",
+      "endpoints": [
+        "https://api.upgrade.toolsetlink.com/v1/tauri/upgrade?tauriKey=CHKetajqYBEyxdQKNFevqQ&versionName={{current_version}}&appointVersionName=&devModelKey=&devKey=&target={{target}}&arch={{arch}}"
+      ],
+      "windows": {
+        "installMode": "basicUi"
+      }
+    }
   }
 }

@@ -21,6 +21,8 @@
           "url": "http://*:*/*"
         }
       ]
-    }
+    },
+    "updater:default",
+    "process:default"
   ]
 }
