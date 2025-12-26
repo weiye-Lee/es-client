@@ -60,14 +60,20 @@
 
     .condition-item {
       display: flex;
+      align-items: center;
       margin: 0 5px;
       position: relative;
+      height: 34px;
 
       .key {
-        line-height: 35px;
+        flex-shrink: 0;
+        padding: 0 8px 0 4px;
+        font-size: 12px;
+        font-weight: 600;
         color: #ff92bb;
-        font-weight: bold;
         user-select: none;
+        white-space: nowrap;
+        letter-spacing: 0.5px;
 
         &.disable {
           color: #787878;

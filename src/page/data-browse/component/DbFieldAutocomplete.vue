@@ -334,13 +334,40 @@ function scrollToActiveItem() {
 .db-field-autocomplete {
   position: relative;
   flex: 1;
+  display: flex;
+  align-items: center;
+  height: 100%;
   
   .autocomplete-input {
     width: 100%;
-    border: 0;
-    padding: 8px 0;
-    margin: 0 5px 1px;
-    line-height: 1em;
+    height: 100%;
+    
+    .arco-input-wrapper {
+      border: none !important;
+      background: transparent !important;
+      padding: 0 !important;
+      height: 100%;
+      
+      &:hover, &:focus-within {
+        border: none !important;
+        background: transparent !important;
+      }
+      
+      .arco-input {
+        padding: 0 4px;
+        font-size: 13px;
+        height: 100%;
+        
+        &::placeholder {
+          color: var(--color-text-4);
+          font-size: 13px;
+        }
+      }
+      
+      .arco-input-suffix {
+        padding-right: 4px;
+      }
+    }
   }
 }
 
