@@ -7,6 +7,7 @@
                 <icon-down style="margin: 5px;" v-else/>
                 <span v-if="name === ''" style="user-select: none;">未选择索引</span>
                 <span v-else style="user-select: none;">{{ name }}</span>
+                <a-tag v-if="isCurrentFrequent" color="arcoblue" size="small" class="frequent-tag-inline">常用</a-tag>
             </a-space>
         </a-button>
         <template #content>
@@ -14,21 +15,31 @@
                 <a-empty v-if="indices.length === 0" description="请选择链接" style="padding-top: 150px"/>
                 <div class="data-browse-pull-down-index" v-else>
                     <a-input v-model="keyword" class="data-browse-pull-down-search" ref="dataBrowsePullDownSearch"
-                             allow-clear/>
+                             allow-clear placeholder="搜索索引..."/>
                     <a-scrollbar style="height: 358px" class="data-browse-pull-down-data">
                         <div>
                             <div v-if="input" class="data-browse-list-item"
                                  :class="input.name === name ? 'data-browse-list-item-this' : ''"
                                  @click="indexChange(input?.name, input?.type)">
-                                <span>{{ input.name }}</span>
-                                <a-tag color="orange">自定义</a-tag>
+                                <span class="item-name">{{ input.name }}</span>
+                                <div class="item-tags">
+                                    <a-tag color="orange" size="small">自定义</a-tag>
+                                </div>
                             </div>
-                            <div v-for="item in items" class="data-browse-list-item"
+                            <div v-for="item in items" :key="item.name" class="data-browse-list-item"
                                  :class="item.name === name ? 'data-browse-list-item-this' : ''"
                                  @click="indexChange(item.name, item.type, item.index)">
-                                <span>{{ item.name }}</span>
-                                <a-tag color="blue" v-if="item.type === 'index'">索引</a-tag>
-                                <a-tag color="green" v-else-if="item.type === 'alias'">别名</a-tag>
+                                <span class="item-name">{{ item.name }}</span>
+                                <div class="item-tags">
+                                    <a-tag v-if="isFrequentlyUsed(item.name)" color="arcoblue" size="small" class="frequent-tag">
+                                        <icon-fire /> 常用
+                                    </a-tag>
+                                    <a-tag color="blue" size="small" v-if="item.type === 'index'">索引</a-tag>
+                                    <a-tag color="green" size="small" v-else-if="item.type === 'alias'">别名</a-tag>
+                                    <span v-if="getUsageCount(item.name) > 0" class="usage-count">
+                                        {{ getUsageCount(item.name) }}次
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </a-scrollbar>
@@ -41,6 +52,7 @@
 import IndexView from "@/view/index/IndexView";
 import useIndexStore from "@/store/IndexStore";
 import {useDataBrowseStore} from "@/store/components/DataBrowseStore";
+import useIndexUsageStore, {FREQUENT_USAGE_THRESHOLD} from "@/store/IndexUsageStore";
 import {useFuse} from "@vueuse/integrations/useFuse";
 
 
@@ -51,6 +63,8 @@ interface Item {
     type: 'index' | 'alias' | 'custom';
 
     index?: IndexView | undefined;
+    
+    usageCount?: number;
 
 }
 
@@ -60,7 +74,31 @@ const show = ref(false);
 const dataBrowsePullDownSearch = ref<HTMLDivElement | null>(null);
 const input = ref<Item>()
 
+const indexUsageStore = useIndexUsageStore();
+
+// 初始化索引使用存储
+onMounted(() => {
+    indexUsageStore.init();
+});
+
 const name = computed(() => useDataBrowseStore().name);
+
+// 检查当前选中的索引是否为常用索引
+const isCurrentFrequent = computed(() => {
+    if (!name.value) return false;
+    return indexUsageStore.isFrequentlyUsed(name.value);
+});
+
+// 获取索引使用次数
+const getUsageCount = (indexName: string): number => {
+    return indexUsageStore.getUsageCount(indexName);
+};
+
+// 检查索引是否为常用索引
+const isFrequentlyUsed = (indexName: string): boolean => {
+    return indexUsageStore.isFrequentlyUsed(indexName);
+};
+
 const indices = computed<Array<Item>>(() => {
     let items = new Set<Item>();
     let names = new Set<string>();
@@ -73,7 +111,8 @@ const indices = computed<Array<Item>>(() => {
         items.add({
             name: index.name,
             type: 'index',
-            index
+            index,
+            usageCount: indexUsageStore.getUsageCount(index.name)
         });
         if (index.alias) {
             for (let alias of index.alias) {
@@ -83,17 +122,28 @@ const indices = computed<Array<Item>>(() => {
                     items.add({
                         name: alias,
                         type: 'alias',
-                        index
+                        index,
+                        usageCount: indexUsageStore.getUsageCount(alias)
                     });
                 }
             }
         }
     }
-    // 此处是索引排序
+    // 按使用频率排序（降序），使用次数相同则按名称排序
     return Array.from(items).sort((e1, e2) => {
+        const count1 = e1.usageCount || 0;
+        const count2 = e2.usageCount || 0;
+        
+        // 首先按使用次数降序排列
+        if (count2 !== count1) {
+            return count2 - count1;
+        }
+        
+        // 使用次数相同，按名称字母顺序排列
         return e1.name.localeCompare(e2.name, 'zh');
     });
 });
+
 const {results} = useFuse(keyword, indices, {
     matchAllWhenSearchEmpty: true,
     fuseOptions: {
@@ -102,7 +152,23 @@ const {results} = useFuse(keyword, indices, {
         }]
     }
 });
-const items = computed(() => results.value.map(e => e.item));
+
+// 保持搜索结果也按使用频率排序
+const items = computed(() => {
+    const searchResults = results.value.map(e => e.item);
+    // 如果有搜索关键词，保持搜索相关性排序；否则按使用频率排序
+    if (keyword.value.trim()) {
+        return searchResults;
+    }
+    return searchResults.sort((e1, e2) => {
+        const count1 = e1.usageCount || 0;
+        const count2 = e2.usageCount || 0;
+        if (count2 !== count1) {
+            return count2 - count1;
+        }
+        return e1.name.localeCompare(e2.name, 'zh');
+    });
+});
 
 watch(keyword,  value =>  {
     if (value === '') {
@@ -155,25 +221,33 @@ function indexChange(name: string, type: string, index?: IndexView) {
 <style lang="less">
 // 下拉列表
 
+.frequent-tag-inline {
+    margin-left: 4px;
+    font-size: 10px;
+    padding: 0 4px;
+    height: 16px;
+    line-height: 16px;
+}
+
 .data-browse-pull-down-panel {
-    width: 400px;
+    width: 420px;
     height: 400px;
     background-color: var(--color-bg-1);
     border-radius: 5px;
     box-shadow: 0 0 6px var(--color-border-2);
 
     .data-browse-pull-down-index {
-        width: 400px;
+        width: 420px;
         height: 400px;
 
         .data-browse-pull-down-search {
-            width: 390px;
+            width: 410px;
             margin-left: 5px;
         }
 
         .data-browse-pull-down-data {
             height: 358px;
-            width: 400px;
+            width: 420px;
             margin-top: 5px;
             overflow: auto;
             color: var(--color-text-1)
@@ -181,28 +255,60 @@ function indexChange(name: string, type: string, index?: IndexView) {
     }
 
     .data-browse-list-item {
-        width: 400px;
+        width: 420px;
         display: flex;
         justify-content: space-between;
-        height: 40px;
-        line-height: 40px;
+        align-items: center;
+        min-height: 40px;
+        padding: 8px 16px 8px 16px;
         border-bottom: 1px solid var(--color-border-2);
         cursor: pointer;
         overflow: hidden;
-        padding-left: 16px;
+        box-sizing: border-box;
 
         &:hover {
-            background-color: var(--color-border-2);
+            background-color: var(--color-fill-2);
         }
-
-        .arco-tag {
-            margin: 8px 4px;
+        
+        .item-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 8px;
+        }
+        
+        .item-tags {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+            
+            .arco-tag {
+                margin: 0;
+            }
+            
+            .frequent-tag {
+                display: flex;
+                align-items: center;
+                gap: 2px;
+                
+                .arco-icon {
+                    font-size: 10px;
+                }
+            }
+            
+            .usage-count {
+                font-size: 11px;
+                color: var(--color-text-3);
+                margin-left: 4px;
+            }
         }
     }
 
     .data-browse-list-item-this {
         color: rgb(var(--arcoblue-6));
-        background-color: var(--color-border-2);
+        background-color: var(--color-fill-2);
     }
 }
 </style>

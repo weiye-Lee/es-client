@@ -26,6 +26,7 @@ import useUrlStore from "@/store/UrlStore";
 import useEditorSettingStore from "@/store/setting/EditorSettingStore";
 import {useBackupSettingStore} from "@/store/setting/BackupSettingStore";
 import useIndexStore from "@/store/IndexStore";
+import useIndexUsageStore from "@/store/IndexUsageStore";
 import PageNameEnum from "@/enumeration/PageNameEnum";
 import LocalNameEnum from "@/enumeration/LocalNameEnum";
 import {versionManager, VersionStatus} from "@/components/version-manager";
@@ -47,7 +48,8 @@ async function initData(): Promise<void> {
     // 设置
     useGlobalSettingStore().init(),
     useEditorSettingStore().init(),
-    useBackupSettingStore().init()
+    useBackupSettingStore().init(),
+    useIndexUsageStore().init()
   ]);
   return Promise.resolve();
 }

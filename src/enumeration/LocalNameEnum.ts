@@ -66,7 +66,12 @@ enum LocalNameEnum {
      * 记录 - 高级查询
      * /record/senior-search/${id}
      */
-    RECORD_SENIOR_SEARCH_HISTORY = '/record/senior-search-history/'
+    RECORD_SENIOR_SEARCH_HISTORY = '/record/senior-search-history/',
+
+    /**
+     * 设置 - 索引使用频率
+     */
+    SETTING_INDEX_USAGE = '/setting/index-usage'
 
 }
 

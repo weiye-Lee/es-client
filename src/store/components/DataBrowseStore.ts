@@ -13,6 +13,7 @@ import IndexView from "@/view/index/IndexView";
 // 存储
 import {useDbConditionStore} from "@/page/data-browse/store/DbConditionStore";
 import {useDbResultRender} from "@/page/data-browse/store/DbResultStore";
+import useIndexUsageStore from "@/store/IndexUsageStore";
 
 export interface IndexInfo {
   name: string,
@@ -47,6 +48,9 @@ export const useDataBrowseStore = defineStore('data-browser', {
           return;
         }
         this.loading = true;
+        // 记录索引使用频率
+        useIndexUsageStore().recordUsage(this.name);
+        
         DocumentApi(this.name)._search(useDbConditionStore().buildSearchQuery())
           .then(result => {
             if (renderHeader) {
