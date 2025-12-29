@@ -10,3 +10,11 @@ export default interface BackupSetting {
     password: string;
 
 }
+
+export function getDefaultBackupSetting(): BackupSetting {
+    return {
+        url: '',
+        username: '',
+        password: ''
+    };
+}

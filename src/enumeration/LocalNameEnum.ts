@@ -74,6 +74,11 @@ enum LocalNameEnum {
    */
   RECORD_SENIOR_SEARCH_HISTORY = '/record/senior-search-history/',
 
+    /**
+     * 设置 - 索引使用频率
+     */
+    SETTING_INDEX_USAGE = '/setting/index-usage',
+
   /**
    * 数据浏览 - 视图
    * /item/data-browser/view/${urlId}

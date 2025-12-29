@@ -22,6 +22,8 @@
 import {useGlobalSettingStore, useIndexStore, useUrlStore} from "@/store";
 import {useColorMode} from "@/hooks";
 import useEditorSettingStore from "@/store/setting/EditorSettingStore";
+import {useBackupSettingStore} from "@/store/setting/BackupSettingStore";
+import useIndexUsageStore from "@/store/IndexUsageStore";
 import PageNameEnum from "@/enumeration/PageNameEnum";
 import LocalNameEnum from "@/enumeration/LocalNameEnum";
 import {versionManager, VersionStatus} from "@/components/version-manager";
@@ -39,6 +41,8 @@ async function initData(): Promise<void> {
     // 设置
     useGlobalSettingStore().init(),
     useEditorSettingStore().init(),
+    useBackupSettingStore().init(),
+    useIndexUsageStore().init()
   ]);
   return Promise.resolve();
 }
