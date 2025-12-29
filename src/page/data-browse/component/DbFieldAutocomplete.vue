@@ -296,12 +296,12 @@ function selectField(field: Field) {
   const prefix = beforeCursor.substring(0, lastSeparator + 1);
   const suffix = afterCursor;
   
-  // 插入字段名和等号
-  const newValue = prefix + field.name + '=' + suffix;
+  // 插入字段名（不添加等号）
+  const newValue = prefix + field.name + suffix;
   inputValue.value = newValue;
   
   // 更新光标位置
-  const newCursorPos = prefix.length + field.name.length + 1;
+  const newCursorPos = prefix.length + field.name.length;
   cursorPosition.value = newCursorPos;
   
   // 关闭下拉框

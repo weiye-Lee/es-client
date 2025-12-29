@@ -132,6 +132,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.5.1'
+          cache: 'yarn'
+      - run: yarn
+      - run: yarn build:chrome
+      - run: yarn build:edge
+      - run: yarn build:firefox
+      - run: zip -r chrome-extension.zip src-chrome/
+      - run: zip -r edge-extension.zip src-edge/
+      - run: zip -r firefox-extension.zip src-firefox/
       - uses: martinbeentjes/npm-get-version-action@v1.3.1
         id: package-version
 
@@ -157,15 +168,21 @@ jobs:
             github-artifacts/mac_x86_64_artifacts/macos/es-client_x64*
             github-artifacts/windows_artifacts/bundle/msi/es-client_*_x64*
             github-artifacts/windows_artifacts/es-client.exe
+            chrome-extension.zip
+            edge-extension.zip
+            firefox-extension.zip
           body: |
             ## 变更日志
             ## 如何使用 es-client
             ### 桌面端
-            * [Windows .msi](https://github.com/q2316367743/es-client/releases/download/${{ github.ref_name }}/es-client_${{ steps.package-version.outputs.current-version }}_x64_en-US.msi)
-            * [Mac x68 .dmg](https://github.com/q2316367743/es-client/releases/download/${{ github.ref_name }}/es-client_${{ steps.package-version.outputs.current-version }}_x64.dmg) / [Mac aarch64 .dmg](https://github.com/q2316367743/es-client/releases/download/${{ github.ref_name }}/es-client_${{ steps.package-version.outputs.current-version }}_aarch64.dmg)
-            * [Linux .AppImage](https://github.com/q2316367743/es-client/releases/download/${{ github.ref_name }}/es-client_${{ steps.package-version.outputs.current-version }}_amd64.AppImage) / [Linux .deb](https://github.com/q2316367743/es-client/releases/download/${{ github.ref_name }}/es-client_${{ steps.package-version.outputs.current-version }}_amd64.deb)
+            * [Windows .msi](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/es-client_${{ steps.package-version.outputs.current-version }}_x64_en-US.msi)
+            * [Mac x68 .dmg](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/es-client_${{ steps.package-version.outputs.current-version }}_x64.dmg) / [Mac aarch64 .dmg](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/es-client_${{ steps.package-version.outputs.current-version }}_aarch64.dmg)
+            * [Linux .AppImage](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/es-client_${{ steps.package-version.outputs.current-version }}_amd64.AppImage) / [Linux .deb](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/es-client_${{ steps.package-version.outputs.current-version }}_amd64.deb)
             
             ### 浏览器拓展
+            * [Chrome 扩展 .zip](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/chrome-extension.zip)
+            * [Edge 扩展 .zip](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/edge-extension.zip)
+            * [Firefox 扩展 .zip](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/firefox-extension.zip)
             * [Google Chrome](https://chromewebstore.google.com/detail/es-client/pkhmgepniefdigphghbolofjgbnhnhfd)
             * [Mozilla Firefox](https://addons.mozilla.org/zh-CN/firefox/addon/es-client/)
             * [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/esclient/aonamamifdfigcflbeokdndfappnmogo)
