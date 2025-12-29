@@ -32,8 +32,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.5.1'
-          cache: 'yarn'
-      - run: yarn
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: latest
+      - run: pnpm install
 
       - run: rustup toolchain install stable
       - name: mac > setup targets
@@ -51,7 +54,7 @@ jobs:
       ### build apple arm
 
       - name: mac aaarch64 > build
-        run: yarn tauri:build --target aarch64-apple-darwin
+        run: pnpm tauri:build --target aarch64-apple-darwin
         if: matrix.platform == 'macos-latest'
 
       - name: mac aaarch64 > rename artifacts
@@ -73,7 +76,7 @@ jobs:
       ### build apple x86_64
 
       - name: mac x86_64 > build
-        run: yarn tauri:build --target x86_64-apple-darwin
+        run: pnpm tauri:build --target x86_64-apple-darwin
         if: matrix.platform == 'macos-latest'
 
       - name: mac x86_64 > rename artifacts
@@ -95,7 +98,7 @@ jobs:
       ### build linux
 
       - name: linux > build
-        run: yarn tauri:build
+        run: pnpm tauri:build
         if: matrix.platform == 'ubuntu-latest'
 
       - name: linux > upload artifacts
@@ -112,7 +115,7 @@ jobs:
       ### build windows
 
       - name: windows > build
-        run: yarn tauri:build
+        run: pnpm tauri:build
         if: matrix.platform == 'windows-latest'
 
       - name: windows > upload artifacts
@@ -135,11 +138,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.5.1'
-          cache: 'yarn'
-      - run: yarn
-      - run: yarn build:chrome
-      - run: yarn build:edge
-      - run: yarn build:firefox
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: latest
+      - run: pnpm install
+      - run: pnpm build:chrome
+      - run: pnpm build:edge
+      - run: pnpm build:firefox
       - run: zip -r chrome-extension.zip src-chrome/
       - run: zip -r edge-extension.zip src-edge/
       - run: zip -r firefox-extension.zip src-firefox/
