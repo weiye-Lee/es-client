@@ -380,6 +380,7 @@ export default {
       edit: 'Edit',
       expand_collapse: 'Expand/Collapse Row',
       please_select_index_double_click: 'Please double click to select index',
+      please_select_index: 'Please select an index',
       index: 'Index',
       alias: 'Alias',
       view: 'View',

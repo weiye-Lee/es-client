@@ -1,6 +1,6 @@
 <template>
   <div class="db-field-autocomplete" ref="containerRef">
-    <a-input
+    <t-input
       v-model="inputValue"
       :placeholder="placeholder"
       class="autocomplete-input"
@@ -9,7 +9,7 @@
       @focus="handleFocus"
       @blur="handleBlur"
       @clear="handleClear"
-      allow-clear
+      clearable
       ref="inputRef"
     />
     <!-- 使用 Teleport 将下拉框传送到 body，使其在最顶层显示 -->
@@ -22,12 +22,12 @@
       >
         <div class="autocomplete-dropdown-content">
           <div
-            v-for="(field, index) in filteredFields"
+            v-for="(field, idx) in filteredFields"
             :key="field.name"
             class="autocomplete-item"
-            :class="{ 'autocomplete-item-active': index === activeIndex }"
+            :class="{ 'autocomplete-item-active': idx === activeIndex }"
             @mousedown.prevent="selectField(field)"
-            @mouseenter="activeIndex = index"
+            @mouseenter="activeIndex = idx"
           >
             <span class="field-name">{{ field.name }}</span>
             <span class="field-type">{{ field.type }}</span>
@@ -40,13 +40,14 @@
 
 <script lang="ts" setup>
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
-import useIndexStore from '@/store/IndexStore';
+import { useIndexStore } from '@/store';
 import { useDataBrowseStore } from '@/store/components/DataBrowseStore';
-import Field from '@/view/Field';
+import type Field from '@/view/Field';
 
 const props = defineProps<{
   modelValue: string;
   placeholder?: string;
+  index?: string;  // 可选：通过 props 传入索引名，如果不传则从 store 获取
 }>();
 
 const emit = defineEmits<{
@@ -70,7 +71,7 @@ const dropdownPosition = ref({ top: 0, left: 0, width: 280 });
 // 获取原生 input 元素
 function getNativeInput(): HTMLInputElement | null {
   if (!inputRef.value) return null;
-  // Arco Design Input 组件的内部 input 元素
+  // TDesign Input 组件的内部 input 元素
   return inputRef.value.$el?.querySelector('input') ||
          inputRef.value.$el ||
          null;
@@ -127,11 +128,14 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', handleWindowScroll);
 });
 
-// 获取当前索引的字段列表
+// 获取 IndexStore 实例
+const indexStore = useIndexStore();
+
+// 获取当前索引的字段列表 - 优先使用 props.index，否则从 DataBrowseStore 获取
 const fields = computed<Field[]>(() => {
-  const index = useDataBrowseStore().index;
-  if (!index) return [];
-  return useIndexStore().field(index);
+  const indexName = props.index || useDataBrowseStore().index;
+  if (!indexName) return [];
+  return indexStore.field(indexName);
 });
 
 // 获取当前输入位置的关键字
@@ -162,6 +166,9 @@ const currentKeyword = computed(() => {
   return keyword;
 });
 
+// 过滤字段 - 最大显示数量
+const MAX_DISPLAY_FIELDS = 50;
+
 // 过滤字段
 const filteredFields = computed(() => {
   // 如果没有字段，不显示建议
@@ -169,13 +176,12 @@ const filteredFields = computed(() => {
   
   const keyword = currentKeyword.value.toLowerCase();
   if (!keyword) {
-    // 如果没有关键字但有焦点，返回前10个字段
-    return fields.value.slice(0, 10);
+    // 如果没有关键字但有焦点，显示所有字段（最多 MAX_DISPLAY_FIELDS 个）
+    return fields.value.slice(0, MAX_DISPLAY_FIELDS);
   }
   
-  return fields.value
-    .filter(field => field.name.toLowerCase().includes(keyword))
-    .slice(0, 10);
+  const filtered = fields.value.filter(field => field.name.toLowerCase().includes(keyword));
+  return filtered.slice(0, MAX_DISPLAY_FIELDS);
 });
 
 // 监听 modelValue 变化
@@ -189,9 +195,14 @@ watch(inputValue, (newValue) => {
 });
 
 // Arco Design Input 的 @input 事件传递的是值，不是事件对象
-function handleInput(value: string | number) {
-  // 同步更新 inputValue
-  inputValue.value = String(value);
+function handleInput(event: Event | string) {
+  let value: string;
+  if (typeof event === 'string') {
+    value = event;
+  } else {
+    value = (event.target as HTMLInputElement)?.value || '';
+  }
+  inputValue.value = value;
   
   // 等待 DOM 更新后获取光标位置
   nextTick(() => {
@@ -342,21 +353,29 @@ function scrollToActiveItem() {
     width: 100%;
     height: 100%;
     
-    .arco-input-wrapper {
+    .t-input {
       border: none !important;
-      background: transparent !important;
+      background: rgba(0, 0, 0, 0.03) !important;
       padding: 0 !important;
       height: 100%;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.2s;
       
-      &:hover, &:focus-within {
-        border: none !important;
-        background: transparent !important;
+      &:hover {
+        background: rgba(0, 0, 0, 0.05) !important;
       }
       
-      .arco-input {
+      &:focus-within {
+        background: rgba(0, 0, 0, 0.08) !important;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(0, 123, 255, 0.25);
+      }
+      
+      .t-input__inner {
         padding: 0 4px;
         font-size: 13px;
         height: 100%;
+        border: none;
+        background: transparent;
         
         &::placeholder {
           color: var(--color-text-4);
@@ -364,7 +383,7 @@ function scrollToActiveItem() {
         }
       }
       
-      .arco-input-suffix {
+      .t-input__suffix {
         padding-right: 4px;
       }
     }
@@ -375,6 +394,8 @@ function scrollToActiveItem() {
 .db-autocomplete-dropdown-portal {
   max-height: 320px;
   background-color: var(--color-bg-1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--color-border-2);
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);

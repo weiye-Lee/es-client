@@ -380,6 +380,7 @@ export default {
       edit: '编辑',
       expand_collapse: '展开/收起当前行',
       please_select_index_double_click: '请双击选择索引',
+      please_select_index: '请选择索引',
       index: '索引',
       alias: '别名',
       view: '视图',

@@ -23,7 +23,7 @@
         <search-icon />
       </db-simple-item>
       <!-- 筛选 -->
-      <db-table-header :tab />
+      <db-table-header :tab :index="index" />
       <!-- 帮助 -->
       <t-button
         variant="text"

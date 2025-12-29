@@ -6,6 +6,7 @@ import {LoadingPlugin} from "tdesign-vue-next";
 import MessageUtil from "@/utils/model/MessageUtil";
 import {SelectOption} from "$/shared/common";
 import {IndexMapping} from "$/shared/elasticsearch";
+import type ViewField from "@/view/Field";
 
 export interface IndexOption extends SelectOption {
   // 标签
@@ -152,7 +153,6 @@ export const useIndexStore = defineStore("index", () => {
     });
     try {
       const clusterInfo = await client.indices();
-      console.log(clusterInfo)
       indices.value = clusterInfo.indices;
       masterNode.value = clusterInfo.masterNode;
       nodes.value = clusterInfo.nodes;
@@ -226,6 +226,33 @@ export const useIndexStore = defineStore("index", () => {
     }
   }
 
+  /**
+   * 获取指定索引的字段列表
+   * @param indexName 索引名称
+   * @returns 字段列表
+   */
+  function field(indexName: string | undefined): Array<ViewField> {
+    if (!indexName) return [];
+    const indexItem = indicesMap.value.get(indexName);
+    if (indexItem) {
+      return [
+        {
+          name: '_id',
+          label: '_id',
+          type: 'text',
+          dataIndex: '_id'
+        },
+        ...indexItem.fields.map(f => ({
+          name: f.label || f.value,
+          label: f.label || f.value,
+          type: f.type || 'text',
+          dataIndex: f.value
+        }))
+      ];
+    }
+    return [];
+  }
+
   return {
     masterNode,
     nodes,
@@ -242,6 +269,7 @@ export const useIndexStore = defineStore("index", () => {
     clear,
     refreshIndex,
     updateIndex,
-    removeIndex
+    removeIndex,
+    field
   };
 });

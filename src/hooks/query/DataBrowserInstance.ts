@@ -1,6 +1,6 @@
 import type { Ref } from "vue";
 import { useSnowflake } from "$/util";
-import { useGlobalSettingStore, useUrlStore } from "@/store";
+import { useGlobalSettingStore, useUrlStore, useIndexStore } from "@/store";
 import MessageUtil from "@/utils/model/MessageUtil";
 import { conditionBuild, orderBuild } from "@/utils/convert/data-browser-condition";
 import {
@@ -90,10 +90,52 @@ export const useDataBrowserInstance = (
       .then((r) => {
         if (renderColumn) {
           const {dataBrowserShowMeta} = useGlobalSettingStore();
-          columns.value = [
-            ...(dataBrowserShowMeta ? metaColumn() : []),
-            ...r.columns
-          ];
+          const indexStore = useIndexStore();
+          const metaCols = (dataBrowserShowMeta ? metaColumn() : []).map(c => ({ ...c, show: true } as DataSearchColumnConfig));
+          // 使用 Map 去重，确保 _id 等字段不会重复
+          const resultColsMap = new Map(r.columns.map(c => [c.field, { ...c, show: true }]));
+          const resultCols = Array.from(resultColsMap.values());
+          // 过滤掉 _id 字段，因为它会在 resultCols 中单独处理
+          const allFields = indexStore.field(index).filter(f => f.dataIndex !== '_id');
+          const colMap = new Map<string, DataSearchColumnConfig>();
+          
+          // Add meta columns
+          metaCols.forEach(col => colMap.set(col.field, col));
+          
+          // Add all index fields with show: false (跳过已存在于 resultCols 中的字段)
+          allFields.forEach(f => {
+            // 如果该字段已经在 resultCols 中或 colMap 中，则跳过，避免重复
+            if (!resultColsMap.has(f.dataIndex) && !colMap.has(f.dataIndex)) {
+              colMap.set(f.dataIndex, {
+                field: f.dataIndex,
+                title: f.label,
+                show: false,
+                width: 120,
+                ellipsis: true,
+                cellClass: ''
+              });
+            }
+          });
+          
+          // Override with result columns show: true
+          resultCols.forEach(col => {
+            if (!colMap.has(col.field)) {
+              colMap.set(col.field, col);
+            }
+          });
+          
+          columns.value = Array.from(colMap.values());
+        } else {
+          // Merge new fields from result
+          const resultCols = Array.from(new Map(r.columns.map(c => [c.field, { ...c, show: true }])).values());
+          const currentCols = columns.value;
+          const colMap = new Map(currentCols.map(c => [c.field, c]));
+          resultCols.forEach(col => {
+            if (!colMap.has(col.field)) {
+              colMap.set(col.field, col);
+            }
+          });
+          columns.value = Array.from(colMap.values());
         }
         records.value = r.records;
         total.value = r.total;
