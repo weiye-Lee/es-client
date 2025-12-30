@@ -56,7 +56,7 @@ export function conditionBuild(condition: string): Array<DataSearchQueryItem> {
     // 1) 支持的操作符：=, !=, >, >=, <, <=, eq, ne, gt, gte, lt, lte, term, match, like, in, exists, missing
     // 2) exists 和 missing 可不带值；其它操作符必须带值
     const fullMatch = part.match(
-      /^\s*(\S+)\s+(=|!=|>=|<=|>|<|eq|ne|gt|gte|lt|lte|term|match|like|in|exists|missing)(?:\s+(.+?))?\s*$/
+      /^\s*(\S+)\s*(=|!=|>=|<=|>|<|eq|ne|gt|gte|lt|lte|term|match|like|in|exists|missing)\s*(.+?)?\s*$/
     );
     if (!fullMatch) {
       console.warn(`${i18n.global.t('utils.convert.condition_parse_error')}: "${part}"`);

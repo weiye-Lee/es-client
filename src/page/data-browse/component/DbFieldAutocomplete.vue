@@ -5,7 +5,6 @@
       :placeholder="placeholder"
       class="autocomplete-input"
       @input="handleInput"
-      @keydown="handleKeydown"
       @focus="handleFocus"
       @blur="handleBlur"
       @clear="handleClear"
@@ -121,11 +120,23 @@ function handleWindowScroll() {
 onMounted(() => {
   window.addEventListener('scroll', handleWindowScroll, true);
   window.addEventListener('resize', handleWindowScroll);
+  
+  // 添加原生 input 的 keydown 监听器
+  const nativeInput = getNativeInput();
+  if (nativeInput) {
+    nativeInput.addEventListener('keydown', handleKeydown);
+  }
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleWindowScroll, true);
   window.removeEventListener('resize', handleWindowScroll);
+  
+  // 移除事件监听器
+  const nativeInput = getNativeInput();
+  if (nativeInput) {
+    nativeInput.removeEventListener('keydown', handleKeydown);
+  }
 });
 
 // 获取 IndexStore 实例
@@ -252,13 +263,13 @@ function handleKeydown(e: KeyboardEvent) {
   
   if (!showDropdown.value || filteredFields.value.length === 0) {
     // 如果下拉框未显示，允许 Enter 键触发查询
-    if (e.key === 'Enter') {
+    if (e.code === 'Enter' || e.code === 'NumpadEnter') {
       emit('enter');
     }
     return;
   }
   
-  switch (e.key) {
+  switch (e.code) {
     case 'ArrowDown':
       e.preventDefault();
       activeIndex.value = (activeIndex.value + 1) % filteredFields.value.length;
@@ -272,6 +283,7 @@ function handleKeydown(e: KeyboardEvent) {
       scrollToActiveItem();
       break;
     case 'Enter':
+    case 'NumpadEnter':
       if (activeIndex.value >= 0 && activeIndex.value < filteredFields.value.length) {
         e.preventDefault();
         selectField(filteredFields.value[activeIndex.value]);
