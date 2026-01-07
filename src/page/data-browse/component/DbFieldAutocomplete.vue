@@ -353,7 +353,7 @@ function scrollToActiveItem() {
 }
 </script>
 
-<style lang="less">
+<style scoped lang="less">
 .db-field-autocomplete {
   position: relative;
   flex: 1;
@@ -401,15 +401,14 @@ function scrollToActiveItem() {
     }
   }
 }
+</style>
 
-// 下拉框样式 - 需要在全局作用域，因为使用了 Teleport 到 body
+<style lang="less">
 .db-autocomplete-dropdown-portal {
   max-height: 320px;
-  background-color: var(--color-bg-1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--color-border-2);
-  border-radius: 4px;
+  background-color: var(--td-bg-color-container);
+  border: 1px solid var(--td-border-level-2-color);
+  border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   
@@ -428,18 +427,18 @@ function scrollToActiveItem() {
     
     &:hover,
     &.autocomplete-item-active {
-      background-color: var(--color-fill-2);
+      background-color: var(--td-bg-color-container-hover);
     }
     
     .field-name {
-      color: var(--color-text-1);
+      color: var(--td-text-color-primary);
       font-weight: 500;
     }
     
     .field-type {
-      color: var(--color-text-3);
+      color: var(--td-text-color-secondary);
       font-size: 12px;
-      background-color: var(--color-fill-3);
+      background-color: var(--td-bg-color-component);
       padding: 2px 6px;
       border-radius: 3px;
     }
