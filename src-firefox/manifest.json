@@ -1,14 +1,14 @@
 {
     "manifest_version": 2,
-    "name": "es-client",
+    "name": "es-client-enhanced",
     "version": "3.2.2",
-    "description": "elasticsearch管理客户端",
+    "description": "Elasticsearch Management Client (Enhanced Edition)",
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
     "icons": {
         "16": "icons/logo_16.png",
         "48": "icons/logo_16.png"
     },
-    "homepage_url": "https://gitee.com/qiaoshengda/es-client",
+    "homepage_url": "https://github.com/weiye-Lee/es-client",
     "permissions": [
         "http://*/*",
         "https://*/*"
@@ -27,5 +27,5 @@
             "src/index.js"
         ]
     },
-    "author": "云落天都"
+    "author": "weiye"
 }

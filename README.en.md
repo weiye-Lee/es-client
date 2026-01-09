@@ -1,4 +1,4 @@
-<p align="center">
+﻿<p align="center">
 <a href="./README.md">简体中文</a> | <a href="./README.en.md">English</a>
 </p>
 
@@ -6,121 +6,79 @@
 <img src="./public/logo.png" alt="ES-Client Logo" width="120">
 </p>
 
-<h1 align="center">ES-Client</h1>
+<h1 align="center">ES-Client (Enhanced Edition)</h1>
 
-<p align="center"><strong>Lightweight, Efficient, and Secure Elasticsearch Desktop Client</strong></p>
-
+<p align="center"><strong>A Cleaner, More Intuitive, and Powerful Elasticsearch Desktop Client</strong></p>
 <p align="center">
-<a href="https://gitcode.com/q2316367743/es-client">
-<img src="https://gitcode.com/q2316367743/es-client/star/badge.svg" alt="GitCode Star">
-</a>
-<a href="https://gitee.com/qiaoshengda/es-client">
-<img src="https://gitee.com/qiaoshengda/es-client/badge/star.svg?theme=white" alt="Gitee Stars">
-</a>
-<a href="https://github.com/q2316367743/es-client">
-<img src="https://img.shields.io/github/stars/q2316367743/es-client?style=social" alt="GitHub Stars">
-</a>
+  <em>Deeply Optimized & Enhanced based on v3.2.2 | Built for Efficient Development</em>
 </p>
 
-<p align="center">
-<a href="https://microsoftedge.microsoft.com/addons/detail/esclient/aonamamifdfigcflbeokdndfappnmogo">
-<img src="https://img.shields.io/badge/Edge-v3.1.9-%23242624" alt="Edge Extension">
-</a>
-<a href="https://chromewebstore.google.com/detail/es-client/pkhmgepniefdigphghbolofjgbnhnhfd">
-<img src="https://img.shields.io/badge/Chrome-v3.1.9-%23ff3847" alt="Chrome Extension">
-</a>
-</p>
+---
+
+##  What's New in Enhanced Edition
+
+This project is a fork of the excellent [ES-Client](https://gitee.com/qiaoshengda/es-client). We have deeply customized and optimized it to provide a smoother and purer development experience:
+
+### 1.  Purely Private & Clean
+* **No Tracking**: We have completely removed user behavior tracking anchors and the `/send` interface. Your operational data is secure and totally private. Whether in an intranet environment or handling sensitive data, you don't need to worry about any implicit data reporting.
+
+### 2.  Modernized UI
+* **Top Index Navigation**: Replaced the original left-sidebar index/alias list (which took up horizontal space) with a modern **Top Index Quick Selector**.
+* **Global Search Experience**: Integrated a powerful search bar at the top for quick index location. This change frees up screen space, providing a wider view for data and a shorter operation path.
+
+### 3.  Smart Data Browsing
+* **Query Intelligent Completion**: Added **Field Auto-completion & Selection** when building query conditions in the **MUST** / **SHOULD** / **MUST_NOT** areas of the Data Browse page.
+* **No More Memorizing**: Forget about checking Mappings repeatedly or memorizing complex field names. Just type a prefix to get precise hints, making complex query construction smoother than ever.
+
+### 4.  Enhanced Custom Headers
+* **Field Visualization**: The custom header settings page now supports **Field Type Display**. Icons clearly show if a field is Keyword, Text, Long, or Date.
+* **Header Search**: Facing thousands of fields in a wide table? The new **Quick Search Filter** lets you rapidly find and check the columns you care about, easily customizing your exclusive data view.
+
+---
+
+##  Core Features Inherited
+
+We perfectly retained all the excellent genes of the original ES-Client, keeping it the lightweight tool you know:
+
+*  **Lightweight & Efficient**: No server deployment, no team dependencies, out-of-the-box, standalone.
+*  **Visual Management**: One-stop graphical configuration for Index Creation, Mapping Settings, and ILM Lifecycle Policies.
+*  **Safe Operations**: Supports `_update_by_query` / `_delete_by_query` with **Operation Preview + Real-time Progress Bar + Cancellation**, eliminating accidental deletion risks.
+*  **Deep Diagnostics**: Built-in Slow Query Analysis Panel, integrated Explain & Profile visualization to quickly locate non-indexed fields, uneven shards, or script bottlenecks.
+*  **Data Export**: Supports streaming export to CSV / Excel / JSON, with resume capability and no lag for large tasks.
+
+##  Installation & Build
+
+### Browser Extensions
+Check the [Releases](../../releases) page to download the latest extension packages:
+* **Edge**: Download `es-client-edge-v*.zip`, go to `edge://extensions`, enable Developer Mode -> Load Unpacked (or drag & drop).
+* **Firefox**: Download `es-client-firefox-v*.zip`, go to `about:debugging` -> This Firefox -> Load Temporary Add-on.
+
+### Build from Source
+If you wish to build from source yourself:
+
+```bash
+# Install dependencies
+pnpm install
+
+# Build Edge Extension (output to src-edge/es-client)
+pnpm build:edge
+
+# Build Firefox Extension (output to src-firefox/es-client)
+pnpm build:firefox
+```
+
+##  Acknowledgements
+
+This project is a small exploration standing on the shoulders of giants. Special thanks to the original author **[Esion](https://gitee.com/qiaoshengda)** (qiaoshengda) for developing such an excellent `es-client` project, which has provided great convenience to the community.
+
+Original Project:
+* Gitee: [https://gitee.com/qiaoshengda/es-client](https://gitee.com/qiaoshengda/es-client)
+* GitHub: [https://github.com/q2316367743/es-client](https://github.com/q2316367743/es-client)
+
+If you like this Enhanced Edition, please also consider giving the original project a Star .
+
+---
 
 <p align="center">
-👉
-<a href="https://es-client.esion.xyz" target="_blank">Official Website</a> •
-<a href="https://es-client.esion.xyz/docs/app/es-client-open" target="_blank">Documentation</a> •
-<a href="https://es-client.esion.xyz/feedback/app/es-client-open" target="_blank">Feedback</a> 👈
+Made with  for Elasticsearch Developers
 </p>
-
-## 💡 Why ES-Client?
-
-Official Elasticsearch tools like Kibana are powerful but heavy, while veteran plugins like elasticsearch-head have been discontinued with outdated user experiences.
-
-ES-Client emerges as a solution - designed specifically for individual developers and operations personnel, focusing on high-frequency daily scenarios, providing lightweight, fast, secure, and standalone management experience.
-
-* ✅ No server deployment required
-* ✅ No team collaboration dependencies
-* ✅ Ready to use out-of-the-box with zero configuration
-
-## 🚀 Core Features
-
-### 🔍 Intelligent Index Management
-
-* Auto Grouping: Intelligently categorize indices by prefix, date, or regex pattern - say goodbye to chaotic lists of thousands of log indices
-* Collapse Operations: Expand/collapse index groups with one click for more efficient batch operations
-
-### 🎨 Visual Configuration Wizard
-
-* Index Creation: Graphical mapping & settings configuration
-* ILM Policies: Visually define lifecycle management rules
-* Index Templates: WYSIWYG template configuration, reducing DSL learning curve
-
-### ⚠️ Safe Batch Operations
-
-Supports _update_by_query / _delete_by_query
-Triple protection: Operation preview + Real-time progress bar + Anytime cancellation, completely eliminating accidental deletion risks
-
-### 📊 In-depth Performance Diagnostics
-
-* Slow Query Analysis Panel: Automatically capture high-latency requests
-
-* Integrated explain & profile visualization for quick identification of:
-  * Non-indexed fields
-  * Excessive shards
-  * Script performance bottlenecks
-
-### 📤 Streaming Big Data Export (Pro)
-
-* Support exporting 100,000+ rows to CSV / Excel / JSON
-* Real-time progress display + Resume capability, no lag or data loss for large tasks
-
-### 🩺 Cluster Health Overview (Pro)
-
-Dashboard displays at a glance:
-* Node count
-* Shard status (unassigned/recovering)
-* Disk watermark & read-only warnings
-* Automatic highlighting of exceptions for peace of mind in operations
-
-### 🔒 High-risk Operation Audit (Pro)
-
-* Automatically record context of sensitive operations like deletion and modification
-* Support rapid retrospection and problem location
-
-## 📥 Installation & Usage
-- [Edge Store](https://microsoftedge.microsoft.com/addons/detail/esclient/aonamamifdfigcflbeokdndfappnmogo)
-- Chrome (VPN required): [Chrome Web Store](https://chromewebstore.google.com/detail/es-client/pkhmgepniefdigphghbolofjgbnhnhfd)
-
-## 🖼️ Screenshots
-
-| Home                | Data Browser                | Basic Query                |
-|-------------------|---------------------|---------------------|
-| ![Home](/img/1.png) | ![Data Browser](/img/2.png) | ![Basic Query](/img/3.png) |
-
-| Advanced Query                | Settings                | About                |
-|---------------------|-------------------|-------------------|
-| ![Advanced Query](/img/4.png) | ![Settings](/img/5.png) | ![About](/img/6.png) |
-
-## 🛠 Tech Stack
-Frontend: Vue 3 + TypeScript + Vite 5 + TDesign
-Plugin System: Chrome / Edge
-
-## ❤️ Open Source & Support
-
-Gitee: [https://gitee.com/qiaoshengda/es-client](https://gitee.com/qiaoshengda/es-client) (Main repository, recommended for Issues)
-
-GitHub: [https://github.com/q2316367743/es-client](https://github.com/q2316367743/es-client)
-
-GitCode: [https://gitcode.com/q2316367743/es-client](https://gitcode.com/q2316367743/es-client)
-
-Documentation: [Documentation Center](https://es-client.esion.xyz/docs/app/es-client-open)
-
-Feedback: [Feedback Center](https://es-client.esion.xyz/feedback/app/es-client-open)
-
-Experience ES-Client now and make Elasticsearch management simple, secure, and efficient! 🚀
