@@ -144,7 +144,7 @@ const indexStore = useIndexStore();
 
 // 获取当前索引的字段列表 - 优先使用 props.index，否则从 DataBrowseStore 获取
 const fields = computed<Field[]>(() => {
-  const indexName = props.index || useDataBrowseStore().index;
+  const indexName = props.index; // || useDataBrowseStore().index;
   if (!indexName) return [];
   return indexStore.field(indexName);
 });

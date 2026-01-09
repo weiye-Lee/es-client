@@ -49,8 +49,8 @@
     </a-trigger>
 </template>
 <script lang="ts" setup>
-import IndexView from "@/view/index/IndexView";
-import useIndexStore from "@/store/IndexStore";
+// import IndexView from "@/view/index/IndexView";
+import { useIndexStore } from "@/store/IndexStore";
 import {useDataBrowseStore} from "@/store/components/DataBrowseStore";
 import useIndexUsageStore, {FREQUENT_USAGE_THRESHOLD} from "@/store/IndexUsageStore";
 import {useFuse} from "@vueuse/integrations/useFuse";
@@ -62,7 +62,7 @@ interface Item {
 
     type: 'index' | 'alias' | 'custom';
 
-    index?: IndexView | undefined;
+    index?: any; // IndexView | undefined;
     
     usageCount?: number;
 
@@ -81,7 +81,9 @@ onMounted(() => {
     indexUsageStore.init();
 });
 
-const name = computed(() => useDataBrowseStore().name);
+// const name = computed(() => useDataBrowseStore().name);
+
+const name = ref('');
 
 // 检查当前选中的索引是否为常用索引
 const isCurrentFrequent = computed(() => {
@@ -102,7 +104,7 @@ const isFrequentlyUsed = (indexName: string): boolean => {
 const indices = computed<Array<Item>>(() => {
     let items = new Set<Item>();
     let names = new Set<string>();
-    let indices = useIndexStore().indices;
+    let indices = useIndexStore().list;
     if (indices.length === 0) {
         return Array.from(items);
     }
@@ -207,13 +209,13 @@ function showIndex() {
     }
 }
 
-function indexChange(name: string, type: string, index?: IndexView) {
+function indexChange(name: string, type: string, index?: any) {
     show.value = false;
-    useDataBrowseStore().indexChange({
-        name,
-        type,
-        index
-    })
+    // useDataBrowseStore().indexChange({
+    //     name,
+    //     type,
+    //     index
+    // })
 }
 
 

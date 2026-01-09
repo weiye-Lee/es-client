@@ -58,13 +58,21 @@
 </template>
 <script lang="ts" setup>
 import {useDataBrowseStore} from "@/store/components/DataBrowseStore";
-import {useDbConditionStore} from "@/page/data-browse/store/DbConditionStore";
+// import {useDbConditionStore} from "@/page/data-browse/store/DbConditionStore";
 import DbFieldAutocomplete from "@/page/data-browse/component/DbFieldAutocomplete.vue";
 
-const {must, should, mustNot, orderBy} = useDbConditionStore()
+// const {must, should, mustNot, orderBy} = useDbConditionStore()
 
-const executeQuery = () => useDataBrowseStore().executeQuery(false);
-const clear = () => nextTick(() => useDataBrowseStore().executeQuery(false));
+const must = ref('');
+const should = ref('');
+const mustNot = ref('');
+const orderBy = ref('');
+
+// const executeQuery = () => useDataBrowseStore().executeQuery(false);
+// const clear = () => nextTick(() => useDataBrowseStore().executeQuery(false));
+
+const executeQuery = () => {};
+const clear = () => {};
 
 
 </script>

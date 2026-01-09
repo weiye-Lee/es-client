@@ -66,12 +66,12 @@ import { useIndexStore } from '@/store';
 import useIndexUsageStore from '@/store/IndexUsageStore';
 import { useDataBrowseStore, encodeValue } from '@/store/components/DataBrowseStore';
 import { useFuse } from '@vueuse/integrations/useFuse';
-import IndexView from '@/view/index/IndexView';
+// import IndexView from '@/view/index/IndexView';
 
 interface IndexItem {
   name: string;
   type: 'index' | 'alias' | 'custom';
-  index?: IndexView;
+  index?: any;
   usageCount?: number;
 }
 

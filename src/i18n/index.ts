@@ -23,7 +23,7 @@ let initialLocale = localStorage.getItem(LocalNameEnum.KEY_LOCAL);
 
 try {
   // 没有设置语言，尝试获取 chrome 的语言
-  if (window.chrome?.i18n?.getUILanguage && !initialLocale) {
+  if (window.chrome?.i18n && !initialLocale) {
     const chromeLanguage = chrome.i18n.getUILanguage();
     initialLocale = mapChromeLangToVueLang(chromeLanguage);
   }
