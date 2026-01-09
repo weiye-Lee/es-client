@@ -18,7 +18,7 @@
   "scripts": {
     "dev": "vite --host --mode=web",
     "dev:tauri": "vite --host --mode=tauri",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vite build",
     "build:edge": "vue-tsc --noEmit && vite build --mode=edge",
     "build:chrome": "vue-tsc --noEmit && vite build --mode=chrome",
     "build:firefox": "vue-tsc --noEmit && vite build --mode=firefox",

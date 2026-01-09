@@ -12,9 +12,9 @@ if (!token) {
 const profileId = token;
 
 // 注册路由跳转事件
-router.beforeEach((to) => {
-  useUmami.page(to.path, to.name as string);
-});
+// router.beforeEach((to) => {
+//   useUmami.page(to.path, to.name as string);
+// });
 
 const umami = {
   // 网站ID
@@ -54,7 +54,9 @@ function sendEvent(payload: Record<string, any>) {
     console.debug("Umami payload:", payload);
     return;
   }
-  fetch(`${umami.url}/api/send`, {
+  // 移除umami统计
+  return;
+  /*fetch(`${umami.url}/api/send`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -66,7 +68,7 @@ function sendEvent(payload: Record<string, any>) {
   })
     .then((response) => response.text())
     .then((text) => console.debug("Umami response:", text))
-    .catch((error) => console.error("Umami error:", error));
+    .catch((error) => console.error("Umami error:", error));*/
 }
 
 export const useUmami = {

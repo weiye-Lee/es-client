@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {getDefaultBackupSetting, BackupSetting} from "@/entity/setting/BackupSetting";
+import BackupSetting, {getDefaultBackupSetting} from "@/entity/setting/BackupSetting";
 import {getFromOneByAsync, saveOneByAsync} from "@/utils/utools/DbStorageUtil";
 import LocalNameEnum from "@/enumeration/LocalNameEnum";
 import {ref} from "vue";

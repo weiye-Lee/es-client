@@ -92,6 +92,8 @@ const dropdownRef = ref<HTMLElement | null>(null);
 const keyword = ref('');
 const showDropdown = ref(false);
 const activeIndex = ref(0);
+// 懒加载：只有在用户交互时才初始化索引列表
+const isInitialized = ref(false);
 
 // 下拉框位置
 const dropdownPosition = ref({ top: 0, left: 0, width: 320 });
@@ -124,6 +126,12 @@ const isFrequentlyUsed = (indexName: string): boolean => {
 const indexStore = useIndexStore();
 
 const indices = computed<Array<IndexItem>>(() => {
+  // 懒加载：如果没有初始化，则返回空数组，避免不必要的计算和 fuse 索引构建
+  // 这可以显著提高页面进入时的性能，特别是当索引数量很大时
+  if (!isInitialized.value) {
+    return [];
+  }
+
   const items = new Set<IndexItem>();
   const names = new Set<string>();
   const indexList = indexStore.list;
@@ -241,6 +249,9 @@ function handleWindowScroll() {
 }
 
 function handleInput() {
+  if (!isInitialized.value) {
+    isInitialized.value = true;
+  }
   nextTick(() => {
     updateDropdownPosition();
     showDropdown.value = true;
@@ -249,6 +260,9 @@ function handleInput() {
 }
 
 function handleFocus() {
+  if (!isInitialized.value) {
+    isInitialized.value = true;
+  }
   nextTick(() => {
     updateDropdownPosition();
     showDropdown.value = true;
