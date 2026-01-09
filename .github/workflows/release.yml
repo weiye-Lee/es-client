@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: '22.5.1'
           cache: 'pnpm'
-      - run: pnpm install
+      - run: pnpm install --frozen-lockfile
 
       - run: pnpm build:chrome
       - run: pnpm build:edge
