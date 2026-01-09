@@ -7,105 +7,58 @@ on:
       - main
 
 jobs:
-  publish-tauri:
-    # 添加输出定义
-    outputs:
-      appVersion: ${{ steps.set_output.outputs.appVersion }}
-
-    permissions:
-      contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: 'macos-latest'
-            args: '--target aarch64-apple-darwin'
-          - platform: 'macos-latest'
-            args: '--target x86_64-apple-darwin'
-          - platform: 'ubuntu-24.04'
-            args: ''
-          - platform: 'windows-latest'
-            args: ''
-
-    runs-on: ${{ matrix.platform }}
+  build_extensions:
+    name: 构建浏览器扩展
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          version: 9
-          run_install: true
+          version: 8
+          run_install: false
 
-      - name: setup node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: '22.5.1'
           cache: 'pnpm'
 
-      - name: install Rust stable
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+      - run: pnpm install
 
-      # ----------------------------------------------------------
-      #  修复 WiX light.exe 找不到 VC++ 运行库的问题（仅 Windows）
-      # ----------------------------------------------------------
-      - name: Install VC++ redist (Windows only)
-        if: matrix.platform == 'windows-latest'
-        run: |
-          Invoke-WebRequest -Uri https://aka.ms/vs/17/release/vc_redist.x64.exe -OutFile vc_redist.x64.exe
-          Start-Process -Wait -FilePath .\vc_redist.x64.exe -ArgumentList "/quiet", "/norestart"
+      - run: pnpm build:chrome
+      - run: pnpm build:edge
+      - run: pnpm build:firefox
 
-      - name: install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-24.04'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y pkg-config libclang-dev libxcb1-dev libxrandr-dev \
-                                  libdbus-1-dev libpipewire-0.3-dev libwayland-dev libegl-dev \
-                                  libglib2.0-dev libgtk-3-dev libwebkit2gtk-4.1-dev libgbm-dev \
-                                  libappindicator3-dev librsvg2-dev patchelf
+      - run: zip -r chrome-extension.zip src-chrome/
+      - run: zip -r edge-extension.zip src-edge/
+      - run: zip -r firefox-extension.zip src-firefox/
 
-      - name: install frontend dependencies
-        run: pnpm install
+      - uses: martinbeentjes/npm-get-version-action@v1.3.1
+        id: package-version
 
-      - uses: tauri-apps/tauri-action@v0
-        id: tauri-action  # 添加 id 以便后续引用
+      - uses: ncipollo/release-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
-          tagName: tauri-demo-v__VERSION__
-          releaseName: 'tauri-demo v__VERSION__'
-          releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: false # 不创建草稿版本
-          prerelease: false # 不作为预发布版本
-          args: ${{ matrix.args }}
-
-      # 保留原有「获取版本号」逻辑
-      - name: Generate release tag
-        id: save_tag
-        if: matrix.platform == 'ubuntu-24.04'
-        run: |
-          echo ${{ steps.tauri-action.outputs.appVersion }}
-          echo "appVersion=${{ steps.tauri-action.outputs.appVersion }}" >> $GITHUB_OUTPUT
-
-      - name: Set job output
-        id: set_output
-        if: matrix.platform == 'ubuntu-24.04'
-        run: |
-          echo "appVersion=${{ steps.save_tag.outputs.appVersion }}" >> $GITHUB_OUTPUT
-
-  upgradeLink-upload:
-    needs: publish-tauri
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send a request to UpgradeLink
-        uses: toolsetlink/upgradelink-action@v5
-        with:
-          source-url: 'https://github.com/toolsetlink/tauri-demo/releases/download/tauri-demo-v${{ needs.publish-tauri.outputs.appVersion }}/latest.json'
-          access-key: ${{ secrets.UPGRADE_LINK_ACCESS_KEY }}
-          tauri-key: ${{ secrets.UPGRADE_LINK_TAURI_KEY }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          draft: true
+          prerelease: false
+          tag: v${{ steps.package-version.outputs.current-version }}
+          name: v${{ steps.package-version.outputs.current-version }}
+          artifacts: |
+            chrome-extension.zip
+            edge-extension.zip
+            firefox-extension.zip
+          body: |
+            ## 变更日志
+            ## 如何使用 es-client
+            ### 浏览器扩展
+            * [Chrome 扩展 .zip](https://github.com/${{ github.repository }}/releases/download/v${{ steps.package-version.outputs.current-version }}/chrome-extension.zip)
+            * [Edge 扩展 .zip](https://github.com/${{ github.repository }}/releases/download/v${{ steps.package-version.outputs.current-version }}/edge-extension.zip)
+            * [Firefox 扩展 .zip](https://github.com/${{ github.repository }}/releases/download/v${{ steps.package-version.outputs.current-version }}/firefox-extension.zip)
+            * [Google Chrome](https://chromewebstore.google.com/detail/es-client/pkhmgepniefdigphghbolofjgbnhnhfd)
+            * [Mozilla Firefox](https://addons.mozilla.org/zh-CN/firefox/addon/es-client/)
+            * [Microsoft Edge](https://microsoftedge.microsoft.com/addons/detail/esclient/aonamamifdfigcflbeokdndfappnmogo)
+            ### 其他方式
+            * [uTools插件](https://u.tools/plugins/detail/es-client/)
+            * [主页](https://es-client.esion.xyz)
